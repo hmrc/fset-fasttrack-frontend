@@ -12,7 +12,7 @@ To run it locally
 	sbt -Dhttp.port=9283 run
 	
 
-If you go to `http://localhost:9000/csr-fast-track/signin` you can see the landing page
+If you go to `http://localhost:9000/fset-fast-track/signin` you can see the landing page
 
 ### License
 
