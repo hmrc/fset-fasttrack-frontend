@@ -1,5 +1,7 @@
 # Civil Service Resourcing Fast Track Web Application
 
+[![Build Status](https://travis-ci.org/hmrc/fset-fasttrack-frontend.svg?branch=roles)](https://travis-ci.org/hmrc/fset-fasttrack-frontend)
+
 ### Summary
 This repository contains the front-end for the Civil Service Resourcing Fast Track programme.
 
