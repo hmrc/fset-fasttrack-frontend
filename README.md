@@ -11,7 +11,7 @@ This service is written in Scala and Play, so needs at least a [JRE] to run.
 ### Testing
 To run it locally
 	
-	sbt -Dhttp.port=9283 run
+- sbt -Dhttp.port=9283 run
 	
 
 If you go to `http://localhost:9283/fset-fast-track/signin` you can see the landing page
