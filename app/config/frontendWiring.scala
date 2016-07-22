@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.config.{ AppName, RunMode, ServicesConfig }
 import uk.gov.hmrc.play.http.ws._
 
-object FrontendAuditConnector extends AuditConnector with RunMode {
+object FrontendAuditConnector extends AuditConnector {
   override lazy val auditingConfig = LoadAuditingConfig("auditing")
 }
 
