@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 import play.api.Play.{ configuration, current }
-import uk.gov.hmrc.play.config.{ RunMode, ServicesConfig }
+import uk.gov.hmrc.play.config.ServicesConfig
 
 case class EmailConfig(url: EmailUrl, templates: EmailTemplates)
 
@@ -59,24 +59,24 @@ trait AppConfig {
   val fasttrackFrontendConfig: FasttrackFrontendConfig
 }
 
-object FrontendAppConfig extends AppConfig with ServicesConfig with RunMode {
+object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   val feedbackUrl = configuration.getString("feedback.url").getOrElse("")
 
-  private val contactHost = configuration.getString(s"$env.microservice.services.contact-frontend.host").getOrElse("")
+  private val contactHost = configuration.getString("microservice.services.contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = "CSRFastTrack"
 
-  override lazy val analyticsToken = loadConfig(s"$env.microservice.services.google-analytics.token")
-  override lazy val analyticsHost = loadConfig(s"$env.microservice.services.google-analytics.host")
+  override lazy val analyticsToken = loadConfig("microservice.services.google-analytics.token")
+  override lazy val analyticsHost = loadConfig("microservice.services.google-analytics.host")
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
-  override lazy val emailConfig = configuration.underlying.as[EmailConfig](s"$env.microservice.services.email")
+  override lazy val emailConfig = configuration.underlying.as[EmailConfig]("microservice.services.email")
 
-  override lazy val userManagementConfig = configuration.underlying.as[UserManagementConfig](s"$env.microservice.services.user-management")
-  override lazy val fasttrackConfig = configuration.underlying.as[FasttrackConfig](s"$env.microservice.services.fasttrack")
+  override lazy val userManagementConfig = configuration.underlying.as[UserManagementConfig]("microservice.services.user-management")
+  override lazy val fasttrackConfig = configuration.underlying.as[FasttrackConfig]("microservice.services.fasttrack")
   override val fasttrackFrontendConfig = FasttrackFrontendConfig.read(
     blockNewAccountsDate = configuration.getString("application.blockNewAccountsDate"),
     blockApplicationsDate = configuration.getString("application.blockApplicationsDate")
