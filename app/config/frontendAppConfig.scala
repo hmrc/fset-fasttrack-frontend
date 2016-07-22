@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
 import play.api.Play.{ configuration, current }
-import uk.gov.hmrc.play.config.{ RunMode, ServicesConfig }
+import uk.gov.hmrc.play.config.ServicesConfig
 
 case class EmailConfig(url: EmailUrl, templates: EmailTemplates)
 

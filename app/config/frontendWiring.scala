@@ -28,7 +28,7 @@ import security.CsrCredentialsProvider
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.config.{ AppName, RunMode, ServicesConfig }
+import uk.gov.hmrc.play.config.{ AppName, ServicesConfig }
 import uk.gov.hmrc.play.http.ws._
 
 object FrontendAuditConnector extends AuditConnector {
