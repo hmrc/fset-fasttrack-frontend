@@ -47,7 +47,9 @@
             @if(!CookiePolicy.bannerSeen(request)) {
                 <div id="global-cookie-message" class="cookie-banner">
                     <div class="content-container" role="alert">
-                        <span class="copy-16">GOV.UK uses cookies to make the site simpler. <a href="">Find out more about cookies</a></span>
+                        <span class="copy-16">GOV.UK uses cookies to make the site simpler.
+                            <a href="@routes.Application.privacy">Find out more about cookies</a>
+                        </span>
                     </div>
                 </div>
             }
@@ -135,7 +137,7 @@
             <script src='@routes.Assets.versioned("js/vendor/jquery-1.11.1.min.js")'></script>
             <script src='@routes.Assets.versioned("js/vendor/fastclick-1.0.6.min.js")'></script>
             <script src='@routes.Assets.versioned("js/scripts.js")'></script>
-            
+
         </body>
     </html>
 
