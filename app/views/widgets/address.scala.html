@@ -1,11 +1,11 @@
-@(form: Form[_], fieldNamespace: String, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+@(form: Form[_], fieldNamespace: String, args: (Symbol,Any)*)(implicit messages: Messages)
 
 <div id="address.line1_field">
 @helper.inputText(form(s"$fieldNamespace.line1"),
     '_label -> "Address",
     'class -> "form-control",
     '_class -> "form-group-compound",
-    '_showConstraints -> false)(helpers.CSRFieldConstructor.myFields, lang)
+    '_showConstraints -> false)(helpers.CSRFieldConstructor.myFields, messages)
 @helper.inputText(form(s"$fieldNamespace.line2"),
     'class -> "form-control",
     '_class -> "form-group-compound",

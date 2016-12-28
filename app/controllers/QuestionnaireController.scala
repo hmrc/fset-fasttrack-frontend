@@ -24,6 +24,8 @@ import models.CachedDataWithApp
 import play.api.mvc.{ Request, Result }
 import security.Roles.{ DiversityQuestionnaireRole, EducationQuestionnaireRole, OccupationQuestionnaireRole, StartQuestionnaireRole }
 import uk.gov.hmrc.play.http.HeaderCarrier
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 import scala.language.reflectiveCalls

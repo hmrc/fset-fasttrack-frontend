@@ -1,4 +1,5 @@
-@(alternateForm: Option[Form[_root_.forms.AlternateLocationsForm.Data]])(implicit request: Request[_], flash: Flash, user: Option[CachedData])
+@(alternateForm: Option[Form[_root_.forms.AlternateLocationsForm.Data]])
+(implicit request: Request[_], flash: Flash, user: Option[CachedData], messages: Messages)
 @import views.html.widgets.radioBox
 
 @helper.form(action = routes.SchemeController.saveConsiderAlternatives(), 'novalidate -> "novalidate") {

@@ -1,4 +1,8 @@
-@(title: String, preferenceForm: Form[_root_.forms.SchemeLocationPreferenceForm.Data], action:Call, selection: models.frameworks.LocationAndSchemeSelection, disabledLocation: Option[String] = None, showNoSecondPreference: Boolean = false)(regions: List[models.frameworks.Region])(buttons: Html)(implicit request: Request[_], flash: Flash, user: Option[CachedData])
+@(title: String, preferenceForm: Form[_root_.forms.SchemeLocationPreferenceForm.Data], action:Call,
+    selection: models.frameworks.LocationAndSchemeSelection, disabledLocation: Option[String] = None, showNoSecondPreference: Boolean = false)
+(regions: List[models.frameworks.Region])
+(buttons: Html)
+(implicit request: Request[_], flash: Flash, user: Option[CachedData], messages: Messages)
 
 <div id="chooseLocationAndScheme">
 
