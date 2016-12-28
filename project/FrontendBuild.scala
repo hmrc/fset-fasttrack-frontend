@@ -29,18 +29,18 @@ private object Versions {
 
   val ficus         = "1.1.2"
   val cacheClient   = "5.3.0"
-  val frontend      = "6.4.0"
-  val playConfig    = "2.0.1"
-  val playHealth    = "1.1.0"
+  val frontend      = "7.10.0"
+  val playConfig    = "3.0.0"
+  val playHealth    = "2.0.0"
   val urlBuilder    = "1.0.0"
   val httpclient    = "4.3.4"
-  val jsonLogger    = "2.1.1"
+  val jsonLogger    = "3.1.0"
   val scalatest     = "2.2.2"
   val pegdown       = "1.4.2"
   val jsoup         = "1.7.3"
   val wiremock      = "1.57"
-  val hmrctest      = "1.4.0"
-  val scalatestplus = "1.2.0"
+  val hmrctest      = "2.2.0"
+  val scalatestplus = "1.5.1"
   val silhouette    = "2.0.2"
 }
 
@@ -53,7 +53,7 @@ private object AppDependencies {
     "uk.gov.hmrc"               %% "http-caching-client"      % cacheClient,
     "uk.gov.hmrc"               %% "frontend-bootstrap"       % frontend,
     "uk.gov.hmrc"               %% "play-config"              % playConfig,
-    "uk.gov.hmrc"               %% "play-json-logger"         % jsonLogger,
+    "uk.gov.hmrc"               %% "logback-json-logger"      % jsonLogger,
     "uk.gov.hmrc"               %% "play-health"              % playHealth,
     "uk.gov.hmrc"               %% "url-builder"              % urlBuilder,
     "org.apache.httpcomponents" %  "httpclient"               % httpclient,
@@ -62,7 +62,7 @@ private object AppDependencies {
 
   val test = Seq(
     "org.scalatest"             %% "scalatest"                % scalatest     % "test",
-    "org.scalatestplus"         %% "play"                     % scalatestplus % "test",
+    "org.scalatestplus.play"    %% "scalatestplus-play"       % scalatestplus % "test",
     "org.pegdown"               %  "pegdown"                  % pegdown       % "test",
     "org.jsoup"                 %  "jsoup"                    % jsoup         % "test",
     "com.github.tomakehurst"    %  "wiremock"                 % wiremock      % "test",
