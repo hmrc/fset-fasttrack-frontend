@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.test
 
 import config.CSRHttp
 import connectors.addresslookup.AddressLookupClient
+import controllers.BaseController
 import play.api.mvc.Action
-
-object AddressLookupController extends AddressLookupController {
-  val http = CSRHttp
-  val addressLookupEndpoint = config.FrontendAppConfig.addressLookupConfig.url
-}
 
 trait AddressLookupController extends BaseController with AddressLookupClient {
   // TODO Add permissions into this once the feature is ready to be moved from test routes
@@ -31,4 +27,9 @@ trait AddressLookupController extends BaseController with AddressLookupClient {
     val decoded = java.net.URLDecoder.decode(postcode, "UTF8")
     findByPostcode(decoded, None).map(r => Ok(r.toString))
   }
+}
+
+object AddressLookupController extends AddressLookupController {
+  val http = CSRHttp
+  val addressLookupEndpoint = config.FrontendAppConfig.addressLookupConfig.url
 }

@@ -83,5 +83,5 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
     blockNewAccountsDate = configuration.getString("application.blockNewAccountsDate"),
     blockApplicationsDate = configuration.getString("application.blockApplicationsDate")
   )
-  override val addressLookupConfig = configuration.underlying.as[AddressLookupConfig]("microservice.services.address-lookup")
+  override lazy val addressLookupConfig = configuration.underlying.as[AddressLookupConfig]("microservice.services.address-lookup")
 }
