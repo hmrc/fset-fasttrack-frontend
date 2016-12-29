@@ -37,6 +37,7 @@ case class FasttrackConfig(url: FasttrackUrl)
 case class FasttrackUrl(host: String, base: String)
 
 case class FasttrackFrontendConfig(blockNewAccountsDate: Option[LocalDateTime], blockApplicationsDate: Option[LocalDateTime])
+case class AddressLookupConfig(url: String)
 
 object FasttrackFrontendConfig {
   def read(blockNewAccountsDate: Option[String], blockApplicationsDate: Option[String]): FasttrackFrontendConfig = {
@@ -57,6 +58,7 @@ trait AppConfig {
   val userManagementConfig: UserManagementConfig
   val fasttrackConfig: FasttrackConfig
   val fasttrackFrontendConfig: FasttrackFrontendConfig
+  val addressLookupConfig: AddressLookupConfig
 }
 
 object FrontendAppConfig extends AppConfig with ServicesConfig {
@@ -81,4 +83,5 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
     blockNewAccountsDate = configuration.getString("application.blockNewAccountsDate"),
     blockApplicationsDate = configuration.getString("application.blockApplicationsDate")
   )
+  override val addressLookupConfig = configuration.underlying.as[AddressLookupConfig]("microservice.services.address-lookup")
 }

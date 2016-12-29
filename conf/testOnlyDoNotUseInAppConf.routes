@@ -11,3 +11,5 @@
 
 # Add all the application routes to the prod.routes file
 ->         /                          prod.Routes
+
+GET        /address/search/:postcode             controllers.AddressLookupController.addressLookup(postcode: String)
