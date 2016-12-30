@@ -1,4 +1,5 @@
-@(details: Form[_root_.forms.GeneralDetailsForm.Data])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+@(details: Form[_root_.forms.GeneralDetailsForm.Data])
+(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, messages: Messages)
 
 @import helpers.CSRFieldConstructor._
 @import views.html.widgets.{date, radioBox}
