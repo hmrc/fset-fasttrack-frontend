@@ -1,7 +1,5 @@
 @(schemesAndLocations: models.frameworks.LocationAndSchemeSelection)(edit: Html)
 
-@import views.html.application.scheme.preferenceSummaryView
-
 @renderBoolean(value: Boolean) = {
     @(value match {
         case true => "Yes"
@@ -15,10 +13,10 @@
         @edit
     </h2>
 
-    @preferenceSummaryView(title = "First preference", preference = schemesAndLocations.firstLocation, id = "firstPreference")
+    <!-- TODO[at]preferenceSummaryView(title = "First preference", preference = schemesAndLocations.firstLocation, id = "firstPreference") -->
 
     @if(schemesAndLocations.secondLocation.isDefined) {
-        @preferenceSummaryView(title = "Second preference", preference = schemesAndLocations.secondLocation.get, id = "secondPreference")
+        <!-- TODO [at]preferenceSummaryView(title = "Second preference", preference = schemesAndLocations.secondLocation.get, id = "secondPreference")
     } else {
         <section>
             <h3 class="heading-small">Second preference</h3>

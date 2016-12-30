@@ -39,14 +39,7 @@ GET         /application/details                                    controllers.
 POST        /application/details                                    controllers.FastTrackApplication.submitGeneralDetails
 
 GET         /application/schemes                                    controllers.SchemeController.entryPoint
-GET         /application/schemes/first-preference                   controllers.SchemeController.firstPreference
-GET         /application/schemes/second-preference                  controllers.SchemeController.secondPreference
-GET         /application/schemes/summary                            controllers.SchemeController.summary
-
-POST        /application/schemes/first-preference                   controllers.SchemeController.saveFirstPreference
-POST        /application/schemes/second-preference/:consider        controllers.SchemeController.considerSecondPreference(consider:Boolean)
-POST        /application/schemes/second-preference                  controllers.SchemeController.saveSecondPreference
-POST        /application/schemes/consider-alternatives              controllers.SchemeController.saveConsiderAlternatives
+POST        /application/schemes                                    controllers.SchemeController.submitLocations
 
 GET         /application/assistance                                 controllers.AssistanceController.present
 POST        /application/assistance                                 controllers.AssistanceController.submit

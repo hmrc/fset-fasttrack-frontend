@@ -1,0 +1,79 @@
+@(locationForm: Form[_root_.forms.SchemeLocationPreferenceForm.Data])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+
+@import helpers.CSRFieldConstructor._
+@import views.html.widgets.{guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
+
+
+@main_template(title = "Where could you work from?", pageForms = Seq(locationForm)) {
+
+    @helper.form(action = routes.SchemeController.submitLocations(), 'novalidate -> "novalidate") {
+        @helper.CSRF.formField
+        <h1 class="heading-xlarge">Where could you work from?</h1>
+
+        <input type="text" id="hiddenInput" class="visuallyhidden">
+        <div class="grid-wrapper">
+            <section class="grid grid-1-2">
+                <div class="inner-block-padr">
+                    <h2 class="heading-medium" id="">Available locations</h2>
+                    <div class="form-group form-group-compound">
+                        <label for="yourPostcode" class="form-label" id="yourPostcodeLabel">Enter postcode or town/city</label>
+                        <input type="text" id="yourPostcode" class="form-control form-control-3-4" value="CV1 2WT"
+                        autocorrect="off" spellcheck="false">
+                        <div id="updateLocationWrapper" style="display: none">
+                            <a id="updateLocation" href="#" class="button-link no-btm-margin">Update list</a>
+                        </div>
+                    </div>
+                    <section>
+                        <div class="scheme-input-container">
+                            <div id="scrollingList" class="scrolling-panel max-height-25">
+                                <ul class="schemes-list" id="listOfLocations">
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="toggle-content loading-panel" id="loadingLocations">
+                            <h3 class="heading-small">Loading locations...</h3>
+                        </div>
+                        <div class="toggle-content noresults-panel" id="noLocationsFound">
+                            <h3 class="heading-small">Postcode not found</h3>
+                            <p>Make sure you've entered a correct postcode</p>
+                        </div>
+                    </section>
+                </div>
+            </section>
+            <section class="grid grid-1-2">
+                <h2 class="heading-medium">Your location preferences</h2>
+                <section class="panel-indent">
+                    <p>Check that you're happy with the order</p>
+                </section>
+                <ol id="selectedPrefList" class="list-text">
+                    <li></li>
+                </ol>
+            </section>
+        </div>
+        <div class="form-group">
+            <a href="scheme-selection-new-02.html" class="button" id="locationsSaveBtn">Save and continue</a>
+        </div>
+        <script src="../_assets/js/vendor/jquery-ui-custom.js"></script>
+        <script src="../_assets/js/vendor/geopoint.js"></script>
+        <script src="../_assets/js/location-finder.js"></script>
+        <script src="../_assets/js/preference-selector.js"></script>
+        <script>
+                // $(function() {
+                //   $('#locationsSaveBtn').on('click', function(e) {
+                //     var storageObject = [];
+                //     $.each($('#selectedPrefList .location-prefcontainer '), function() {
+                //       var preference = $(this).find('[data-schemprefinlist]').text(),
+                //           location = $(this).find('[data-schemenameinlist]').text();
+                //       storageObject.push({
+                //                       pref: preference,
+                //                       name: location
+                //                     });
+                //     });
+                //       $.jStorage.set('locationPrefs', storageObject);
+                //   });
+                // });
+        </script>
+    }
+
+
+}

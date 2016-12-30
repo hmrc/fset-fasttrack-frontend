@@ -16,7 +16,6 @@
 
 package controllers
 
-import _root_.forms.SchemeLocationPreferenceForm.{ form => preferenceForm, resetPreference, validateSchemeLocation }
 import _root_.forms.{ AlternateLocationsForm, SchemeLocationPreferenceForm }
 import config.CSRHttp
 import connectors.SchemeClient.CannotFindSelection
@@ -39,6 +38,19 @@ object SchemeController extends SchemeController {
 
 trait SchemeController extends BaseController with SchemeClient with ApplicationClient {
 
+  val schemeLocationForm = SchemeLocationPreferenceForm.form
+
+  def entryPoint = CSRSecureAppAction(SchemesRole) { implicit request =>
+    implicit cachedData =>
+    Future.successful(Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm)))
+  }
+
+  def submitLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
+    implicit cachedData =>
+    Future.successful(Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm)))
+  }
+
+  /*
   def entryPoint = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit user =>
       withRegions { regions =>
@@ -129,20 +141,6 @@ trait SchemeController extends BaseController with SchemeClient with Application
       )
   }
 
-  // format: OFF
-  type errorFuncSig = (LocationAndSchemeSelection, List[Region], Form[SchemeLocationPreferenceForm.Data])
-    => Request[_]
-    => CachedDataWithApp
-    => HeaderCarrier
-    => Html
-
-  type successFuncSig = (SchemeLocationPreferenceForm.Data)
-    => Request[_]
-    => CachedDataWithApp
-    => HeaderCarrier
-    => Future[Unit]
-  // format: ON
-
   private def savePreference(error: errorFuncSig)(success: successFuncSig) = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit user =>
       withRegions { regions =>
@@ -185,4 +183,5 @@ trait SchemeController extends BaseController with SchemeClient with Application
         }
       }
   }
+  */
 }
