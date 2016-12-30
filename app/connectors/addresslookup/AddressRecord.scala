@@ -16,17 +16,8 @@
 
 package connectors.addresslookup
 
-import java.net.URLEncoder
-
-import config.CSRHttp
 import play.api.libs.json.Json
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.http._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-
-import java.util.regex.Pattern
 
 /**
   * The following DTOs are taken from https://github.com/hmrc/address-reputation-store. The project has
@@ -100,8 +91,6 @@ case class Address(lines: List[String],
                    subdivision: Option[Country],
                    country: Country) {
 
-  import Address._
-
   def nonEmptyFields: List[String] = lines ::: town.toList ::: county.toList ::: List(postcode)
 
   /** Gets a conjoined representation, excluding the country. */
@@ -110,40 +99,17 @@ case class Address(lines: List[String],
   /** Gets a single-line representation, excluding the country. */
   def printable: String = printable(", ")
 
-  def line1: String = if (lines.nonEmpty) lines.head else ""
+  def line1: String = lines.lift(0).getOrElse("")
 
-  def line2: String = if (lines.size > 1) lines(1) else ""
+  def line2: String = lines.lift(1).getOrElse("")
 
-  def line3: String = if (lines.size > 2) lines(2) else ""
+  def line3: String = lines.lift(2).getOrElse("")
 
-  def line4: String = if (lines.size > 3) lines(3) else ""
-
-  def longestLineLength: Int = nonEmptyFields.map(_.length).max
-
-  def truncatedAddress(maxLen: Int = maxLineLength): Address =
-    Address(lines.map(limit(_, maxLen)), town.map(limit(_, maxLen)), county.map(limit(_, maxLen)), postcode, subdivision, country)
-
+  def line4: String = lines.lift(3).getOrElse("")
 }
 
 object Address {
-  val maxLineLength = 35
-  val danglingLetter: Pattern = Pattern.compile(".* [A-Z0-9]$")
   implicit val addressFormat = Json.reads[Address]
-
-  private[addresslookup] def limit(str: String, max: Int): String = {
-    var s = str
-    while (s.length > max && s.indexOf(", ") > 0) {
-      s = s.replaceFirst(", ", ",")
-    }
-    if (s.length > max) {
-      s = s.substring(0, max).trim
-      if (Address.danglingLetter.matcher(s).matches()) {
-        s = s.substring(0, s.length - 2)
-      }
-      s
-    }
-    else { s }
-  }
 }
 
 case class LatLong(lat: Double, long: Double) {
@@ -162,53 +128,13 @@ case class AddressRecord(
                           logicalState: Option[String],
                           streetClassification: Option[String]) {
 
-  import Address._
-  def truncatedAddress(maxLen: Int = Address.maxLineLength): AddressRecord =
-    if (address.longestLineLength <= maxLen) { this }
-    else { copy(address = address.truncatedAddress(maxLen)) }
-
   def withoutMetadata: AddressRecord = copy(blpuState = None, logicalState = None, streetClassification = None)
 
-  def geoLocation: LatLong = ???
+  // TODO put in the real lat/lng once the address lookup service supports it
+  // Hardcoded to Coventry for the time being
+  val geoLocation: LatLong = LatLong(52.40656, -1.51217)
 }
 
 object AddressRecord {
   implicit val addressRecordFormat = Json.reads[AddressRecord]
-}
-
-trait AddressLookupClient{
-
-  def addressLookupEndpoint: String
-  val http: CSRHttp
-
-  private def url = s"$addressLookupEndpoint/v2/uk/addresses"
-
-  def findById(id: String)(implicit hc: HeaderCarrier): Future[Option[AddressRecord]] = {
-    assert(id.length <= 100, "Postcodes cannot be larger than 100 characters")
-    val uq = "/" + enc(id)
-    http.GET[Option[AddressRecord]](url + uq).recover {
-      case _: NotFoundException => None
-    }
-  }
-
-  def findByUprn(uprn: Long)(implicit hc: HeaderCarrier): Future[List[AddressRecord]] = {
-    val uq = "?uprn=" + uprn.toString
-    http.GET[List[AddressRecord]](url + uq)
-  }
-
-  def findByPostcode(postcode: String, filter: Option[String])(implicit hc: HeaderCarrier): Future[List[AddressRecord]] = {
-    val safePostcode = postcode.replaceAll("[^A-Za-z0-9]", "")
-    assert(safePostcode.length <= 10, "Postcodes cannot be larger than 10 characters")
-    val pq = "?postcode=" + enc(safePostcode)
-    val fq = filter.map(fi => "&filter=" + enc(fi)).getOrElse("")
-    http.GET[List[AddressRecord]](url + pq + fq)
-  }
-
-  def findByOutcode(outcode: Outcode, filter: String)(implicit hc: HeaderCarrier): Future[List[AddressRecord]] = {
-    val pq = "?outcode=" + outcode.toString
-    val fq = "&filter=" + enc(filter)
-    http.GET[List[AddressRecord]](url + pq + fq)
-  }
-
-  private def enc(s: String) = URLEncoder.encode(s, "UTF-8")
 }
