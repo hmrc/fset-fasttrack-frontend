@@ -1,4 +1,9 @@
-@(locationForm: Form[_root_.forms.SchemeLocationPreferenceForm.Data])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+@import viewmodels.application.scheme.LocationViewModel
+
+@(
+        locationForm: Form[_root_.forms.SchemeLocationPreferenceForm.Data],
+        viewModel: LocationViewModel
+)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
 @import views.html.widgets.{guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
@@ -15,6 +20,8 @@
             <section class="grid grid-1-2">
                 <div class="inner-block-padr">
                     <h2 class="heading-medium" id="">Available locations</h2>
+
+                    @if(viewModel.postCodeLookupEnabled) {
                     <div class="form-group form-group-compound">
                         <label for="yourPostcode" class="form-label" id="yourPostcodeLabel">Enter postcode or town/city</label>
                         <input type="text" id="yourPostcode" class="form-control form-control-3-4" value="CV1 2WT"
@@ -23,6 +30,8 @@
                             <a id="updateLocation" href="#" class="button-link no-btm-margin">Update list</a>
                         </div>
                     </div>
+                    }
+
                     <section>
                         <div class="scheme-input-container">
                             <div id="scrollingList" class="scrolling-panel max-height-25">
@@ -53,26 +62,6 @@
         <div class="form-group">
             <a href="scheme-selection-new-02.html" class="button" id="locationsSaveBtn">Save and continue</a>
         </div>
-        <script src="../_assets/js/vendor/jquery-ui-custom.js"></script>
-        <script src="../_assets/js/vendor/geopoint.js"></script>
-        <script src="../_assets/js/location-finder.js"></script>
-        <script src="../_assets/js/preference-selector.js"></script>
-        <script>
-                // $(function() {
-                //   $('#locationsSaveBtn').on('click', function(e) {
-                //     var storageObject = [];
-                //     $.each($('#selectedPrefList .location-prefcontainer '), function() {
-                //       var preference = $(this).find('[data-schemprefinlist]').text(),
-                //           location = $(this).find('[data-schemenameinlist]').text();
-                //       storageObject.push({
-                //                       pref: preference,
-                //                       name: location
-                //                     });
-                //     });
-                //       $.jStorage.set('locationPrefs', storageObject);
-                //   });
-                // });
-        </script>
     }
 
 

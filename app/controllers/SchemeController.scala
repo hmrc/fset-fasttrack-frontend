@@ -17,7 +17,7 @@
 package controllers
 
 import _root_.forms.{ AlternateLocationsForm, SchemeLocationPreferenceForm }
-import config.CSRHttp
+import config.{ AppConfig, CSRHttp, FrontendAppConfig }
 import connectors.SchemeClient.CannotFindSelection
 import connectors.{ ApplicationClient, SchemeClient }
 import helpers.NotificationType._
@@ -29,25 +29,31 @@ import play.api.mvc.{ Request, Result }
 import play.twirl.api.Html
 import security.Roles.SchemesRole
 import uk.gov.hmrc.play.http.HeaderCarrier
+import viewmodels.application.scheme.LocationViewModel
 
 import scala.concurrent.Future
 
 object SchemeController extends SchemeController {
   val http = CSRHttp
+  val config = FrontendAppConfig
 }
 
 trait SchemeController extends BaseController with SchemeClient with ApplicationClient {
+
+  val config: AppConfig
 
   val schemeLocationForm = SchemeLocationPreferenceForm.form
 
   def entryPoint = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-    Future.successful(Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm)))
+      val viewModel = LocationViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup)
+    Future.successful(Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm, viewModel)))
   }
 
   def submitLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-    Future.successful(Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm)))
+      val viewModel = LocationViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup)
+    Future.successful(Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm, viewModel)))
   }
 
   /*

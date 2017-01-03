@@ -7,10 +7,9 @@ $(function(){
         return this;
     };
 
-    var getPostcode = $.jStorage.get('address04');
-
     function loadJSON(callback) {
 
+        /*
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
         xobj.open('GET', '../_assets/js/locations.json', true); // Replace 'my_data' with the path to your file
@@ -21,21 +20,15 @@ $(function(){
             }
         };
         xobj.send(null);
-    }
-
-    if(getPostcode) {
-        $('#yourPostcode').val(getPostcode);
-        $('#postcodePresented').text(getPostcode);
-    } else {
-        $('#yourPostcode').val('CV1 2WT');
-        $('#postcodePresented').text('CV1 2WT');
+        */
+        callback('{ "locations": [ { "name": "foo" }, { "name": "bar" }]}')
     }
 
     function hasNumber(myString) {
         return /\d/.test(myString);
     }
 
-    $( "#yourPostcode" ).autocomplete({
+    $("#yourPostcode").autocomplete({
         source: function (request, response) {
             //data :: JSON list defined
             locations.sort(sort_by('name', true, function(a){return a.toUpperCase()}));
@@ -96,6 +89,7 @@ $(function(){
             locations = locationsResponse.locations;
         });
 
+        /* Post code lookup
         var currentPostcode = $('#yourPostcode').val().toUpperCase(),
             parts = currentPostcode.match(/^([A-Z]{1,2}\d{1,2}[A-Z]?)\s*(\d[A-Z]{2})$/);
 
@@ -123,21 +117,12 @@ $(function(){
             $('#loadingLocations').addClass('toggle-content');
             // $('#noLocationsFound').removeClass('toggle-content');
         }
+        */
+        setTimeout(addDistance, 0)
 
     }
 
     function addDistance() {
-        for (var i = 0; i < locations.length; i++) {
-            var thisId = locations[i].id,
-                thisName = locations[i].name,
-                thisLat = locations[i].lat,
-                thisLng = locations[i].lng,
-                thisGeo = new GeoPoint(thisLat, thisLng),
-                distance = parseFloat(myGeoLocation.distanceTo(thisGeo).toFixed(1));
-
-            locations[i]["distance"] = distance;
-        }
-
         locations.sort(sort_by('distance', true, parseInt));
 
         setTimeout(showNearby, 0);
@@ -159,7 +144,7 @@ $(function(){
                     '<label for="' + locations[i].id + '" class="block-label block-label-slim">' +
                     '<input type="checkbox" id="' + locations[i].id + '" data-schemename>' +
                     '<span class="location-name">' + locations[i].name + '</span>' +
-                    '<span class="location-distance">' + locations[i].distance + ' miles</span>' +
+                    // '<span class="location-distance">' + locations[i].distance + ' miles</span>' +
                     '</label>' +
                     '</li>' );
             }

@@ -24,6 +24,7 @@ $(function(){
 
     function loadJSON(callback) {
 
+        /*
         var xobj = new XMLHttpRequest();
         xobj.overrideMimeType("application/json");
         xobj.open('GET', '../_assets/js/locations.json', true); // Replace 'my_data' with the path to your file
@@ -34,6 +35,8 @@ $(function(){
             }
         };
         xobj.send(null);
+        */
+        callback('{ "locations": [] }');
     }
 
     var locations = [];
