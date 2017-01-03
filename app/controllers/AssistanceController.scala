@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,7 @@ trait AssistanceController extends BaseController with ApplicationClient {
           ad.guaranteedInterview,
           ad.needsAdjustment.getOrElse(""),
           ad.typeOfAdjustments,
-          ad.otherAdjustments,
-          ad.campaignReferrer,
-          ad.campaignOther
+          ad.otherAdjustments
         ))
         Ok(views.html.application.assistance(form))
       }.recover {
@@ -59,24 +57,16 @@ trait AssistanceController extends BaseController with ApplicationClient {
         invalidForm =>
           Future.successful(Ok(views.html.application.assistance(invalidForm))),
         data => {
-          addMedia(user.user.userID, extractMediaReferrer(data)).flatMap { _ =>
-            updateAssistanceDetails(user.application.applicationId, user.user.userID, data).flatMap { _ =>
-              updateProgress()(_ => Redirect(routes.ReviewApplicationController.present()))
-            }.recover {
-              case e: AssistanceDetailsNotFound =>
-                Redirect(routes.HomeController.present()).flashing(danger("account.error"))
-            }
+          updateAssistanceDetails(user.application.applicationId, user.user.userID, data).flatMap { _ =>
+            updateProgress()(_ => Redirect(routes.ReviewApplicationController.present()))
+          }.recover {
+            case e: AssistanceDetailsNotFound =>
+              Redirect(routes.HomeController.present()).flashing(danger("account.error"))
           }
         }
       )
   }
 
-  private def extractMediaReferrer(data: AssistanceForm.Data): String = {
-    if (data.campaignReferrer.contains("Other") || data.campaignReferrer.contains("Careers fair")) {
-      data.campaignOther.getOrElse("")
-    } else {
-      data.campaignReferrer.getOrElse("")
-    }
-  }
+
 
 }

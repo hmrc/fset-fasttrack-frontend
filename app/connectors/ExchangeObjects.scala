@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,9 +63,7 @@ object ExchangeObjects {
     guaranteedInterview: Option[String],
     needsAdjustment: Option[String],
     typeOfAdjustments: Option[List[String]],
-    otherAdjustments: Option[String],
-    campaignReferrer: Option[String],
-    campaignOther: Option[String]
+    otherAdjustments: Option[String]
   )
 
   case class AddMedia(userId: UniqueIdentifier, media: String)
@@ -219,9 +217,7 @@ object ExchangeObjects {
         if (needsAssistance) { None } else data.guaranteedInterview,
         Some(data.needsAdjustment),
         if (data.needsAdjustment == "No") { None } else data.typeOfAdjustments,
-        adjustmentValid(data, data.otherAdjustments),
-        data.campaignReferrer,
-        data.campaignOther
+        adjustmentValid(data, data.otherAdjustments)
       )
     }
 

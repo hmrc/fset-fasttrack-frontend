@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,9 @@ object SignUpForm {
       passwordField -> of(passwordFormatter),
       confirmPasswordField -> nonEmptyTrimmedText("error.confirmpwd", passwordMaxLength),
       "agree" -> checked(Messages("agree.accept")),
-      "agreeEligibleToApply" -> checked(Messages("agree.eligible"))
+      "agreeEligibleToApply" -> checked(Messages("agree.eligible")),
+      "campaignReferrer" -> optionalTrimmedText(64),
+      "campaignOther" -> optionalTrimmedText(256)
     )(Data.apply)(Data.unapply)
   )
 
@@ -94,6 +96,8 @@ object SignUpForm {
     password: String,
     confirmpwd: String,
     agree: Boolean,
-    agreeEligibleToApply: Boolean
+    agreeEligibleToApply: Boolean,
+    campaignReferrer: Option[String],
+    campaignOther: Option[String]
   )
 }

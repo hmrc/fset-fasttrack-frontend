@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,9 +98,7 @@ object AssistanceForm {
       "guaranteedInterview" -> of(requiredFormatter("needsAssistance", "guaranteedInterview")),
       "needsAdjustment" -> Mappings.nonEmptyTrimmedText("needsAdjustment.chooseone", 3),
       "typeOfAdjustments" -> of(requiredListFormatter("needsAdjustment", "typeOfAdjustments")),
-      "otherAdjustments" -> optional(Mappings.nonEmptyTrimmedText("otherAdjustments.chooseone", 4000)),
-      "campaignReferrer" -> Mappings.optionalTrimmedText(64),
-      "campaignOther" -> Mappings.optionalTrimmedText(256)
+      "otherAdjustments" -> optional(Mappings.nonEmptyTrimmedText("otherAdjustments.chooseone", 4000))
     )(Data.apply)(Data.unapply)
   )
 
@@ -111,9 +109,7 @@ object AssistanceForm {
     guaranteedInterview: Option[String],
     needsAdjustment: String,
     typeOfAdjustments: Option[List[String]],
-    otherAdjustments: Option[String],
-    campaignReferrer: Option[String],
-    campaignOther: Option[String]
+    otherAdjustments: Option[String]
   )
 
 }
