@@ -1,5 +1,5 @@
 @(generalDetails: connectors.ExchangeObjects.GeneralDetailsExchange,
-        assistanceDetails: connectors.ExchangeObjects.AssistanceDetailsExchange,
+        assistanceDetails: connectors.exchange.AssistanceDetails,
         schemesAndLocations: models.frameworks.LocationAndSchemeSelection,
         applicationData: models.ApplicationData)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
