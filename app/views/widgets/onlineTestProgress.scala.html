@@ -52,21 +52,21 @@
 
     case ONLINE_TEST_STARTED => {
 
-            <p>Your tests are now ready.</p>
-            <p>You have <b>@{
-                onlineTest.map(v => v.getDuration).getOrElse("")
-            }</b> to complete the tests.
-                <br>The tests will expire at @{
-                onlineTest.map(v => v.getExpireDateTime).getOrElse("")
-            }.</p>
-                <div class="hide-tablet panel-indent">
-        <p><i class="fa fa-exclamation-triangle"></i>The online tests
+        <p>Your tests are now ready.</p>
+        <p>You have <b>@{
+            onlineTest.map(v => v.getDuration).getOrElse("")
+        }</b> to complete the tests.
+            <br>The tests will expire at @{
+            onlineTest.map(v => v.getExpireDateTime).getOrElse("")
+        }.</p>
+        <div class="hide-tablet panel-indent">
+            <p><i class="fa fa-exclamation-triangle"></i>The online tests
             will be extremely difficult to use on a small device.</p>
             <p>Use a laptop or desktop browser, or alternatively seek
                 <a
                 href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#help-with-getting-online"
                 target="_blank" rel="external">help with getting online</a>. </p>
-
+        </div>
         @helper.form(action = routes.OnlineTestController.startTests(), 'novalidate -> "novalidate") {
             @helper.CSRF.formField
 
