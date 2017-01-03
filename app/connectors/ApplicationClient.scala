@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package connectors
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
 import connectors.ExchangeObjects._
-import connectors.exchange.ProgressResponse
-import forms.{ AssistanceForm, GeneralDetailsForm }
+import connectors.exchange.{AssistanceDetails, ProgressResponse}
+import forms.{AssistanceForm, GeneralDetailsForm}
 import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
@@ -137,7 +137,7 @@ trait ApplicationClient {
 
   def findAssistanceDetails(userId: UniqueIdentifier, applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier) = {
     http.GET(s"${url.host}${url.base}/assistance-details/$userId/$applicationId").map { response =>
-      response.json.as[AssistanceDetailsExchange]
+      response.json.as[AssistanceDetails]
     } recover {
       case _: NotFoundException => throw new AssistanceDetailsNotFound()
     }

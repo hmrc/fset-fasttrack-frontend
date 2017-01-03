@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,16 @@
 
 package connectors
 
-import connectors.exchange.ProgressResponse
+import connectors.exchange.{AssistanceDetails, ProgressResponse}
 import forms.AssistanceForm
 import mappings.Address
 import mappings.PhoneNumberMapping._
 import mappings.PostCodeMapping._
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
-import org.joda.time.format.{ DateTimeFormatterBuilder, PeriodFormatterBuilder }
-import org.joda.time.{ DateTime, LocalDate, Period }
-import play.api.libs.json.{ Format, Json }
+import org.joda.time.format.{DateTimeFormatterBuilder, PeriodFormatterBuilder}
+import org.joda.time.{DateTime, LocalDate, Period}
+import play.api.libs.json.{Format, Json}
 
 /**
  * this is duplicated from the auth project
@@ -54,18 +54,6 @@ object ExchangeObjects {
     phone: Option[PhoneNumber],
     aLevel: Boolean,
     stemLevel: Boolean
-  )
-
-  case class AssistanceDetailsExchange(
-    needsAssistance: String,
-    typeOfdisability: Option[List[String]],
-    detailsOfdisability: Option[String],
-    guaranteedInterview: Option[String],
-    needsAdjustment: Option[String],
-    typeOfAdjustments: Option[List[String]],
-    otherAdjustments: Option[String],
-    campaignReferrer: Option[String],
-    campaignOther: Option[String]
   )
 
   case class AddMedia(userId: UniqueIdentifier, media: String)
@@ -190,7 +178,6 @@ object ExchangeObjects {
     implicit val createApplicationRequestFormats: Format[CreateApplicationRequest] = Json.format[CreateApplicationRequest]
     implicit val withdrawApplicationRequestFormats: Format[WithdrawApplicationRequest] = Json.format[WithdrawApplicationRequest]
     implicit val updatePersonalDetailsRequestFormats: Format[GeneralDetailsExchange] = Json.format[GeneralDetailsExchange]
-    implicit val updateassistanceDetailsRequestFormats: Format[AssistanceDetailsExchange] = Json.format[AssistanceDetailsExchange]
 
     implicit val sendPasswordCodeRequestFormats = Json.format[SendPasswordCodeRequest]
     implicit val resetPasswordRequestFormats = Json.format[ResetPasswordRequest]
@@ -212,7 +199,7 @@ object ExchangeObjects {
 
       def needsAssistance: Boolean = data.needsAssistance == "No" || data.needsAssistance == "Prefer not to say"
 
-      def exchange = AssistanceDetailsExchange(
+      def exchange = AssistanceDetails(
         data.needsAssistance,
         if (needsAssistance) { None } else data.typeOfdisability,
         if (needsAssistance) { None } else data.detailsOfdisability,
