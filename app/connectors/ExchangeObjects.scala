@@ -63,9 +63,7 @@ object ExchangeObjects {
     guaranteedInterview: Option[String],
     needsAdjustment: Option[String],
     typeOfAdjustments: Option[List[String]],
-    otherAdjustments: Option[String],
-    campaignReferrer: Option[String],
-    campaignOther: Option[String]
+    otherAdjustments: Option[String]
   )
 
   case class AddMedia(userId: UniqueIdentifier, media: String)
@@ -219,9 +217,7 @@ object ExchangeObjects {
         if (needsAssistance) { None } else data.guaranteedInterview,
         Some(data.needsAdjustment),
         if (data.needsAdjustment == "No") { None } else data.typeOfAdjustments,
-        adjustmentValid(data, data.otherAdjustments),
-        data.campaignReferrer,
-        data.campaignOther
+        adjustmentValid(data, data.otherAdjustments)
       )
     }
 

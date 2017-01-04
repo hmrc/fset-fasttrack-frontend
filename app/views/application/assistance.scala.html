@@ -80,24 +80,6 @@
                 }
             </section>
 
-        <section>
-            <h2 class="heading-large">How did you hear about us?</h2>
-            <div data-optional>
-                @select_guard(assistanceForm("campaignReferrer"), models.CampaignReferrers.list,
-                    "hearAboutUsDetail", "-- Select one --") {
-                    Select how you heard about us (optional)
-                }
-            </div>
-
-            <div class="form-group toggle-content" id="hearAboutUsDetail" data-requiredifshown data-optional>
-                @helper.inputText(assistanceForm("campaignOther"),
-                    '_label -> "Provide more information (optional)",
-                    'class -> "form-control",
-                    '_showConstraints -> false)
-            </div>
-        </section>
-
-
         <div class="form-group">
             <div>
                 <button id="submit" type="submit" value="submit" class="button">Save and continue</button>

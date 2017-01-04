@@ -72,14 +72,14 @@ class SignUpFormSpec extends BaseSpec {
       signUpForm.errors("password").head.messages must be(Seq(Messages("error.password")))
     }
 
-    "throw an error if I haven't click on the I am eligible" in {
+    "throw an error if I haven't clicked on the I am eligible" in {
       val (_, signUpForm) = SignupFormGenerator(agreeEligibleToApply = false).get
       signUpForm.hasErrors must be(true)
       signUpForm.errors.length must be(1)
       signUpForm.errors("agreeEligibleToApply").head.messages must be(Seq(Messages("agree.eligible")))
     }
 
-    "throw an error if I haven't click on the I agree" in {
+    "throw an error if I haven't clicked on the I agree" in {
       val (_, signUpForm) = SignupFormGenerator(agree = false).get
       signUpForm.hasErrors must be(true)
       signUpForm.errors.length must be(1)
@@ -105,10 +105,14 @@ case class SignupFormGenerator(
   password: String = "aA1234567",
   confirm: String = "aA1234567",
   agree: Boolean = true,
-  agreeEligibleToApply: Boolean = true
+  agreeEligibleToApply: Boolean = true,
+  campaignReferrer: Option[String] = Some("Google"),
+  campaignOther: Option[String] = Some("More Google")
 ) {
 
-  private val data = Data(firstName, lastName, email, confirmEmail, password, confirm, agree, agreeEligibleToApply)
+  private val data = Data(firstName, lastName, email, confirmEmail, password, confirm, agree, agreeEligibleToApply,
+    campaignReferrer, campaignOther
+  )
 
   private val validFormData = Map(
     "firstName" -> data.firstName,
@@ -118,7 +122,10 @@ case class SignupFormGenerator(
     "password" -> data.password,
     "confirmpwd" -> data.confirmpwd,
     "agree" -> data.agree.toString,
-    "agreeEligibleToApply" -> data.agreeEligibleToApply.toString
+    "agreeEligibleToApply" -> data.agreeEligibleToApply.toString,
+    "campaignReferrer" -> data.campaignReferrer.getOrElse(""),
+    "campaignOther" -> data.campaignOther.getOrElse("")
+
   )
 
   private def signUpForm = Form(SignUpForm.form.mapping).bind(validFormData)
