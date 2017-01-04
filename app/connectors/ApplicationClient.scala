@@ -42,14 +42,16 @@ trait ApplicationClient {
   import ExchangeObjects.Implicits._
   import config.FrontendAppConfig.fasttrackConfig._
 
-  def createApplication(userId: UniqueIdentifier, frameworkId: String)(implicit hc: HeaderCarrier) = {
+  def createApplication(userId: UniqueIdentifier, frameworkId: String)
+    (implicit hc: HeaderCarrier): Future[ApplicationResponse] = {
 
     http.PUT(s"${url.host}${url.base}/application/create", CreateApplicationRequest(userId, frameworkId)).map { response =>
       response.json.as[ApplicationResponse]
     }
   }
 
-  def submitApplication(userId: UniqueIdentifier, applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier) = {
+  def submitApplication(userId: UniqueIdentifier, applicationId: UniqueIdentifier)
+    (implicit hc: HeaderCarrier): Future[Unit] = {
     http.PUT(s"${url.host}${url.base}/application/submit/$userId/$applicationId", Json.toJson("")).map {
       case x: HttpResponse if x.status == OK => ()
     }.recover {
@@ -57,7 +59,8 @@ trait ApplicationClient {
     }
   }
 
-  def withdrawApplication(applicationId: UniqueIdentifier, reason: WithdrawApplicationRequest)(implicit hc: HeaderCarrier) = {
+  def withdrawApplication(applicationId: UniqueIdentifier, reason: WithdrawApplicationRequest)
+    (implicit hc: HeaderCarrier): Future[Unit] = {
     http.PUT(s"${url.host}${url.base}/application/withdraw/$applicationId", Json.toJson(reason)).map {
       case x: HttpResponse if x.status == OK => ()
     }.recover {
@@ -65,7 +68,7 @@ trait ApplicationClient {
     }
   }
 
-  def addMedia(userId: UniqueIdentifier, media: String)(implicit hc: HeaderCarrier) = {
+  def addMedia(userId: UniqueIdentifier, media: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     http.PUT(s"${url.host}${url.base}/media/create", AddMedia(userId, media)).map {
       case x: HttpResponse if x.status == CREATED => ()
     } recover {
@@ -73,13 +76,13 @@ trait ApplicationClient {
     }
   }
 
-  def getApplicationProgress(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier) = {
+  def getApplicationProgress(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[ProgressResponse] = {
     http.GET(s"${url.host}${url.base}/application/progress/$applicationId").map { response =>
       response.json.as[ProgressResponse]
     }
   }
 
-  def findApplication(userId: UniqueIdentifier, frameworkId: String)(implicit hc: HeaderCarrier) = {
+  def findApplication(userId: UniqueIdentifier, frameworkId: String)(implicit hc: HeaderCarrier): Future[ApplicationResponse] = {
     http.GET(s"${url.host}${url.base}/application/find/user/$userId/framework/$frameworkId").map { response =>
       response.json.as[ApplicationResponse]
     } recover {
@@ -87,10 +90,8 @@ trait ApplicationClient {
     }
   }
 
-  def updateGeneralDetails(applicationId: UniqueIdentifier, userId: UniqueIdentifier, data: GeneralDetailsForm.Data, email: String)(
-    implicit
-    hc: HeaderCarrier
-  ) = {
+  def updateGeneralDetails(applicationId: UniqueIdentifier, userId: UniqueIdentifier, data: GeneralDetailsForm.Data,
+    email: String)(implicit hc: HeaderCarrier): Future[Unit] = {
 
     http.POST(
       s"${url.host}${url.base}/personal-details/$userId/$applicationId",
@@ -113,7 +114,8 @@ trait ApplicationClient {
       }
   }
 
-  def findPersonalDetails(userId: UniqueIdentifier, applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier) = {
+  def findPersonalDetails(userId: UniqueIdentifier, applicationId: UniqueIdentifier)
+    (implicit hc: HeaderCarrier): Future[GeneralDetailsExchange] = {
     http.GET(s"${url.host}${url.base}/personal-details/$userId/$applicationId").map { response =>
       response.json.as[GeneralDetailsExchange]
     } recover {
@@ -133,6 +135,7 @@ trait ApplicationClient {
   }
 
   def getAssistanceDetails(userId: UniqueIdentifier, applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier) = {
+
     http.GET(s"${url.host}${url.base}/assistance-details/$userId/$applicationId").map { response =>
       response.json.as[AssistanceDetails]
     } recover {
@@ -140,10 +143,8 @@ trait ApplicationClient {
     }
   }
 
-  def updateQuestionnaire(applicationId: UniqueIdentifier, sectionId: String, questionnaire: Questionnaire)(
-    implicit
-    hc: HeaderCarrier
-  ) = {
+  def updateQuestionnaire(applicationId: UniqueIdentifier, sectionId: String, questionnaire: Questionnaire)
+    (implicit hc: HeaderCarrier): Future[Unit] = {
     http.PUT(
       s"${url.host}${url.base}/questionnaire/$applicationId/$sectionId",
       questionnaire
@@ -154,7 +155,7 @@ trait ApplicationClient {
       }
   }
 
-  def updateReview(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier) = {
+  def updateReview(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Unit] = {
     http.PUT(
       s"${url.host}${url.base}/application/review/$applicationId",
       ReviewRequest(true)

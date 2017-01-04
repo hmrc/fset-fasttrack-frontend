@@ -199,6 +199,7 @@ object ExchangeObjects {
 
       def needsAssistance: Boolean = data.needsAssistance == "No" || data.needsAssistance == "Prefer not to say"
 
+      // TODO: Fix once we change the Assistance Details Form
       def exchange = AssistanceDetails(
         data.needsAssistance,
         if (needsAssistance) { None } else data.typeOfdisability,
@@ -207,8 +208,7 @@ object ExchangeObjects {
         Some(data.needsAdjustment),
         if (data.needsAdjustment == "No") { None } else data.typeOfAdjustments,
         adjustmentValid(data, data.otherAdjustments),
-        data.campaignReferrer,
-        data.campaignOther
+        None, None, data.needsAssistance, None, None, None, None, None, None, None, None, None
       )
     }
 

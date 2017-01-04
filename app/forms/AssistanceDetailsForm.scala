@@ -16,9 +16,10 @@
 
 package forms
 
+import connectors.exchange.AssistanceDetails
 import play.api.data.Forms._
 import play.api.data.format.Formatter
-import play.api.data.{ Form, FormError }
+import play.api.data.{Form, FormError}
 import play.api.i18n.Messages
 
 object AssistanceDetailsForm {
@@ -98,9 +99,7 @@ object AssistanceDetailsForm {
       "guaranteedInterview" -> of(requiredFormatter("needsAssistance", "guaranteedInterview")),
       "needsAdjustment" -> Mappings.nonEmptyTrimmedText("needsAdjustment.chooseone", 3),
       "typeOfAdjustments" -> of(requiredListFormatter("needsAdjustment", "typeOfAdjustments")),
-      "otherAdjustments" -> optional(Mappings.nonEmptyTrimmedText("otherAdjustments.chooseone", 4000)),
-      "campaignReferrer" -> Mappings.optionalTrimmedText(64),
-      "campaignOther" -> Mappings.optionalTrimmedText(256)
+      "otherAdjustments" -> optional(Mappings.nonEmptyTrimmedText("otherAdjustments.chooseone", 4000))
     )(Data.apply)(Data.unapply)
   )
 
@@ -111,9 +110,20 @@ object AssistanceDetailsForm {
     guaranteedInterview: Option[String],
     needsAdjustment: String,
     typeOfAdjustments: Option[List[String]],
-    otherAdjustments: Option[String],
-    campaignReferrer: Option[String],
-    campaignOther: Option[String]
-  )
+    otherAdjustments: Option[String]
+  ) {
+    // TODO
+    def exchange: AssistanceDetails = {
+      AssistanceDetails(
+        "No", None, None, None, None, None, None, None, None, "No", None, None, None, None, None, None, None, None, None
+      )
+    }
+
+    // TODO
+    def sanitizeData: AssistanceDetailsForm.Data = {
+      AssistanceDetailsForm.Data("No", None, None, None, "No", None, None
+      )
+    }
+  }
 
 }

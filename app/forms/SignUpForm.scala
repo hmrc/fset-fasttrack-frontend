@@ -82,7 +82,9 @@ object SignUpForm {
       passwordField -> of(passwordFormatter),
       confirmPasswordField -> nonEmptyTrimmedText("error.confirmpwd", passwordMaxLength),
       "agree" -> checked(Messages("agree.accept")),
-      "agreeEligibleToApply" -> checked(Messages("agree.eligible"))
+      "agreeEligibleToApply" -> checked(Messages("agree.eligible")),
+      "campaignReferrer" -> optionalTrimmedText(64),
+      "campaignOther" -> optionalTrimmedText(256)
     )(Data.apply)(Data.unapply)
   )
 
@@ -94,6 +96,8 @@ object SignUpForm {
     password: String,
     confirmpwd: String,
     agree: Boolean,
-    agreeEligibleToApply: Boolean
+    agreeEligibleToApply: Boolean,
+    campaignReferrer: Option[String],
+    campaignOther: Option[String]
   )
 }

@@ -42,9 +42,7 @@ trait AssistanceController extends BaseController with ApplicationClient {
           ad.guaranteedInterview,
           ad.needsAdjustment.getOrElse(""),
           ad.typeOfAdjustments,
-          ad.otherAdjustments,
-          ad.campaignReferrer,
-          ad.campaignOther
+          ad.otherAdjustments
         ))
         Ok(views.html.application.assistance(form))
       }.recover {
@@ -59,7 +57,6 @@ trait AssistanceController extends BaseController with ApplicationClient {
         invalidForm =>
           Future.successful(Ok(views.html.application.assistance(invalidForm))),
         data => {
-          addMedia(user.user.userID, extractMediaReferrer(data)).flatMap { _ =>
             updateAssistanceDetails(user.application.applicationId, user.user.userID, data.sanitizeData.exchange).flatMap { _ =>
               updateProgress()(_ => Redirect(routes.ReviewApplicationController.present()))
             }.recover {
@@ -67,16 +64,6 @@ trait AssistanceController extends BaseController with ApplicationClient {
                 Redirect(routes.HomeController.present()).flashing(danger("account.error"))
             }
           }
-        }
       )
   }
-
-  private def extractMediaReferrer(data: AssistanceDetailsForm.Data): String = {
-    if (data.campaignReferrer.contains("Other") || data.campaignReferrer.contains("Careers fair")) {
-      data.campaignOther.getOrElse("")
-    } else {
-      data.campaignReferrer.getOrElse("")
-    }
-  }
-
 }

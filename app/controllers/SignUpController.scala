@@ -50,18 +50,28 @@ trait SignUpController extends BaseController with SignInUtils with ApplicationC
         invalidForm => Future.successful(Ok(views.html.registration.signup(invalidForm))),
         data => {
           env.register(data.email.toLowerCase, data.password, data.firstName, data.lastName).flatMap { u =>
-            signInUser(
-              u.toCached,
-              redirect = Redirect(routes.ActivationController.present()).flashing(success("account.successful"))
-            ).map { r =>
+            addMedia(u.userId, extractMediaReferrer(data)).flatMap { _ =>
+              signInUser(
+                u.toCached,
+                redirect = Redirect(routes.ActivationController.present()).flashing(success("account.successful"))
+              ).map { r =>
                 env.eventBus.publish(SignUpEvent(SecurityUser(u.userId.toString), request, request2lang))
                 r
               }
+            }
           }.recover {
             case e: EmailTakenException =>
               Ok(views.html.registration.signup(SignUpForm.form.fill(data), Some(danger("user.exists"))))
           }
         }
       )
+  }
+
+  private def extractMediaReferrer(data: SignUpForm.Data): String = {
+    if (data.campaignReferrer.contains("Other") || data.campaignReferrer.contains("Careers fair")) {
+      data.campaignOther.getOrElse("")
+    } else {
+      data.campaignReferrer.getOrElse("")
+    }
   }
 }
