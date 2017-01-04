@@ -32,7 +32,7 @@ trait ReviewApplicationController extends BaseController with ApplicationClient 
   def present = CSRSecureAppAction(ReviewRole) { implicit request =>
     implicit user =>
       val personalDetailsFut = findPersonalDetails(user.user.userID, user.application.applicationId)
-      val assistanceDetailsFut = findAssistanceDetails(user.user.userID, user.application.applicationId)
+      val assistanceDetailsFut = getAssistanceDetails(user.user.userID, user.application.applicationId)
       val frameworkLocationFut = getSelection(user.application.applicationId)
 
       (for {

@@ -17,8 +17,8 @@
 package controllers.forms
 
 import controllers.BaseSpec
-import forms.AssistanceForm
-import forms.AssistanceForm.Data
+import forms.AssistanceDetailsForm
+import forms.AssistanceDetailsForm.Data
 import play.api.data.Form
 
 class AssistanceFormSpec extends BaseSpec {
@@ -53,19 +53,19 @@ class AssistanceFormSpec extends BaseSpec {
     val noDisabilities = {
       val data = Data("No", Some(List("")), None, Some("No"), "No", None, None, None, None)
 
-      (data, AssistanceForm.form.fill(data))
+      (data, AssistanceDetailsForm.form.fill(data))
     }
 
     val noAdjustments = {
       val data = Data("Yes", Some(List("One of the disabilities")), None, None, "No", None, None, None, None)
 
-      (data, AssistanceForm.form.fill(data))
+      (data, AssistanceDetailsForm.form.fill(data))
     }
 
     val fullForm: (Data, Form[Data]) = {
       val data = Data("Yes", Some(List("One of the disabilities")), Some("some details"), None, "Yes", Some(List("other")), None, None, None)
 
-      (data, AssistanceForm.form.fill(data))
+      (data, AssistanceDetailsForm.form.fill(data))
     }
 
     def form(
@@ -81,7 +81,7 @@ class AssistanceFormSpec extends BaseSpec {
       val data = Data(needsAssistance, typeOfdisability, detailsOfdisability, guaranteedInterview, needsAdjustment,
         typeOfAdjustments, otherAdjustments, None, None)
 
-      (data, AssistanceForm.form.fill(data))
+      (data, AssistanceDetailsForm.form.fill(data))
     }
 
     val validFormValues = Map(
@@ -96,7 +96,7 @@ class AssistanceFormSpec extends BaseSpec {
     )
 
     def assertFormError(expectedError: Seq[String], invalidFormValues: Map[String, String]) = {
-      val invalidForm: Form[Data] = AssistanceForm.form.bind(invalidFormValues)
+      val invalidForm: Form[Data] = AssistanceDetailsForm.form.bind(invalidFormValues)
       invalidForm.hasErrors mustBe true
       invalidForm.errors.map(_.message) mustBe expectedError
     }

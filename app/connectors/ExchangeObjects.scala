@@ -17,7 +17,7 @@
 package connectors
 
 import connectors.exchange.{AssistanceDetails, ProgressResponse}
-import forms.AssistanceForm
+import forms.AssistanceDetailsForm
 import mappings.Address
 import mappings.PhoneNumberMapping._
 import mappings.PostCodeMapping._
@@ -192,8 +192,8 @@ object ExchangeObjects {
 
     implicit val onlineTestStatusFormats = Json.format[OnlineTestStatus]
 
-    implicit class assistanceDetailsFormtoRequest(data: AssistanceForm.Data) {
-      def adjustmentValid[T](data: AssistanceForm.Data, value: Option[T]) = {
+    implicit class assistanceDetailsFormtoRequest(data: AssistanceDetailsForm.Data) {
+      def adjustmentValid[T](data: AssistanceDetailsForm.Data, value: Option[T]) = {
         if (data.needsAdjustment == "Yes") value else None
       }
 

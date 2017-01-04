@@ -19,6 +19,7 @@ package connectors.exchange
 import play.api.libs.json.Json
 
 final case class AssistanceDetails(
+                                  // TODO: old, they will be removed
                                     needsAssistance: String,
                                     typeOfdisability: Option[List[String]],
                                     detailsOfdisability: Option[String],
@@ -27,7 +28,19 @@ final case class AssistanceDetails(
                                     typeOfAdjustments: Option[List[String]],
                                     otherAdjustments: Option[String],
                                     campaignReferrer: Option[String],
-                                    campaignOther: Option[String]
+                                    campaignOther: Option[String],
+                                  // TODO: new
+                                    hasDisability: String,
+                                    hasDisabilityDescription: Option[String],
+                                    guaranteedInterviewBoolean: Option[Boolean], // TODO: Change this
+                                    needsSupportForOnlineAssessment: Option[Boolean],
+                                    needsSupportForOnlineAssessmentDescription: Option[String],
+                                    needsSupportAtVenue: Option[Boolean],
+                                    needsSupportAtVenueDescription: Option[String],
+                                    // TODO: Change adjustments
+                                    confirmedAdjustments: Option[Boolean],
+                                    numericalTimeAdjustmentPercentage: Option[Int],
+                                    verbalTimeAdjustmentPercentage: Option[Int]
 ) {
 }
 

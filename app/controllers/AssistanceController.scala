@@ -16,7 +16,7 @@
 
 package controllers
 
-import _root_.forms.AssistanceForm
+import _root_.forms.AssistanceDetailsForm
 import config.CSRHttp
 import connectors.ApplicationClient
 import connectors.ApplicationClient.AssistanceDetailsNotFound
@@ -34,8 +34,8 @@ trait AssistanceController extends BaseController with ApplicationClient {
   def present = CSRSecureAppAction(AssistanceRole) { implicit request =>
     implicit user =>
 
-      findAssistanceDetails(user.user.userID, user.application.applicationId).map { ad =>
-        val form = AssistanceForm.form.fill(AssistanceForm.Data(
+      getAssistanceDetails(user.user.userID, user.application.applicationId).map { ad =>
+        val form = AssistanceDetailsForm.form.fill(AssistanceDetailsForm.Data(
           ad.needsAssistance,
           ad.typeOfdisability,
           ad.detailsOfdisability,
@@ -48,19 +48,19 @@ trait AssistanceController extends BaseController with ApplicationClient {
         ))
         Ok(views.html.application.assistance(form))
       }.recover {
-        case e: AssistanceDetailsNotFound => Ok(views.html.application.assistance(AssistanceForm.form))
+        case e: AssistanceDetailsNotFound => Ok(views.html.application.assistance(AssistanceDetailsForm.form))
       }
   }
 
   def submit = CSRSecureAppAction(AssistanceRole) { implicit request =>
     implicit user =>
 
-      AssistanceForm.form.bindFromRequest.fold(
+      AssistanceDetailsForm.form.bindFromRequest.fold(
         invalidForm =>
           Future.successful(Ok(views.html.application.assistance(invalidForm))),
         data => {
           addMedia(user.user.userID, extractMediaReferrer(data)).flatMap { _ =>
-            updateAssistanceDetails(user.application.applicationId, user.user.userID, data).flatMap { _ =>
+            updateAssistanceDetails(user.application.applicationId, user.user.userID, data.sanitizeData.exchange).flatMap { _ =>
               updateProgress()(_ => Redirect(routes.ReviewApplicationController.present()))
             }.recover {
               case e: AssistanceDetailsNotFound =>
@@ -71,7 +71,7 @@ trait AssistanceController extends BaseController with ApplicationClient {
       )
   }
 
-  private def extractMediaReferrer(data: AssistanceForm.Data): String = {
+  private def extractMediaReferrer(data: AssistanceDetailsForm.Data): String = {
     if (data.campaignReferrer.contains("Other") || data.campaignReferrer.contains("Careers fair")) {
       data.campaignOther.getOrElse("")
     } else {
