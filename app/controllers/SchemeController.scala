@@ -16,7 +16,7 @@
 
 package controllers
 
-import _root_.forms.{ AlternateLocationsForm, SchemeLocationPreferenceForm }
+import _root_.forms.{ AlternateLocationsForm, SchemeLocationPreferenceForm, SchemePreferenceForm }
 import config.{ AppConfig, CSRHttp, FrontendAppConfig }
 import connectors.SchemeClient.CannotFindSelection
 import connectors.{ ApplicationClient, SchemeClient }
@@ -30,7 +30,7 @@ import play.api.mvc.{ Request, Result }
 import play.twirl.api.Html
 import security.Roles.SchemesRole
 import uk.gov.hmrc.play.http.HeaderCarrier
-import viewmodels.application.scheme.LocationViewModel
+import viewmodels.application.scheme.SchemeLocationsViewModel
 
 import scala.concurrent.Future
 
@@ -46,14 +46,22 @@ trait SchemeController extends BaseController {
   val applicationClient: ApplicationClient
 
   val schemeLocationForm = SchemeLocationPreferenceForm.form
+  val schemeForm = SchemePreferenceForm.form
 
-  def entryPoint = CSRSecureAppAction(SchemesRole) { implicit request =>
+  def schemeLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
       applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId).map { personalDetails =>
-        val viewModel = LocationViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup,
+        val viewModel = SchemeLocationsViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup,
           personalDetails.aLevel, personalDetails.stemLevel)
 
         Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm, viewModel))
+      }
+  }
+
+  def schemes = CSRSecureAppAction(SchemesRole) { implicit request =>
+    implicit cachedData =>
+      applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId).map { personalDetails =>
+        Ok(views.html.application.scheme.chooseyourschemes(schemeForm))
       }
   }
 
@@ -65,10 +73,24 @@ trait SchemeController extends BaseController {
           Future.successful(BadRequest)
         },
         locationsForm => {
-          // TODO: Validate schemes chosen should be able to be chosen by this user (alevels/stem etc.)
+          // TODO: Validate locations chosen should be able to be chosen by this user (alevels/stem etc.)
           applicationClient.saveLocationChoices(cachedData.application.applicationId, locationsForm.locationIds).map { _ =>
-            Ok(Json.toJson(locationsForm.locationIds))
+            Redirect(routes.SchemeController.schemes)
           }
+        }
+      )
+  }
+
+  def submitSchemes = CSRSecureAppAction(SchemesRole) { implicit request =>
+    implicit cachedData =>
+      // TODO: Process form
+      schemeForm.bindFromRequest.fold(
+        formWithErrors => {
+          Future.successful(BadRequest)
+        },
+        schemeForm => {
+          // TODO: Validate schemes chosen should be able to be chosen by this user (alevels/stem etc.)
+          Future.successful(Ok(Json.toJson(schemeForm.schemeNames)))
         }
       )
   }

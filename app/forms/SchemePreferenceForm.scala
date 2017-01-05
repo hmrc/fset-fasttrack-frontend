@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
-package viewmodels.application.scheme
+package forms
 
-case class LocationViewModel(postCodeLookupEnabled: Boolean, hasALevels: Boolean, hasStemALevels: Boolean)
+import forms.Mappings._
+import play.api.data.Form
+import play.api.data.Forms._
+
+import scala.language.implicitConversions
+
+object SchemePreferenceForm {
+
+  val form = Form(
+    mapping(
+      "schemeNames" -> list(nonEmptyTrimmedText("scheme.required", 128))
+    )(Data.apply)(Data.unapply)
+  )
+
+  case class Data(
+    schemeNames: List[String]
+  )
+}

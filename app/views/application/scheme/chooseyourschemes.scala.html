@@ -1,0 +1,262 @@
+@import viewmodels.application.scheme.SchemeLocationsViewModel
+
+@(
+        schemesForm: Form[_root_.forms.SchemePreferenceForm.Data]
+)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+
+@import helpers.CSRFieldConstructor._
+@import views.html.widgets.{guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
+
+@main_template(title = "Choose your preferred schemes", pageForms = Seq(schemesForm)) {
+
+    @helper.form(action = routes.SchemeController.submitSchemes(), 'novalidate -> "novalidate") {
+        @helper.CSRF.formField
+        <h1 class="heading-xlarge">Choose your preferred schemes</h1>
+
+        <div class="panel-indent">
+            <p>In preference order, select only the schemes you'd like to work in.</p>
+        </div>
+        <section class="grid-wrapper scheme-wrapper">
+            <div class="scheme-input-container">
+                <div class="inner-block-padr">
+                    <ul class="schemes-list">
+                        <li class="scheme-container">
+                            <span class="selected-preference invisible">N/A</span>
+                            <label for="scheme-04" class="block-label block-label-slim">
+                                <input type="checkbox" id="scheme-04" data-schemename>Business
+                            </label>
+                            <span class="alwayshidden" data-scheme-req>5 GCSEs A* to C including English language and maths</span>
+                        </li>
+                        <li class="scheme-container">
+                            <span class="selected-preference invisible">N/A</span>
+                            <label for="scheme-02" class="block-label block-label-slim">
+                                <input type="checkbox" id="scheme-02" data-schemename>Commercial
+                            </label>
+                            <span class="alwayshidden" data-scheme-req>5 GCSEs A* to C including English language and maths</span>
+                        </li>
+                        <li class="scheme-container">
+                            <span class="selected-preference invisible">N/A</span>
+                            <label for="scheme-03" class="block-label block-label-slim">
+                                <input type="checkbox" id="scheme-03" data-schemename>Digital and technology
+                            </label>
+                            <span class="alwayshidden" data-scheme-req data-spec-scheme>2 A levels A* to C in STEM subjects and 5 GCSEs A* to C including English language and maths</span>
+                        </li>
+                        <li class="scheme-container">
+                            <span class="selected-preference invisible">N/A</span>
+                            <label for="scheme-06" class="block-label block-label-slim">
+                                <input type="checkbox" id="scheme-06" data-schemename>Finance
+                            </label>
+                            <span class="alwayshidden" data-scheme-req>5 GCSEs A* to C including English language and maths</span>
+                        </li>
+                        <li class="scheme-container">
+                            <span class="selected-preference invisible">N/A</span>
+                            <label for="scheme-14" class="block-label block-label-slim">
+                                <input type="checkbox" id="scheme-14" data-schemename>Project Delivery
+                            </label>
+                            <span class="alwayshidden" data-scheme-req data-spec-scheme>2 A levels A* to D in any subject and 5 GCSEs A* to C including English language and maths</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section id="selectedPreferences" class="hide-nojs">
+            <h2 class="heading-large">Your chosen schemes</h2>
+            <div data-scheme-placeholder>
+                <div class="scheme-warning text">
+                    <p>Your schemes will appear here as you select them from the list</p>
+                </div>
+            </div>
+            <ol id="selectedPrefList" class="list-text">
+                <li></li>
+            </ol>
+                &nbsp;
+        </section>
+        <section class="text panel-indent">
+            <p>Your schemes will be offered to you in order of preference.</p>
+            <p>You will not be able to reorder them after submitting your application.</p>
+        </section>
+        <section class="text clearfix">
+            <fieldset>
+                <legend class="form-label">Are you happy with the order of your schemes?</legend>
+                <div class="form-group no-btm-margin">
+                    <label for="reorder-yes" class="block-label">
+                        <input name="reorder" type="radio" id="reorder-yes">Yes
+                    </label>
+                    <label data-target="order-panel" for="reorder-no" class="block-label">
+                        <input name="reorder" type="radio" id="reorder-no" aria-controls="order-panel"
+                        aria-expanded="false">No
+                    </label>
+                </div>
+                <div id="order-panel" class="toggle-content">
+                    <div class="panel-danger">
+                        <p>Review your preferences and confirm your happy with the order to
+                            continue</p>
+                    </div>
+                </div>
+            </fieldset>
+        </section>
+        <section class="text clearfix">
+            <fieldset>
+                <legend class="form-label">Are you eligible for your chosen schemes?</legend>
+                <p>Make sure you're <a href="http://faststream.gov.uk" target="_blank"
+                rel="external">eligible</a> for your chosen schemes.</p>
+                <div class="form-group no-btm-margin">
+                    <label for="eligible-yes" class="block-label">
+                        <input name="eligible" type="radio" id="eligible-yes">Yes
+                    </label>
+                    <label data-target="eligible-panel" for="eligible-no" class="block-label">
+                        <input name="eligible" type="radio" id="eligible-no" aria-controls="eligible-panel"
+                        aria-expanded="false">No
+                    </label>
+                </div>
+                <div id="eligible-panel" class="toggle-content">
+                    <div class="panel-danger">
+                        <p>You can only select preferences you're eligible for</p>
+                    </div>
+                </div>
+            </fieldset>
+        </section>
+        <a href="assistance.html" id="schemeSaveBtn" class="button">Save and continue</a>
+        <script>
+                $(function()
+                {
+                    var isCivilServant = $.jStorage.get('civilServant'),
+                            schemePrefArray = ['Empty'],
+                            firstEmptyPosition = $.inArray('Empty', schemePrefArray),
+                            preferencesAs123 = ['1st', '2nd', '3rd', '4th', '5th', '6th',
+                                '7th', '8th', '9th', '10th', '11th', '12th', '13th', '14th',
+                                '15th', '16th', '17th'
+                            ],
+                            preferencesAsText = [
+                                '1st preference',
+                                '2nd preference',
+                                '3rd preference',
+                                '4th preference',
+                                '5th preference',
+                                '6th preference',
+                                '7th preference',
+                                '8th preference',
+                                '9th preference',
+                                '10th preference',
+                                '11th preference',
+                                '12th preference',
+                                '13th preference',
+                                '14th preference',
+                                '15th preference',
+                                '16th preference',
+                                '17th preference'
+                            ];
+                    $('[data-schemename]').on('change', function()
+                    {
+                        var $this = $(this),
+                                thisScheme = $this.closest('.block-label').text(),
+                                thisSchemeID = $this.attr('id'),
+                                schemeReq = $this.closest('.scheme-container').find(
+                                        '[data-scheme-req]').html(),
+                                isSpecial = $this.closest('.scheme-container').find(
+                                        '[data-spec-scheme]').length,
+                                specialEligibility = isSpecial == 0 ?
+                                        '<p class="font-xsmall no-btm-margin">Requires at least ' +
+                                        schemeReq + '</p>' :
+                                        '<div class="scheme-warning"><p class="font-xsmall">Requires at least ' +
+                                        schemeReq + '</p></div>',
+                                arrayPosition = $.inArray(thisSchemeID, schemePrefArray),
+                                emptyPosition = $.inArray('Empty', schemePrefArray);
+                        if (arrayPosition >= 0)
+                        {
+                            //Do nothing
+                        }
+                        else if ($this.is(':checked'))
+                        {
+                            if (emptyPosition < 0)
+                            {
+                                schemePrefArray.push(thisSchemeID);
+                            }
+                            else
+                            {
+                                schemePrefArray.splice(emptyPosition, 1, thisSchemeID);
+                            }
+                            var arrayPositionNow = $.inArray(thisSchemeID,
+                                    schemePrefArray);
+                            if (isCivilServant === true && isSpecial == 0)
+                            {
+                                $('#selectedPrefList li').eq(arrayPositionNow).after(
+                                        '<li class="scheme-prefcontainer" data-scheme-id="' +
+                                        thisSchemeID + '"><span data-schemeorder>' +
+                                        preferencesAsText[arrayPositionNow] +
+                                        '</span><div class="text scheme-elegrepeat"><span class="bold-small" data-schemenameinlist>' +
+                                        thisScheme +
+                                        '</span><p>You\'re eligible as a current civil servant</p><a href="#" class="link-unimp scheme-remove"><i class="fa fa-times" aria-hidden="true"></i>Remove</a></div>'
+                                );
+                            }
+                            else
+                            {
+                                $('#selectedPrefList li').eq(arrayPositionNow).after(
+                                        '<li class="scheme-prefcontainer" data-scheme-id="' +
+                                        thisSchemeID + '"><span data-schemeorder>' +
+                                        preferencesAsText[arrayPositionNow] +
+                                        '</span><div class="text scheme-elegrepeat"><span class="bold-small" data-schemenameinlist>' +
+                                        thisScheme + '</span>' + specialEligibility +
+                                        '<a href="#" class="link-unimp scheme-remove"><i class="fa fa-times" aria-hidden="true"></i>Remove</a></div>'
+                                );
+                            }
+                            $this.closest('.scheme-container').addClass(
+                                    'selected-scheme').find('.selected-preference').text(
+                                    preferencesAs123[arrayPositionNow]).removeClass(
+                                    'invisible');
+                        }
+                        if (!$this.is(':checked'))
+                        {
+                            schemePrefArray.splice(arrayPosition, 1, 'Empty');
+                            $('#selectedPrefList').find('[data-scheme-id="' +
+                                    thisSchemeID + '"]').remove();
+                            $this.closest('.scheme-container').removeClass(
+                                    'selected-scheme').find('.selected-preference').text(
+                                    'N/A').addClass('invisible');
+                        }
+                        var chosenPreferences = $('[data-schemeorder]').map(
+                                function()
+                                {
+                                    return $(this).text();
+                                })
+                                .get();
+                        var arrayOfChosen = $.makeArray(chosenPreferences);
+                        var differenceArray = [],
+                                initialVal = 0;
+                        $.grep(preferencesAsText, function(el)
+                        {
+                            if ($.inArray(el, arrayOfChosen) == -1)
+                                differenceArray.push(el);
+                            initialVal++;
+                        })
+                        if ($('input[data-schemename]:checked').length > 0)
+                        {
+                            $('[data-scheme-placeholder]').addClass(
+                                    'toggle-content');
+                        }
+                        else
+                        {
+                            $('[data-scheme-placeholder]').removeClass(
+                                    'toggle-content');
+                        }
+                    });
+                    $('#selectedPrefList').on('click', '.scheme-remove', function(e)
+                    {
+                        var thisScheme = $(this).closest('.scheme-prefcontainer')
+                                        .attr('data-scheme-id'),
+                                schemesAfter = $(this).closest('.scheme-prefcontainer')
+                                        .nextAll();
+                        e.preventDefault();
+                        $('#' + thisScheme).trigger('click').attr('checked',
+                                false).closest('label').removeClass('selected');
+                        schemesAfter.each(function()
+                        {
+                            var schemeID = $(this).attr('data-scheme-id');
+                            $('#' + schemeID).trigger('click');
+                            $('#' + schemeID).trigger('click');
+                        });
+                    });
+                });
+        </script>
+    }
+}

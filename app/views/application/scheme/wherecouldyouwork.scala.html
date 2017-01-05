@@ -1,8 +1,8 @@
-@import viewmodels.application.scheme.LocationViewModel
+@import viewmodels.application.scheme.SchemeLocationsViewModel
 
 @(
         locationForm: Form[_root_.forms.SchemeLocationPreferenceForm.Data],
-        viewModel: LocationViewModel
+        viewModel: SchemeLocationsViewModel
 )(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
