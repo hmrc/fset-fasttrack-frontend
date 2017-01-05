@@ -1,8 +1,7 @@
 @(assistanceForm: Form[_root_.forms.AssistanceForm.Data])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
-@import views.html.widgets.{guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
-
+@import views.html.widgets.{guard, guardWithLabel, inputCheckboxGroup, radioBox}
 
 @main_template(title = "Additional information", pageForms = Seq(assistanceForm)) {
 
@@ -86,12 +85,9 @@
             </div>
         </div>
     }
-
-
 }
 
     <script>
-
         function cleanCheckBoxGroupAndOther(checkBoxGroup,other){
             $("#"+other).val("");
 

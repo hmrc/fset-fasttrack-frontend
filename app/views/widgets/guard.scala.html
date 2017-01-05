@@ -1,5 +1,7 @@
 @(field: play.api.data.Field, label: String, labelHint: String, options: String*)(subForm: PartialFunction[String, Html])
 
+@import helpers.CSRSkinnyFieldConstructor._
+
 <fieldset>
   <legend class="form-label" id="@field.id-question">@label</legend>
   <p class="form-hint text">@labelHint</p>
