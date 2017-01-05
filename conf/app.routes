@@ -40,6 +40,7 @@ POST        /application/details                                    controllers.
 
 GET         /application/schemes                                    controllers.SchemeController.entryPoint
 POST        /application/schemes                                    controllers.SchemeController.submitLocations
+GET         /application/schemes/by-eligibility                     controllers.LocationSchemeController.getSchemesAndLocationsByEligibility(hasALevels: Boolean, hasStemALevels: Boolean, latitudeOpt: Option[Double] ?= None, longitudeOpt: Option[Double] ?= None)
 
 GET         /application/assistance                                 controllers.AssistanceController.present
 POST        /application/assistance                                 controllers.AssistanceController.submit

@@ -7,21 +7,16 @@ $(function(){
         return this;
     };
 
-    function loadLocationsJson(callback) {
+    function loadLocationsJson(callback, hasALevels, hasStemALevels, latitude, longitude) {
 
-        /*
-        var xobj = new XMLHttpRequest();
-        xobj.overrideMimeType("application/json");
-        xobj.open('GET', '../_assets/js/locations.json', true); // Replace 'my_data' with the path to your file
-        xobj.onreadystatechange = function () {
-            if (xobj.readyState == 4 && xobj.status == "200") {
-                // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-                callback(xobj.responseText);
-            }
-        };
-        xobj.send(null);
-        */
-        callback('{ "locations": [ { "name": "foo" }, { "name": "bar" }]}')
+        var latLongParams = "";
+        if (typeof latitude !== "undefined" && typeof longitude !== "undefined") {
+            latLongParams = "&latitudeOpt=" + latitude + "&longitudeOpt=" + longitude;
+        }
+
+        $.getJSON("/fset-fast-track/application/schemes/by-eligibility?hasALevels=" + hasALevels + "&hasStemALevels=" + hasStemALevels + latLongParams, function(data) {
+            callback(data);
+        });
     }
 
     function hasNumber(myString) {
@@ -64,9 +59,7 @@ $(function(){
         }
     });
 
-    var lat = '',
-        lng = '',
-        myGeoLocation = '';
+    var lat, lng;
 
     var locations = [];
 
@@ -77,17 +70,27 @@ $(function(){
             var A = key(a), B = key(b);
             return ( (A < B) ? -1 : ((A > B) ? 1 : 0) ) * [-1,1][+!!reverse];
         }
+    };
+
+    var sic = $('#scheme-input-container');
+
+    if (sic.length) {
+        getLatLongFromPostCode(
+         sic.attr('data-hasALevels'),
+         sic.attr('data-hasStemALevels'),
+         lat,
+         lng
+        )
     }
 
-    function getLatLongFromPostCode() {
+    function getLatLongFromPostCode(hasALevels, hasStemALevels, latitude, longitude) {
         $('#loadingLocations').removeClass('toggle-content');
         $('#noLocationsFound').addClass('toggle-content');
 
         loadLocationsJson(function(response) {
             // Parse JSON string into object
-            var locationsResponse = JSON.parse(response);
-            locations = locationsResponse.locations;
-        });
+            locations = response
+        }, hasALevels, hasStemALevels, latitude, longitude);
 
         /* Post code lookup
         var currentPostcode = $('#yourPostcode').val().toUpperCase(),
@@ -128,9 +131,6 @@ $(function(){
         setTimeout(showNearby, 0);
     }
 
-    // locations.sort(sort_by('name', true, function(a){return a.toUpperCase()}));
-    // http://stackoverflow.com/questions/979256/sorting-an-array-of-javascript-objects
-
     function showNearby() {
         $('#listOfLocations input').not(':checked').closest('li').remove();
         $('#loadingLocations').addClass('toggle-content');
@@ -138,21 +138,26 @@ $(function(){
             if($('#listOfLocations label:contains("' + locations[i].name + '")').length ) {
 
             } else {
+
+                var distanceText = "";
+                if (typeof locations[i].distanceKm !== 'undefined') {
+                    var distanceToMax2DP = +parseFloat(locations[i].distanceKm).toFixed(2)
+                    distanceText = '<span class="location-distance">' + distanceToMax2DP + ' miles</span>';
+                }
+
                 $('#listOfLocations').append(
                     '<li class="scheme-container">' +
                     '<span class="selected-preference invisible">N/A</span>' +
-                    '<label for="' + locations[i].id + '" class="block-label block-label-slim">' +
-                    '<input type="checkbox" id="' + locations[i].id + '" data-schemename>' +
-                    '<span class="location-name">' + locations[i].name + '</span>' +
-                    // '<span class="location-distance">' + locations[i].distance + ' miles</span>' +
+                    '<label for="' + locations[i].locationId + '" class="block-label block-label-slim">' +
+                    '<input type="checkbox" id="' + locations[i].locationId + '" data-schemename>' +
+                    '<span class="location-name">' + locations[i].locationName + '</span>' +
+                    distanceText +
                     '</label>' +
                     '</li>' );
             }
         }
         $('#scrollingList').scrollTo($('#listOfLocations li:first-child'), 400);
     }
-
-    getLatLongFromPostCode();
 
     $('#updateLocation').on('click', function(e) {
 
@@ -173,6 +178,114 @@ $(function(){
 
             setTimeout(getLatLongFromPostCode(), 300);
         }
+    });
+
+    var schemePrefArray = ['Empty'],
+        firstEmptyPosition = $.inArray('Empty', schemePrefArray),
+        preferencesAs123 = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th', '13th', '14th', '15th', '16th', '17th'],
+        preferencesAsText = [
+            '1st preference',
+            '2nd preference',
+            '3rd preference',
+            '4th preference',
+            '5th preference',
+            '6th preference',
+            '7th preference',
+            '8th preference',
+            '9th preference',
+            '10th preference',
+            '11th preference',
+            '12th preference',
+            '13th preference',
+            '14th preference',
+            '15th preference',
+            '16th preference',
+            '17th preference'
+        ];
+
+    $('html').on('change', '[data-schemename]', function() {
+        var $this = $(this),
+            thisScheme = $this.closest('.block-label').find('.location-name').text(),
+            thisSchemeID = $this.attr('id'),
+            schemeReq = $this.closest('.scheme-container').find('[data-scheme-req]').html(),
+            isSpecial = $this.closest('.scheme-container').find('[data-spec-scheme]').length,
+            arrayPosition = $.inArray(thisSchemeID, schemePrefArray),
+            emptyPosition = $.inArray('Empty', schemePrefArray);
+
+        if(arrayPosition >= 0) {
+            //Do nothing
+        } else if($this.is(':checked')) {
+            if(emptyPosition < 0) {
+                schemePrefArray.push(thisSchemeID);
+            } else {
+                schemePrefArray.splice(emptyPosition, 1, thisSchemeID);
+            }
+            var arrayPositionNow = $.inArray(thisSchemeID, schemePrefArray);
+
+            var id = thisSchemeID;
+            var result = $.grep(locations, function(e){ return e.locationId == id; });
+            var schemesLength = result[0].schemes.length;
+            var schemesAsHTML = '';
+
+            for (var i = 0; i < schemesLength; i++) {
+                schemesAsHTML += '<li>' + result[0].schemes[i] + '</li>';
+            }
+
+            $('#selectedPrefList > li').eq(arrayPositionNow).after(
+                '<li class="location-prefcontainer" data-scheme-id="' + thisSchemeID + '">' +
+                '<span data-schemprefinlist>' + preferencesAsText[arrayPositionNow] + '</span>' +
+                '<input type="hidden" name="locationIds[' + arrayPositionNow +']" value="' + id + '" />' +
+                '<div class="text scheme-elegrepeat">' +
+                '<span class="bold-small" data-schemenameinlist>' + thisScheme +
+                '</span><a href="#" class="link-unimp scheme-remove">' +
+                '<i class="fa fa-times" aria-hidden="true"></i>Remove</a>' +
+                '<details class="no-btm-margin"><summary class="no-btm-margin">' +
+                schemesLength + ' available schemes</summary>' +
+                '<div class="detail-content panel-indent"><ul>' + schemesAsHTML + '</ul></div></details></div>');
+
+            $this.closest('.scheme-container').addClass('selected-scheme').find('.selected-preference').text(preferencesAs123[arrayPositionNow]).removeClass('invisible');
+        }
+
+        if(!$this.is(':checked')) {
+            schemePrefArray.splice(arrayPosition, 1, 'Empty');
+            $('#selectedPrefList').find('[data-scheme-id="' + thisSchemeID + '"]').remove();
+            $this.closest('.scheme-container').removeClass('selected-scheme').find('.selected-preference').text('N/A').addClass('invisible');
+        }
+
+        var chosenPreferences = $('[data-schemeorder]').map(function() {
+            return $( this ).text();
+        })
+            .get();
+
+        var arrayOfChosen = $.makeArray(chosenPreferences);
+        var differenceArray = [],
+            initialVal = 0;
+
+
+        $.grep(preferencesAsText, function(el) {
+            if($.inArray(el, arrayOfChosen) == -1) differenceArray.push(el);
+
+            initialVal++;
+        });
+
+    });
+
+    $('#selectedPrefList').on('click', '.scheme-remove', function(e) {
+        var thisScheme = $(this).closest('.location-prefcontainer').attr('data-scheme-id'),
+            schemesAfter = $(this).closest('.location-prefcontainer').nextAll();
+
+        e.preventDefault();
+
+        $('#' + thisScheme).trigger('click').attr('checked', false).closest('label').removeClass('selected');
+
+
+        schemesAfter.each(function () {
+            var schemeID = $(this).attr('data-scheme-id');
+
+            $('#' + schemeID).trigger('click');
+            $('#' + schemeID).trigger('click');
+        });
+
     });
 
 });

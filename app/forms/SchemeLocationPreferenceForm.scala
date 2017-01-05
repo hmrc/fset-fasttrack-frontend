@@ -17,7 +17,6 @@
 package forms
 
 import forms.Mappings._
-import models.frameworks.{ Preference, Region }
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -27,11 +26,11 @@ object SchemeLocationPreferenceForm {
 
   val form = Form(
     mapping(
-      "locations" -> list(nonEmptyTrimmedText("location.required", 128))
+      "locationIds" -> list(nonEmptyTrimmedText("location.required", 128))
     )(Data.apply)(Data.unapply)
   )
 
   case class Data(
-    locations: List[String]
+    locationIds: List[String]
   )
 }

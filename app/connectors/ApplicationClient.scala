@@ -220,12 +220,16 @@ trait ApplicationClient {
       s"&latitude=$latitude&longitude=$longitude"
     }).getOrElse("")
 
-    http.GET(s"$hostBase/schemes-locations/by-eligibility" +
+    http.GET(s"$hostBase/scheme-locations/by-eligibility" +
       s"?hasALevels=$hasALevels&hasStemALevels=$hasStemALevels$optionalLocation").map { response =>
       response.json.as[List[LocationSchemes]]
     } recover {
       case _: Throwable => throw new ErrorRetrievingLocationSchemes()
     }
+  }
+
+  def saveLocationChoices(applicationId: UniqueIdentifier, locationIds: List[String])(implicit hc: HeaderCarrier): Future[Unit] = {
+    http.PUT(s"$hostBase/scheme-locations/$applicationId", locationIds).map(_ => ())
   }
 }
 

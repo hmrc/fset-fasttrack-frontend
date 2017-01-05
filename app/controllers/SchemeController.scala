@@ -25,6 +25,7 @@ import models.CachedDataWithApp
 import models.frameworks.LocationAndSchemeSelection.empty
 import models.frameworks.{ LocationAndSchemeSelection, Region }
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{ Request, Result }
 import play.twirl.api.Html
 import security.Roles.SchemesRole
@@ -36,24 +37,40 @@ import scala.concurrent.Future
 object SchemeController extends SchemeController {
   val http = CSRHttp
   val config = FrontendAppConfig
+  val applicationClient = ApplicationClient
 }
 
-trait SchemeController extends BaseController with SchemeClient with ApplicationClient {
+trait SchemeController extends BaseController {
 
   val config: AppConfig
+  val applicationClient: ApplicationClient
 
   val schemeLocationForm = SchemeLocationPreferenceForm.form
 
   def entryPoint = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-      val viewModel = LocationViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup)
-    Future.successful(Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm, viewModel)))
+      applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId).map { personalDetails =>
+        val viewModel = LocationViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup,
+          personalDetails.aLevel, personalDetails.stemLevel)
+
+        Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm, viewModel))
+      }
   }
 
   def submitLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-      val viewModel = LocationViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup)
-    Future.successful(Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm, viewModel)))
+      // TODO: Process form
+      schemeLocationForm.bindFromRequest.fold(
+        formWithErrors => {
+          Future.successful(BadRequest)
+        },
+        locationsForm => {
+          // TODO: Validate schemes chosen should be able to be chosen by this user (alevels/stem etc.)
+          applicationClient.saveLocationChoices(cachedData.application.applicationId, locationsForm.locationIds).map { _ =>
+            Ok(Json.toJson(locationsForm.locationIds))
+          }
+        }
+      )
   }
 
   /*

@@ -16,4 +16,4 @@
 
 package viewmodels.application.scheme
 
-case class LocationViewModel(postCodeLookupEnabled: Boolean)
+case class LocationViewModel(postCodeLookupEnabled: Boolean, hasALevels: Boolean, hasStemALevels: Boolean)
