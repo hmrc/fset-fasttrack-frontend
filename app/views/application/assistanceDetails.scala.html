@@ -6,7 +6,7 @@
 
 @main_template(title = "Additional information", pageForms = Seq(assistanceForm)) {
 
-    @helper.form(action = routes.AssistanceController.submit(), 'novalidate -> "novalidate") {
+    @helper.form(action = routes.AssistanceDetailsController.submit(), 'novalidate -> "novalidate") {
         @helper.CSRF.formField
         <h1 class="heading-xlarge">Additional information</h1>
         <section class="section-border clearfix">

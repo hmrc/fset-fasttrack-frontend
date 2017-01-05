@@ -42,17 +42,9 @@ class CSRHttp extends WSHttp {
   val wS = WS
 }
 
-trait CSRCache extends SessionCache with AppName with ServicesConfig {
-  override lazy val http = CSRHttp
-  override lazy val defaultSource = appName
-  override lazy val baseUri = baseUrl("cachable.session-cache")
-  override lazy val domain = getConfString(
-    "cachable.session-cache.domain",
-    throw new Exception(s"Could not find config 'cachable.session-cache.domain'")
-  )
-}
+trait CSRCache extends SessionCache with AppName with ServicesConfig
 
-object CSRCache extends SessionCache with AppName with ServicesConfig {
+object CSRCache extends CSRCache {
   override lazy val http = CSRHttp
   override lazy val defaultSource = appName
   override lazy val baseUri = baseUrl("cachable.session-cache")

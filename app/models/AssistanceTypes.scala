@@ -16,6 +16,7 @@
 
 package models
 
+// TODO: We do not need this after we implement the new assistance details based on fast stream's
 object AssistanceTypes {
   val seq = Seq(
     ("ADHD", "ADHD"),

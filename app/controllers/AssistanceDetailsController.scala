@@ -17,24 +17,25 @@
 package controllers
 
 import _root_.forms.AssistanceDetailsForm
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient
 import connectors.ApplicationClient.AssistanceDetailsNotFound
 import helpers.NotificationType._
-import security.Roles.AssistanceRole
+import security.Roles.AssistanceDetailsRole
 
 import scala.concurrent.Future
 
-object AssistanceController extends AssistanceController {
-  val http = CSRHttp
+object AssistanceDetailsController extends AssistanceDetailsController(ApplicationClient, CSRCache) {
+  override val http: CSRHttp = ApplicationClient.http
 }
 
-trait AssistanceController extends BaseController with ApplicationClient {
+abstract class AssistanceDetailsController(applicationClient: ApplicationClient, cacheClient: CSRCache)
+  extends BaseController {
 
-  def present = CSRSecureAppAction(AssistanceRole) { implicit request =>
+  def present = CSRSecureAppAction(AssistanceDetailsRole) { implicit request =>
     implicit user =>
 
-      getAssistanceDetails(user.user.userID, user.application.applicationId).map { ad =>
+      applicationClient.getAssistanceDetails(user.user.userID, user.application.applicationId).map { ad =>
         val form = AssistanceDetailsForm.form.fill(AssistanceDetailsForm.Data(
           ad.needsAssistance,
           ad.typeOfdisability,
@@ -44,20 +45,20 @@ trait AssistanceController extends BaseController with ApplicationClient {
           ad.typeOfAdjustments,
           ad.otherAdjustments
         ))
-        Ok(views.html.application.assistance(form))
+        Ok(views.html.application.assistanceDetails(form))
       }.recover {
-        case e: AssistanceDetailsNotFound => Ok(views.html.application.assistance(AssistanceDetailsForm.form))
+        case e: AssistanceDetailsNotFound => Ok(views.html.application.assistanceDetails(AssistanceDetailsForm.form))
       }
   }
 
-  def submit = CSRSecureAppAction(AssistanceRole) { implicit request =>
+  def submit = CSRSecureAppAction(AssistanceDetailsRole) { implicit request =>
     implicit user =>
 
       AssistanceDetailsForm.form.bindFromRequest.fold(
         invalidForm =>
-          Future.successful(Ok(views.html.application.assistance(invalidForm))),
+          Future.successful(Ok(views.html.application.assistanceDetails(invalidForm))),
         data => {
-            updateAssistanceDetails(user.application.applicationId, user.user.userID, data.sanitizeData.exchange).flatMap { _ =>
+          applicationClient.updateAssistanceDetails(user.application.applicationId, user.user.userID, data.sanitizeData.exchange).flatMap { _ =>
               updateProgress()(_ => Redirect(routes.ReviewApplicationController.present()))
             }.recover {
               case e: AssistanceDetailsNotFound =>

@@ -206,7 +206,8 @@ trait ApplicationClient {
   }
 }
 
-object ApplicationClient {
+object ApplicationClient extends ApplicationClient  {
+  override val http: CSRHttp = CSRHttp
 
   sealed class CannotUpdateRecord extends Exception
 

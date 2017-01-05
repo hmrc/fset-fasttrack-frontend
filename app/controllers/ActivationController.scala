@@ -19,7 +19,7 @@ package controllers
 import _root_.forms.ActivateAccountForm
 import config.CSRHttp
 import connectors.ApplicationClient
-import connectors.UserManagementClient.{ TokenEmailPairInvalidException, TokenExpiredException }
+import connectors.UserManagementClient.{TokenEmailPairInvalidException, TokenExpiredException}
 import helpers.NotificationType._
 import security.Roles._
 import security.SignInUtils

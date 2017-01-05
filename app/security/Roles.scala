@@ -72,7 +72,7 @@ object Roles {
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasPersonalDetails(user)
   }
 
-  object AssistanceRole extends CsrAuthorization {
+  object AssistanceDetailsRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasSchemes(user)
   }
@@ -184,7 +184,7 @@ object Roles {
     ApplicationStartRole -> routes.HomeController.present,
     PersonalDetailsRole -> routes.FastTrackApplication.generalDetails(None),
     SchemesRole -> routes.SchemeController.entryPoint,
-    AssistanceRole -> routes.AssistanceController.present,
+    AssistanceDetailsRole -> routes.AssistanceDetailsController.present,
     ReviewRole -> routes.ReviewApplicationController.present,
     StartQuestionnaireRole -> routes.QuestionnaireController.start,
     DiversityQuestionnaireRole -> routes.QuestionnaireController.firstPageView,
