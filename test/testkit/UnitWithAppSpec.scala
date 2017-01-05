@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package testkit
 
-import org.scalatestplus.play.PlaySpec
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import controllers.UnitSpec
+import org.scalatestplus.play.OneAppPerSuite
+import play.api.test.FakeApplication
 
-class LandingPageControllerSpec extends PlaySpec {
+abstract class UnitWithAppSpec extends UnitSpec with OneAppPerSuite {
 
-  "Landing page controller" should {
+  // Suppress logging during tests
+  val additionalConfig = Map("logger.application" -> "ERROR")
 
-    "redirect to sign-in" in {
-      val request = FakeRequest(GET, controllers.routes.ApplicationController.index().url)
+  override implicit lazy val app: FakeApplication = new FakeApplication(additionalConfiguration = additionalConfig)
 
-      val result = call(LandingPageController.index, request)
-
-      status(result) must be(303)
-      redirectLocation(result).get must be(controllers.routes.SignInController.signIn().url)
-    }
-
-  }
 }

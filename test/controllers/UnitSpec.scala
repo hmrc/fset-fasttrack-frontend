@@ -16,22 +16,8 @@
 
 package controllers
 
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
 
-class LandingPageControllerSpec extends PlaySpec {
-
-  "Landing page controller" should {
-
-    "redirect to sign-in" in {
-      val request = FakeRequest(GET, controllers.routes.ApplicationController.index().url)
-
-      val result = call(LandingPageController.index, request)
-
-      status(result) must be(303)
-      redirectLocation(result).get must be(controllers.routes.SignInController.signIn().url)
-    }
-
-  }
-}
+abstract class UnitSpec extends PlaySpec with MockitoSugar with ScalaFutures

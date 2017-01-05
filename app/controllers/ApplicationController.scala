@@ -25,11 +25,11 @@ import scala.concurrent.Future
  * Provide all the peripheral links from this controller, like T&C link
  *
  */
-object Application extends Application {
+object ApplicationController extends ApplicationController {
   val http = CSRHttp
 }
 
-trait Application extends BaseController {
+trait ApplicationController extends BaseController {
 
   def index = Action {
     Redirect(routes.SignInController.signIn)

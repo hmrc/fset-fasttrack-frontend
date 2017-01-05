@@ -16,34 +16,44 @@
 
 package connectors.exchange
 
+import forms.AssistanceDetailsForm
 import play.api.libs.json.Json
 
 final case class AssistanceDetails(
-                                  // TODO: old, they will be removed
-                                    needsAssistance: String,
-                                    typeOfdisability: Option[List[String]],
-                                    detailsOfdisability: Option[String],
-                                    guaranteedInterview: Option[String],
-                                    needsAdjustment: Option[String],
-                                    typeOfAdjustments: Option[List[String]],
-                                    otherAdjustments: Option[String],
-                                    campaignReferrer: Option[String],
-                                    campaignOther: Option[String],
-                                  // TODO: new
                                     hasDisability: String,
                                     hasDisabilityDescription: Option[String],
-                                    guaranteedInterviewBoolean: Option[Boolean], // TODO: Change this
-                                    needsSupportForOnlineAssessment: Option[Boolean],
+                                    guaranteedInterview: Option[Boolean],
+                                    needsSupportForOnlineAssessment: Boolean,
                                     needsSupportForOnlineAssessmentDescription: Option[String],
-                                    needsSupportAtVenue: Option[Boolean],
+                                    needsSupportAtVenue: Boolean,
                                     needsSupportAtVenueDescription: Option[String],
                                     // TODO: Change adjustments
                                     confirmedAdjustments: Option[Boolean],
                                     numericalTimeAdjustmentPercentage: Option[Int],
                                     verbalTimeAdjustmentPercentage: Option[Int]
-) {
-}
+                                  )
 
 object AssistanceDetails {
   implicit val assistanceDetailsFormat = Json.format[AssistanceDetails]
+
+  implicit def fromFormData(formData: AssistanceDetailsForm.Data): AssistanceDetails = {
+    def toOptBoolean(optString: Option[String]) = optString match {
+      case Some("Yes") => Some(true)
+      case Some("No") => Some(false)
+      case _ => None
+    }
+
+    AssistanceDetails(
+      hasDisability = formData.hasDisability,
+      hasDisabilityDescription = formData.hasDisabilityDescription,
+      guaranteedInterview = toOptBoolean(formData.guaranteedInterview),
+      needsSupportForOnlineAssessment = if (formData.needsSupportForOnlineAssessment == "Yes") true else false,
+      needsSupportForOnlineAssessmentDescription = formData.needsSupportForOnlineAssessmentDescription,
+      needsSupportAtVenue = if (formData.needsSupportAtVenue == "Yes") true else false,
+      needsSupportAtVenueDescription = formData.needsSupportAtVenueDescription,
+      confirmedAdjustments = None,
+      numericalTimeAdjustmentPercentage = None,
+      verbalTimeAdjustmentPercentage = None
+    )
+  }
 }

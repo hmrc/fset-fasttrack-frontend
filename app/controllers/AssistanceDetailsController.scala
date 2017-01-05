@@ -36,15 +36,7 @@ abstract class AssistanceDetailsController(applicationClient: ApplicationClient,
     implicit user =>
 
       applicationClient.getAssistanceDetails(user.user.userID, user.application.applicationId).map { ad =>
-        val form = AssistanceDetailsForm.form.fill(AssistanceDetailsForm.Data(
-          ad.needsAssistance,
-          ad.typeOfdisability,
-          ad.detailsOfdisability,
-          ad.guaranteedInterview,
-          ad.needsAdjustment.getOrElse(""),
-          ad.typeOfAdjustments,
-          ad.otherAdjustments
-        ))
+        val form = AssistanceDetailsForm.form.fill(AssistanceDetailsForm.Data(ad))
         Ok(views.html.application.assistanceDetails(form))
       }.recover {
         case e: AssistanceDetailsNotFound => Ok(views.html.application.assistanceDetails(AssistanceDetailsForm.form))
@@ -53,12 +45,11 @@ abstract class AssistanceDetailsController(applicationClient: ApplicationClient,
 
   def submit = CSRSecureAppAction(AssistanceDetailsRole) { implicit request =>
     implicit user =>
-
       AssistanceDetailsForm.form.bindFromRequest.fold(
         invalidForm =>
           Future.successful(Ok(views.html.application.assistanceDetails(invalidForm))),
         data => {
-          applicationClient.updateAssistanceDetails(user.application.applicationId, user.user.userID, data.sanitizeData.exchange).flatMap { _ =>
+          applicationClient.updateAssistanceDetails(user.application.applicationId, user.user.userID, data.sanitizeData).flatMap { _ =>
               updateProgress()(_ => Redirect(routes.ReviewApplicationController.present()))
             }.recover {
               case e: AssistanceDetailsNotFound =>

@@ -191,27 +191,5 @@ object ExchangeObjects {
     implicit val onlineTestFormats = Json.format[OnlineTest]
 
     implicit val onlineTestStatusFormats = Json.format[OnlineTestStatus]
-
-    implicit class assistanceDetailsFormtoRequest(data: AssistanceDetailsForm.Data) {
-      def adjustmentValid[T](data: AssistanceDetailsForm.Data, value: Option[T]) = {
-        if (data.needsAdjustment == "Yes") value else None
-      }
-
-      def needsAssistance: Boolean = data.needsAssistance == "No" || data.needsAssistance == "Prefer not to say"
-
-      // TODO: Fix once we change the Assistance Details Form
-      def exchange = AssistanceDetails(
-        data.needsAssistance,
-        if (needsAssistance) { None } else data.typeOfdisability,
-        if (needsAssistance) { None } else data.detailsOfdisability,
-        if (needsAssistance) { None } else data.guaranteedInterview,
-        Some(data.needsAdjustment),
-        if (data.needsAdjustment == "No") { None } else data.typeOfAdjustments,
-        adjustmentValid(data, data.otherAdjustments),
-        None, None, data.needsAssistance, None, None, None, None, None, None, None, None, None
-      )
-    }
-
   }
-
 }

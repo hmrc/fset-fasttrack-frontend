@@ -17,113 +17,66 @@
 package forms
 
 import connectors.exchange.AssistanceDetails
-import play.api.data.Forms._
-import play.api.data.format.Formatter
-import play.api.data.{Form, FormError}
-import play.api.i18n.Messages
+import play.api.data.Form
+import play.api.data.Forms.{mapping, of, optional}
 
 object AssistanceDetailsForm {
 
-  def requiredFormatter(requiredKey: String, key: String) = new Formatter[Option[String]] {
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
-      val requiredField: Option[String] = data.get(requiredKey)
-      val keyField: Option[String] = data.get(key)
-
-      (requiredField, keyField) match {
-        case (Some("Yes"), None) => Left(List(FormError(key, Messages(s"$key.chooseone"))))
-        case (Some("Yes"), Some("")) => Left(List(FormError(key, Messages(s"$key.chooseone"))))
-        case _ => Right(keyField)
-      }
-    }
-
-    override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
-  }
-
-  def requiredListFormatter(requiredKey: String, key: String) = new Formatter[Option[List[String]]] {
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[List[String]]] = {
-
-      def indexes(key: String, data: Map[String, String]): Seq[Int] = {
-        val KeyPattern = ("^" + java.util.regex.Pattern.quote(key) + """\[(\d+)\].*$""").r
-        data.toSeq.collect { case (KeyPattern(index), _) => index.toInt }.sorted.distinct
-      }
-
-      val i = indexes(key, data)
-      val requiredField: Option[String] = data.get(requiredKey)
-      val keyField: List[String] = indexes(key, data).flatMap(i => data.get(s"$key[$i]")).toList
-
-      (requiredField, keyField) match {
-        case (Some("Yes"), Seq()) => Left(List(FormError(key, Messages(s"$key.chooseone"))))
-        case (Some("Yes"), Seq(opt)) if opt.isEmpty => Left(List(FormError(key, Messages(s"$key.chooseone"))))
-        case _ => Right(Some(keyField))
-      }
-    }
-
-    override def unbind(key: String, value: Option[List[String]]): Map[String, String] = {
-      val sk: Option[List[(String, String)]] = value.map { v =>
-        v.zipWithIndex.map { case (item, i) => s"$key[$i]" -> item }
-      }
-
-      val ssk: Option[Map[String, String]] = sk map { lst => lst.foldLeft(Map.empty[String, String])((z, a) => z + a) }
-
-      ssk.getOrElse(Map.empty[String, String])
-    }
-  }
-
-  // todo - find a better way to do this
-  def alLeastOneformatter(key: String) = new Formatter[Option[String]] {
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
-      val needsAdjustment: Option[String] = data.get("needsAdjustment")
-      val extraTime: Option[String] = data.get("extraTime")
-      val screenMagnification: Option[String] = data.get("screenMagnification")
-      val printCopies: Option[String] = data.get("printCopies")
-      val otherAdjustments: Option[String] = data.get("otherAdjustments")
-
-      (needsAdjustment, extraTime, screenMagnification, printCopies, otherAdjustments) match {
-        case (Some("Yes"), None, None, None, Some("")) => Left(List(
-          FormError("otherAdjustments", Messages("otherAdjustments.chooseone"))
-        ))
-        case _ =>
-          val keyField: Option[String] = data.get(key)
-          Right(keyField.map(_.trim))
-      }
-    }
-
-    override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.map(_.trim).getOrElse(""))
-  }
-
   val form = Form(
     mapping(
-      "needsAssistance" -> Mappings.nonEmptyTrimmedText("error.needsassistance.required", 18),
-      "typeOfdisability" -> of(requiredListFormatter("needsAssistance", "typeOfdisability")),
-      "detailsOfdisability" -> optional(Mappings.nonEmptyTrimmedText("error.required.detailsOfdisability", 4000)),
-      "guaranteedInterview" -> of(requiredFormatter("needsAssistance", "guaranteedInterview")),
-      "needsAdjustment" -> Mappings.nonEmptyTrimmedText("needsAdjustment.chooseone", 3),
-      "typeOfAdjustments" -> of(requiredListFormatter("needsAdjustment", "typeOfAdjustments")),
-      "otherAdjustments" -> optional(Mappings.nonEmptyTrimmedText("otherAdjustments.chooseone", 4000))
+      "hasDisability" -> Mappings.nonEmptyTrimmedText("error.hasDisability.required", 31),
+      "hasDisabilityDescription" -> optional(Mappings.nonEmptyTrimmedText("error.hasDisabilityDescription.required", 2048)),
+      "guaranteedInterview" -> of(requiredFormatterWithMaxLengthCheck("hasDisability", "guaranteedInterview", None)),
+      "needsSupportForOnlineAssessment" -> Mappings.nonEmptyTrimmedText("error.needsSupportForOnlineAssessment.required", 31),
+      "needsSupportForOnlineAssessmentDescription" -> of(requiredFormatterWithMaxLengthCheck("needsSupportForOnlineAssessment",
+        "needsSupportForOnlineAssessmentDescription", Some(2048))),
+      "needsSupportAtVenue" -> Mappings.nonEmptyTrimmedText("error.needsSupportAtVenue.required", 31),
+      "needsSupportAtVenueDescription" -> of(requiredFormatterWithMaxLengthCheck("needsSupportAtVenue", "needsSupportAtVenueDescription",
+        Some(2048)))
     )(Data.apply)(Data.unapply)
   )
 
+  import Data._
   case class Data(
-    needsAssistance: String,
-    typeOfdisability: Option[List[String]],
-    detailsOfdisability: Option[String],
-    guaranteedInterview: Option[String],
-    needsAdjustment: String,
-    typeOfAdjustments: Option[List[String]],
-    otherAdjustments: Option[String]
-  ) {
-    // TODO
-    def exchange: AssistanceDetails = {
-      AssistanceDetails(
-        "No", None, None, None, None, None, None, None, None, "No", None, None, None, None, None, None, None, None, None
+                   hasDisability: String,
+                   hasDisabilityDescription: Option[String],
+                   guaranteedInterview: Option[String],
+                   needsSupportForOnlineAssessment: String,
+                   needsSupportForOnlineAssessmentDescription: Option[String],
+                   needsSupportAtVenue: String,
+                   needsSupportAtVenueDescription: Option[String]) {
+    def sanitizeData: AssistanceDetailsForm.Data = {
+      AssistanceDetailsForm.Data(
+        hasDisability,
+        if (hasDisability == "Yes") hasDisabilityDescription else None,
+        if (hasDisability == "Yes") { guaranteedInterview } else { None },
+        needsSupportForOnlineAssessment,
+        if (needsSupportForOnlineAssessment.contains("Yes")) needsSupportForOnlineAssessmentDescription else None,
+        needsSupportAtVenue,
+        if (needsSupportAtVenue.contains("Yes")) needsSupportAtVenueDescription else None
       )
     }
 
-    // TODO
-    def sanitizeData: AssistanceDetailsForm.Data = {
-      AssistanceDetailsForm.Data("No", None, None, None, "No", None, None
+    def needsAssistance: Boolean = hasDisability == "No" || hasDisability == "Prefer not to say"
+  }
+
+  object Data {
+    def apply(ad: AssistanceDetails): Data = {
+      def toOptString(optBoolean: Option[Boolean]) = optBoolean match {
+        case Some(true) => Some("Yes")
+        case Some(false) => Some("No")
+        case _ => None
+      }
+
+      AssistanceDetailsForm.Data(
+        ad.hasDisability,
+        ad.hasDisabilityDescription,
+        toOptString(ad.guaranteedInterview),
+        if (ad.needsSupportForOnlineAssessment) "Yes" else "No",
+        ad.needsSupportForOnlineAssessmentDescription,
+        if (ad.needsSupportAtVenue) "Yes" else "No",
+        ad.needsSupportAtVenueDescription
       )
     }
   }
-
 }
