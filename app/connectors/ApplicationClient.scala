@@ -19,7 +19,7 @@ package connectors
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
 import connectors.ExchangeObjects._
-import connectors.exchange.ProgressResponse
+import connectors.exchange.{ LocationSchemes, ProgressResponse }
 import forms.{ AssistanceForm, GeneralDetailsForm }
 import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
@@ -41,6 +41,8 @@ trait ApplicationClient {
   import ApplicationClient._
   import ExchangeObjects.Implicits._
   import config.FrontendAppConfig.fasttrackConfig._
+
+  protected lazy val hostBase: LoginInfo = url.host + url.base
 
   def createApplication(userId: UniqueIdentifier, frameworkId: String)(implicit hc: HeaderCarrier) = {
 
@@ -206,9 +208,30 @@ trait ApplicationClient {
   def completeTests(token: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Unit] = {
     http.POST(s"${url.host}${url.base}/online-test/complete/$token", "").map(_ => ())
   }
+
+  def getSchemesAndLocationsByEligibility(hasALevels: Boolean, hasStemALevels: Boolean,
+                                          latitudeOpt: Option[Double], longitudeOpt: Option[Double])
+                                         (implicit hc: HeaderCarrier): Future[List[LocationSchemes]] = {
+
+    val optionalLocation = (for {
+      latitude <- latitudeOpt
+      longitude <- longitudeOpt
+    } yield {
+      s"&latitude=$latitude&longitude=$longitude"
+    }).getOrElse("")
+
+    http.GET(s"$hostBase/schemes-locations/by-eligibility" +
+      s"?hasALevels=$hasALevels&hasStemALevels=$hasStemALevels$optionalLocation").map { response =>
+      response.json.as[List[LocationSchemes]]
+    } recover {
+      case _: Throwable => throw new ErrorRetrievingLocationSchemes()
+    }
+  }
 }
 
-object ApplicationClient {
+object ApplicationClient extends ApplicationClient {
+
+  override val http = CSRHttp
 
   sealed class CannotUpdateRecord extends Exception
 
@@ -225,6 +248,8 @@ object ApplicationClient {
   sealed class CannotWithdraw extends Exception
 
   sealed class OnlineTestNotFound extends Exception
+
+  sealed class ErrorRetrievingLocationSchemes extends Exception
 
   sealed class PdfReportNotFoundException extends Exception
 }

@@ -7,7 +7,7 @@ $(function(){
         return this;
     };
 
-    function loadJSON(callback) {
+    function loadLocationsJson(callback) {
 
         /*
         var xobj = new XMLHttpRequest();
@@ -83,7 +83,7 @@ $(function(){
         $('#loadingLocations').removeClass('toggle-content');
         $('#noLocationsFound').addClass('toggle-content');
 
-        loadJSON(function(response) {
+        loadLocationsJson(function(response) {
             // Parse JSON string into object
             var locationsResponse = JSON.parse(response);
             locations = locationsResponse.locations;

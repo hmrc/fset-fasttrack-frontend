@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package controllers.test
+package controllers
 
 import config.CSRHttp
 import connectors.addresslookup.AddressLookupClient
-import controllers.BaseController
-import play.api.mvc.Action
+import play.api.mvc.{ Action, AnyContent }
 
-trait AddressLookupController extends BaseController with AddressLookupClient {
+trait AddressLookupController extends BaseController {
+  val addressLookupClient: AddressLookupClient
+
   // TODO Add permissions into this once the feature is ready to be moved from test routes
-  def addressLookup(postcode: String) = Action.async { implicit request =>
+  def addressLookup(postcode: String): Action[AnyContent] = Action.async { implicit request =>
     val decoded = java.net.URLDecoder.decode(postcode, "UTF8")
-    findByPostcode(decoded, None).map(r => Ok(r.toString))
+    addressLookupClient.findByPostcode(decoded, None).map(r => Ok(r.toString))
   }
 }
 
 object AddressLookupController extends AddressLookupController {
+  val addressLookupClient = AddressLookupClient
   val http = CSRHttp
-  val addressLookupEndpoint = config.FrontendAppConfig.addressLookupConfig.url
 }
