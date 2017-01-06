@@ -29,7 +29,7 @@ trait LocationSchemeController extends BaseController {
                                           hasStemALevels: Boolean,
                                           latitudeOpt: Option[Double],
                                           longitudeOpt: Option[Double]): Action[AnyContent] = CSRSecureAppAction(SchemesRole) {
-    implicit request => implicit user =>
+    implicit request => implicit cachedData =>
     applicationClient.getSchemesAndLocationsByEligibility(hasALevels, hasStemALevels, latitudeOpt, longitudeOpt).map { resp =>
       Ok(Json.toJson(resp))
     }
