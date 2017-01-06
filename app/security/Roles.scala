@@ -213,10 +213,7 @@ object RoleUtils {
 
   def hasPersonalDetails(implicit user: CachedData) = progress.personalDetails
 
-  def hasSchemesAndLocations(implicit user: CachedData) = {
-    Logger.debug(s"==== HL = ${progress.hasLocations} && HS = ${progress.hasSchemes})")
-    progress.hasLocations && progress.hasSchemes
-   }
+  def hasSchemesAndLocations(implicit user: CachedData) = progress.hasLocations && progress.hasSchemes
 
   def hasAssistance(implicit user: CachedData) = progress.assistance
 
