@@ -19,6 +19,7 @@ package security
 import controllers.routes
 import models.ApplicationData.ApplicationStatus._
 import models.{ CachedData, CachedDataWithApp, Progress }
+import play.api.Logger
 import play.api.i18n.Lang
 import play.api.mvc.{ Call, RequestHeader }
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -74,13 +75,13 @@ object Roles {
 
   object AssistanceRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasSchemes(user)
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasSchemesAndLocations(user)
   }
 
   object ReviewRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       activeUserWithApp(user) && !statusIn(user)(CREATED) &&
-        hasPersonalDetails(user) && hasAssistance(user) && hasSchemes(user)
+        hasPersonalDetails(user) && hasAssistance(user) && hasSchemesAndLocations(user)
   }
 
   object StartQuestionnaireRole extends CsrAuthorization {
@@ -212,7 +213,10 @@ object RoleUtils {
 
   def hasPersonalDetails(implicit user: CachedData) = progress.personalDetails
 
-  def hasSchemes(implicit user: CachedData) = progress.frameworksLocation
+  def hasSchemesAndLocations(implicit user: CachedData) = {
+    Logger.debug(s"==== HL = ${progress.hasLocations} && HS = ${progress.hasSchemes})")
+    progress.hasLocations && progress.hasSchemes
+   }
 
   def hasAssistance(implicit user: CachedData) = progress.assistance
 

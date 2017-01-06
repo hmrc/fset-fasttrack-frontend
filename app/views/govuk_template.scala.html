@@ -1,4 +1,4 @@
-@(title: String, user: Option[CachedData] = None)(mainContent: Html)(implicit request: Request[_], feedbackUrl: String)
+@(title: String, user: Option[CachedData] = None, additionalJavascriptFilenames: List[String] = Nil)(mainContent: Html)(implicit request: Request[_], feedbackUrl: String)
 
 @import config.FrontendAppConfig
 @import views.html.template.userDetails
@@ -135,8 +135,13 @@
 
             <script src='@routes.Assets.versioned("js/vendor/jquery-1.11.1.min.js")'></script>
             <script src='@routes.Assets.versioned("js/vendor/jquery-ui-1.10.4.custom.min.js")'></script>
-            <!-- TODO: Move these two location scripts elsewhere -->
-            <script src='@routes.Assets.versioned("js/location-finder.js")'></script>
+            @for(additionalJavascriptFilename <- additionalJavascriptFilenames) {
+                <script src='@routes.Assets.versioned("js/" + additionalJavascriptFilename)'></script>
+            }
+            <!-- TODO: Move these two location/scheme scripts elsewhere -->
+            <!-- <script src='@routes.Assets.versioned("js/location-finder.js")'></script>
+            <script src='@routes.Assets.versioned("js/scheme-preference-selector.js")'></script> -->
+            <!-- End todo -->
             <script src='@routes.Assets.versioned("js/vendor/fastclick-1.0.6.min.js")'></script>
             <script src='@routes.Assets.versioned("js/scripts.js")'></script>
 

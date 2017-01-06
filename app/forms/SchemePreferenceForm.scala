@@ -17,6 +17,7 @@
 package forms
 
 import forms.Mappings._
+import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -26,11 +27,14 @@ object SchemePreferenceForm {
 
   val form = Form(
     mapping(
-      "schemeNames" -> list(nonEmptyTrimmedText("scheme.required", 128))
+      "schemeNames" -> list(nonEmptyTrimmedText("scheme.required", 128)),
+      "happyWithOrder" -> nonEmptyTrimmedText("schemeorderhappiness.required", 3)
+        .verifying("schemeorderhappiness.required", str => { List("on", "off").contains(str.trim) })
     )(Data.apply)(Data.unapply)
   )
 
   case class Data(
-    schemeNames: List[String]
+    schemeNames: List[String],
+    happyWithOrder: String
   )
 }

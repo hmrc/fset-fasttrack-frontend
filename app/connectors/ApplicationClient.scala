@@ -19,7 +19,7 @@ package connectors
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
 import connectors.ExchangeObjects._
-import connectors.exchange.{ LocationSchemes, ProgressResponse }
+import connectors.exchange.{ LocationSchemes, ProgressResponse, SchemeInfo }
 import forms.{ AssistanceForm, GeneralDetailsForm }
 import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
@@ -224,12 +224,24 @@ trait ApplicationClient {
       s"?hasALevels=$hasALevels&hasStemALevels=$hasStemALevels$optionalLocation").map { response =>
       response.json.as[List[LocationSchemes]]
     } recover {
-      case _: Throwable => throw new ErrorRetrievingLocationSchemes()
+      case ex: Throwable => throw new ErrorRetrievingLocationSchemes(ex)
     }
   }
 
   def saveLocationChoices(applicationId: UniqueIdentifier, locationIds: List[String])(implicit hc: HeaderCarrier): Future[Unit] = {
     http.PUT(s"$hostBase/scheme-locations/$applicationId", locationIds).map(_ => ())
+  }
+
+  def saveSchemeChoices(applicationId: UniqueIdentifier, schemeNames: List[String])(implicit hc: HeaderCarrier): Future[Unit] = {
+    http.PUT(s"$hostBase/schemes/$applicationId", schemeNames).map(_ => ())
+  }
+
+  def getSchemesAvailable(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
+    http.GET(s"$hostBase/schemes/available/$applicationId").map { response =>
+      response.json.as[List[SchemeInfo]]
+    } recover {
+      case ex: Throwable => throw new ErrorRetrievingAvailableSchemes(ex)
+    }
   }
 }
 
@@ -253,7 +265,9 @@ object ApplicationClient extends ApplicationClient {
 
   sealed class OnlineTestNotFound extends Exception
 
-  sealed class ErrorRetrievingLocationSchemes extends Exception
+  sealed class ErrorRetrievingLocationSchemes(throwable: Throwable) extends Exception(throwable)
+
+  sealed class ErrorRetrievingAvailableSchemes(throwable: Throwable) extends Exception(throwable)
 
   sealed class PdfReportNotFoundException extends Exception
 }

@@ -16,4 +16,6 @@
 
 package viewmodels.application.scheme
 
-case class SchemeSelectionViewModel(hasALevels: Boolean, hasStemALevels: Boolean)
+import connectors.exchange.SchemeInfo
+
+case class SchemePreferenceViewModel(schemeOptions: List[SchemeInfo])

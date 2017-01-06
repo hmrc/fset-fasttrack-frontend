@@ -16,21 +16,12 @@
 
 package controllers
 
-import _root_.forms.{ AlternateLocationsForm, SchemeLocationPreferenceForm, SchemePreferenceForm }
+import _root_.forms.{ SchemeLocationPreferenceForm, SchemePreferenceForm }
 import config.{ AppConfig, CSRHttp, FrontendAppConfig }
-import connectors.SchemeClient.CannotFindSelection
-import connectors.{ ApplicationClient, SchemeClient }
-import helpers.NotificationType._
-import models.CachedDataWithApp
-import models.frameworks.LocationAndSchemeSelection.empty
-import models.frameworks.{ LocationAndSchemeSelection, Region }
-import play.api.data.Form
+import connectors.ApplicationClient
 import play.api.libs.json.Json
-import play.api.mvc.{ Request, Result }
-import play.twirl.api.Html
 import security.Roles.SchemesRole
-import uk.gov.hmrc.play.http.HeaderCarrier
-import viewmodels.application.scheme.SchemeLocationsViewModel
+import viewmodels.application.scheme.{ SchemeLocationsViewModel, SchemePreferenceViewModel }
 
 import scala.concurrent.Future
 
@@ -60,8 +51,9 @@ trait SchemeController extends BaseController {
 
   def schemes = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-      applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId).map { personalDetails =>
-        Ok(views.html.application.scheme.chooseyourschemes(schemeForm))
+      applicationClient.getSchemesAvailable(cachedData.application.applicationId).map { availableSchemes =>
+        val viewModel = SchemePreferenceViewModel(availableSchemes.distinct)
+        Ok(views.html.application.scheme.chooseyourschemes(schemeForm, viewModel))
       }
   }
 
@@ -74,8 +66,8 @@ trait SchemeController extends BaseController {
         },
         locationsForm => {
           // TODO: Validate locations chosen should be able to be chosen by this user (alevels/stem etc.)
-          applicationClient.saveLocationChoices(cachedData.application.applicationId, locationsForm.locationIds).map { _ =>
-            Redirect(routes.SchemeController.schemes)
+          applicationClient.saveLocationChoices(cachedData.application.applicationId, locationsForm.locationIds).flatMap { _ =>
+            updateProgress()(_ => Redirect(routes.SchemeController.schemes))
           }
         }
       )
@@ -86,11 +78,13 @@ trait SchemeController extends BaseController {
       // TODO: Process form
       schemeForm.bindFromRequest.fold(
         formWithErrors => {
-          Future.successful(BadRequest)
+          Future.successful(BadRequest(Json.toJson(formWithErrors.errors.map(_.toString).toList)))
         },
         schemeForm => {
           // TODO: Validate schemes chosen should be able to be chosen by this user (alevels/stem etc.)
-          Future.successful(Ok(Json.toJson(schemeForm.schemeNames)))
+          applicationClient.saveSchemeChoices(cachedData.application.applicationId, schemeForm.schemeNames).flatMap { _ =>
+            updateProgress()(_ => Redirect(routes.AssistanceController.present))
+          }
         }
       )
   }
