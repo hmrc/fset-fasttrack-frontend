@@ -51,19 +51,19 @@ class AssistanceFormSpec extends BaseSpec {
   trait Fixture {
 
     val noDisabilities = {
-      val data = Data("No", Some(List("")), None, Some("No"), "No", None, None, None, None)
+      val data = Data("No", Some(List("")), None, Some("No"), "No", None, None)
 
       (data, AssistanceForm.form.fill(data))
     }
 
     val noAdjustments = {
-      val data = Data("Yes", Some(List("One of the disabilities")), None, None, "No", None, None, None, None)
+      val data = Data("Yes", Some(List("One of the disabilities")), None, None, "No", None, None)
 
       (data, AssistanceForm.form.fill(data))
     }
 
     val fullForm: (Data, Form[Data]) = {
-      val data = Data("Yes", Some(List("One of the disabilities")), Some("some details"), None, "Yes", Some(List("other")), None, None, None)
+      val data = Data("Yes", Some(List("One of the disabilities")), Some("some details"), None, "Yes", Some(List("other")), None)
 
       (data, AssistanceForm.form.fill(data))
     }
@@ -79,7 +79,7 @@ class AssistanceFormSpec extends BaseSpec {
     ) = {
 
       val data = Data(needsAssistance, typeOfdisability, detailsOfdisability, guaranteedInterview, needsAdjustment,
-        typeOfAdjustments, otherAdjustments, None, None)
+        typeOfAdjustments, otherAdjustments)
 
       (data, AssistanceForm.form.fill(data))
     }
