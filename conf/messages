@@ -79,9 +79,9 @@ guaranteedInterview.chooseone = Tell us if you wish to apply under the Guarantee
 typeOfAdjustments.chooseone = Tell us what adjustments you need
 
 #locations & schemes
-location.required= Select your preferred location
-firstScheme.required= Select your first preference of scheme
-second.required= Select your second preference of scheme
+location.required = Select your preferred location(s)
+scheme.required = Select your preferred scheme(s)
+schemeorderhappiness.required = Please confirm whether you are happy with your scheme preferences
 
 error.alternativeLocation= Choose whether you would consider an alternative location
 error.alternativeScheme= Choose whether you would consider an alternative scheme

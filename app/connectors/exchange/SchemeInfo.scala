@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package connectors.exchange
 
-import forms.Mappings._
-import play.api.data.Form
-import play.api.data.Forms._
+import play.api.libs.json.Json
 
-import scala.language.implicitConversions
+case class SchemeInfo(name: String, requiresALevel: Boolean, requiresALevelInStem: Boolean)
 
-object SchemeLocationPreferenceForm {
-
-  val form = Form(
-    mapping(
-      "locationIds" -> list(nonEmptyTrimmedText("location.required", 128))
-    )(Data.apply)(Data.unapply)
-  )
-
-  case class Data(
-    locationIds: List[String]
-  )
+object SchemeInfo {
+  implicit val schemeInfoFormat = Json.format[SchemeInfo]
 }

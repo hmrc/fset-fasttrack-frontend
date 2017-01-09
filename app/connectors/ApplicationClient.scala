@@ -19,12 +19,13 @@ package connectors
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
 import connectors.ExchangeObjects._
-import connectors.exchange.ProgressResponse
+import connectors.exchange.{ LocationSchemes, ProgressResponse, SchemeInfo }
 import forms.{ AssistanceForm, GeneralDetailsForm }
 import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
 import org.joda.time.LocalDate
+import play.api.Logger
 import play.api.Play.current
 import play.api.http.Status._
 import play.api.libs.iteratee.Iteratee
@@ -41,6 +42,8 @@ trait ApplicationClient {
   import ApplicationClient._
   import ExchangeObjects.Implicits._
   import config.FrontendAppConfig.fasttrackConfig._
+
+  protected lazy val hostBase: LoginInfo = url.host + url.base
 
   def createApplication(userId: UniqueIdentifier, frameworkId: String)
     (implicit hc: HeaderCarrier): Future[ApplicationResponse] = {
@@ -205,9 +208,62 @@ trait ApplicationClient {
   def completeTests(token: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Unit] = {
     http.POST(s"${url.host}${url.base}/online-test/complete/$token", "").map(_ => ())
   }
+
+  def getSchemesAndLocationsByEligibility(hasALevels: Boolean, hasStemALevels: Boolean,
+                                          latitudeOpt: Option[Double], longitudeOpt: Option[Double])
+                                         (implicit hc: HeaderCarrier): Future[List[LocationSchemes]] = {
+
+    val optionalLocation = (for {
+      latitude <- latitudeOpt
+      longitude <- longitudeOpt
+    } yield {
+      s"&latitude=$latitude&longitude=$longitude"
+    }).getOrElse("")
+
+    http.GET(s"$hostBase/scheme-locations/available/by-eligibility" +
+      s"?hasALevels=$hasALevels&hasStemALevels=$hasStemALevels$optionalLocation").map { response =>
+      response.json.as[List[LocationSchemes]]
+    } recover {
+      case ex: Throwable => throw new ErrorRetrievingEligibleLocationSchemes(ex)
+    }
+  }
+
+  def saveLocationChoices(applicationId: UniqueIdentifier, locationIds: List[String])(implicit hc: HeaderCarrier): Future[Unit] = {
+    http.PUT(s"$hostBase/scheme-locations/$applicationId", locationIds).map(_ => ())
+  }
+
+  def saveSchemeChoices(applicationId: UniqueIdentifier, schemeNames: List[String])(implicit hc: HeaderCarrier): Future[Unit] = {
+    http.PUT(s"$hostBase/schemes/$applicationId", schemeNames).map(_ => ())
+  }
+
+  def getSchemeLocationChoices(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[String]] = {
+    http.GET(s"$hostBase/scheme-locations/$applicationId").map { response =>
+      response.json.as[List[String]]
+    } recover {
+      case ex: Throwable => throw new ErrorRetrievingLocationSchemes(ex)
+    }
+  }
+
+  def getSchemeChoices(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[String]] = {
+    http.GET(s"$hostBase/schemes/$applicationId").map { response =>
+      response.json.as[List[String]]
+    } recover {
+      case ex: Throwable => throw new ErrorRetrievingSchemes(ex)
+    }
+  }
+
+  def getSchemesAvailable(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
+    http.GET(s"$hostBase/schemes/available/$applicationId").map { response =>
+      response.json.as[List[SchemeInfo]]
+    } recover {
+      case ex: Throwable => throw new ErrorRetrievingAvailableSchemes(ex)
+    }
+  }
 }
 
-object ApplicationClient {
+object ApplicationClient extends ApplicationClient {
+
+  override val http = CSRHttp
 
   sealed class CannotUpdateRecord extends Exception
 
@@ -224,6 +280,14 @@ object ApplicationClient {
   sealed class CannotWithdraw extends Exception
 
   sealed class OnlineTestNotFound extends Exception
+
+  sealed class ErrorRetrievingEligibleLocationSchemes(throwable: Throwable) extends Exception(throwable)
+
+  sealed class ErrorRetrievingLocationSchemes(throwable: Throwable) extends Exception(throwable)
+
+  sealed class ErrorRetrievingAvailableSchemes(throwable: Throwable) extends Exception(throwable)
+
+  sealed class ErrorRetrievingSchemes(throwable: Throwable) extends Exception(throwable)
 
   sealed class PdfReportNotFoundException extends Exception
 }

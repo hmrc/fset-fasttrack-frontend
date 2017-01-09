@@ -33,9 +33,15 @@ import scala.concurrent.Future
   * but there is some copied code that is not idiomatic Scala and should be changed at some point in the future
   */
 
+object AddressLookupClient extends AddressLookupClient
+{
+  val http = CSRHttp
+  val addressLookupEndpoint = config.FrontendAppConfig.addressLookupConfig.url
+}
+
 trait AddressLookupClient {
 
-  def addressLookupEndpoint: String
+  val addressLookupEndpoint: String
   val http: CSRHttp
 
   private def url = s"$addressLookupEndpoint/v2/uk/addresses"

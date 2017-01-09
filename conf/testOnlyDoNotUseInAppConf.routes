@@ -10,6 +10,4 @@
 # Failing to follow this rule may result in test routes deployed in production.
 
 # Add all the application routes to the prod.routes file
-->         /                          prod.Routes
-
-GET     /fset-fast-track/address-search/:postcode                              controllers.test.AddressLookupController.addressLookup(postcode: String)
+->         /                                             prod.Routes

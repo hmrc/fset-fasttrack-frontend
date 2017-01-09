@@ -17,20 +17,24 @@
 package forms
 
 import forms.Mappings._
+import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
 
 import scala.language.implicitConversions
 
-object SchemeLocationPreferenceForm {
+object SchemePreferenceForm {
 
   val form = Form(
     mapping(
-      "locationIds" -> list(nonEmptyTrimmedText("location.required", 128))
+      "schemeNames" -> list(nonEmptyTrimmedText("scheme.required", 128)),
+      "happyWithOrder" -> nonEmptyTrimmedText("schemeorderhappiness.required", 3)
+        .verifying("schemeorderhappiness.required", str => { List("on", "off").contains(str.trim) })
     )(Data.apply)(Data.unapply)
   )
 
   case class Data(
-    locationIds: List[String]
+    schemeNames: List[String],
+    happyWithOrder: String
   )
 }
