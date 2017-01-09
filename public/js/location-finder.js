@@ -121,7 +121,7 @@ $(function(){
             // $('#noLocationsFound').removeClass('toggle-content');
         }
         */
-        setTimeout(addDistance, 0)
+        setTimeout(addDistance, 100)
 
     }
 
@@ -156,7 +156,7 @@ $(function(){
                     '</li>' );
             }
         }
-        $('#scrollingList').scrollTo($('#listOfLocations li:first-child'), 400);
+        //$('#scrollingList').scrollTo($('#listOfLocations li:first-child'), 400);
     }
 
     $('#updateLocation').on('click', function(e) {
