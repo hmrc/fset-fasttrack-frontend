@@ -19,6 +19,8 @@ package connectors.exchange
 import forms.AssistanceDetailsForm
 import play.api.libs.json.Json
 
+import scala.language.implicitConversions
+
 final case class AssistanceDetails(
                                     hasDisability: String,
                                     hasDisabilityDescription: Option[String],

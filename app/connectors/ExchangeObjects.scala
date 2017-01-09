@@ -75,9 +75,6 @@ object ExchangeObjects {
 
   case class FindUserRequest(email: String)
 
-  case class UserResponse(firstName: String, lastName: String, preferredName: Option[String],
-    isActive: Boolean, userId: UniqueIdentifier, email: String, lockStatus: String, role: String)
-
   case class ActivateEmailRequest(email: String, token: String, service: String)
 
   case class ResendActivationTokenRequest(email: String, service: String)
@@ -159,12 +156,6 @@ object ExchangeObjects {
     implicit val activateEmailRequestFormats = Json.format[ActivateEmailRequest]
     implicit val signInRequestFormats = Json.format[SignInRequest]
     implicit val findUserRequestFormats = Json.format[FindUserRequest]
-
-    implicit class exchangeUserToCachedUser(exchUser: UserResponse) {
-      def toCached: models.CachedUser =
-        models.CachedUser(exchUser.userId, exchUser.firstName, exchUser.lastName,
-          exchUser.preferredName, exchUser.email, exchUser.isActive, exchUser.lockStatus)
-    }
 
     implicit val registrationEmail = Json.format[RegistrationEmail]
     implicit val addUserRequestFormats = Json.format[AddUserRequest]

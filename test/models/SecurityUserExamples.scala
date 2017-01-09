@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-import scala.language.implicitConversions
+package models
 
-/**
- * Consider breaking this into multiple exchange objects (e.g. Email Exchange objects etc).
- */
-package object connectors {
-  val FrameworkId = "FastTrack-2015" // TODO
+object SecurityUserExamples {
+  val ValidToken = "ABCDEFG"
+  val CreatedApplication = CachedDataExample.CreatedApplication
+  val ActiveCandidateUser = CachedUser(CreatedApplication.userId, "firstName", "lastName", Some("preferredName"),
+    "email@test.com", isActive = true, "lockStatus")
+  val ActiveCandidate = CachedData(ActiveCandidateUser, None)
 
-  type LoginInfo = String
+  val InactiveCandidateUser = ActiveCandidateUser.copy(isActive = false)
+  val InactiveCandidate = CachedData(InactiveCandidateUser, None)
+
+  val CandidateWithApp = CachedDataWithApp(ActiveCandidateUser, CreatedApplication)
 }

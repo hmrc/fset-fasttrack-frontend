@@ -28,6 +28,7 @@ import scala.concurrent.Future
 
 object SignInController extends SignInController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait SignInController extends BaseController with SignInUtils with ApplicationClient {

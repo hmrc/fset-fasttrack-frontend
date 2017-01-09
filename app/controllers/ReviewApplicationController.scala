@@ -16,15 +16,16 @@
 
 package controllers
 
-import config.CSRHttp
-import connectors.ApplicationClient.{ AssistanceDetailsNotFound, PersonalDetailsNotFound }
+import config.{CSRCache, CSRHttp}
+import connectors.ApplicationClient.{AssistanceDetailsNotFound, PersonalDetailsNotFound}
 import connectors.SchemeClient.CannotFindSelection
-import connectors.{ ApplicationClient, SchemeClient }
+import connectors.{ApplicationClient, SchemeClient}
 import helpers.NotificationType._
-import security.Roles.{ QuestionnaireInProgressRole, ReviewRole, StartQuestionnaireRole }
+import security.Roles.{QuestionnaireInProgressRole, ReviewRole, StartQuestionnaireRole}
 
 object ReviewApplicationController extends ReviewApplicationController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait ReviewApplicationController extends BaseController with ApplicationClient with SchemeClient {

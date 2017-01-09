@@ -27,6 +27,7 @@ import scala.concurrent.Future
 
 object AssistanceDetailsController extends AssistanceDetailsController(ApplicationClient, CSRCache) {
   override val http: CSRHttp = ApplicationClient.http
+  val cacheClient = CSRCache
 }
 
 abstract class AssistanceDetailsController(applicationClient: ApplicationClient, cacheClient: CSRCache)

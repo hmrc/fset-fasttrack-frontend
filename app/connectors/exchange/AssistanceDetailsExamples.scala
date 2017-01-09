@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-import scala.language.implicitConversions
+package connectors.exchange
 
-/**
- * Consider breaking this into multiple exchange objects (e.g. Email Exchange objects etc).
- */
-package object connectors {
-  val FrameworkId = "FastTrack-2015" // TODO
-
-  type LoginInfo = String
+object AssistanceDetailsExamples {
+  val OnlyDisabilityNoGisNoAdjustments = AssistanceDetails("Yes", Some(""), Some(false), false, None, false, None, None, None, None)
+  val DisabilityGisAndAdjustments = AssistanceDetails("Yes", Some("Epilepsy"), Some(true), true,
+    Some("Some adjustment"), true, Some("Some other adjustments"), None, None, None)
 }

@@ -17,7 +17,7 @@
 package controllers
 
 import _root_.forms.ActivateAccountForm
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient
 import connectors.UserManagementClient.{TokenEmailPairInvalidException, TokenExpiredException}
 import helpers.NotificationType._
@@ -28,6 +28,7 @@ import scala.concurrent.Future
 
 object ActivationController extends ActivationController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait ActivationController extends BaseController with SignInUtils with ApplicationClient {

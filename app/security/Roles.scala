@@ -214,7 +214,7 @@ object RoleUtils {
 
   def hasSchemes(implicit user: CachedData) = progress.frameworksLocation
 
-  def hasAssistance(implicit user: CachedData) = progress.assistance
+  def hasAssistance(implicit user: CachedData) = progress.assistanceDetails
 
   def hasReview(implicit user: CachedData) = progress.review
 

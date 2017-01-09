@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.forms
+package connectos.exchange
 
-import controllers.BaseSpec
-import forms.ResetPasswordForm
+import models.UniqueIdentifier
+import play.api.libs.json.Json
 
-class resetPasswordFormSpec extends BaseSpec {
-
-  "the validate method" should {
-    "validate an email" in {
-      ResetPasswordForm.validateEmail("test@test.com") must be(true)
-    }
-
-    "return false on invalid email" in {
-      ResetPasswordForm.validateEmail("not_an_email") must be(false)
-    }
-  }
-
+case class FindByUserIdRequest(userId: UniqueIdentifier)
+object FindByUserIdRequest {
+  implicit val format = Json.format[FindByUserIdRequest]
 }

@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import play.api.mvc.Action
 
 import scala.concurrent.Future
@@ -27,6 +27,7 @@ import scala.concurrent.Future
  */
 object ApplicationController extends ApplicationController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait ApplicationController extends BaseController {

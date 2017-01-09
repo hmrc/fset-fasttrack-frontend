@@ -16,31 +16,30 @@
 
 package connectors.exchange
 
-import models.UniqueIdentifier
 import play.api.libs.json.Json
 
 case class ProgressResponse(
-  applicationId: UniqueIdentifier,
-  personalDetails: Boolean,
-  frameworksLocation: Boolean,
-  assistance: Boolean,
-  review: Boolean,
-  questionnaire: List[String],
-  submitted: Boolean,
-  withdrawn: Boolean,
-  onlineTestInvited: Boolean,
-  onlineTestStarted: Boolean,
-  onlineTestCompleted: Boolean,
-  onlineTestExpired: Boolean,
-  onlineTestAwaitingReevaluation: Boolean,
-  onlineTestFailed: Boolean,
-  onlineTestFailedNotified: Boolean,
-  onlineTestAwaitingAllocation: Boolean,
-  onlineTestAllocationConfirmed: Boolean,
-  onlineTestAllocationUnconfirmed: Boolean,
-  failedToAttend: Boolean,
-  assessmentScores: AssessmentScores = AssessmentScores(),
-  assessmentCentre: AssessmentCentre = AssessmentCentre()
+                             applicationId: String,
+                             personalDetails: Boolean = false,
+                             frameworksLocation: Boolean = false,
+                             assistanceDetails: Boolean = false,
+                             review: Boolean = false,
+                             questionnaire: List[String] = Nil,
+                             submitted: Boolean = false,
+                             withdrawn: Boolean = false,
+                             onlineTestInvited: Boolean = false,
+                             onlineTestStarted: Boolean = false,
+                             onlineTestCompleted: Boolean = false,
+                             onlineTestExpired: Boolean = false,
+                             onlineTestAwaitingReevaluation: Boolean = false,
+                             onlineTestFailed: Boolean = false,
+                             onlineTestFailedNotified: Boolean = false,
+                             onlineTestAwaitingAllocation: Boolean = false,
+                             onlineTestAllocationConfirmed: Boolean = false,
+                             onlineTestAllocationUnconfirmed: Boolean = false,
+                             failedToAttend: Boolean = false,
+                             assessmentScores: AssessmentScores = AssessmentScores(),
+                             assessmentCentre: AssessmentCentre = AssessmentCentre()
 )
 
 case class AssessmentScores(

@@ -16,17 +16,17 @@
 
 package controllers
 
-import _root_.forms.SchemeLocationPreferenceForm.{ form => preferenceForm, resetPreference, validateSchemeLocation }
-import _root_.forms.{ AlternateLocationsForm, SchemeLocationPreferenceForm }
-import config.CSRHttp
+import _root_.forms.SchemeLocationPreferenceForm.{resetPreference, validateSchemeLocation, form => preferenceForm}
+import _root_.forms.{AlternateLocationsForm, SchemeLocationPreferenceForm}
+import config.{CSRCache, CSRHttp}
 import connectors.SchemeClient.CannotFindSelection
-import connectors.{ ApplicationClient, SchemeClient }
+import connectors.{ApplicationClient, SchemeClient}
 import helpers.NotificationType._
 import models.CachedDataWithApp
 import models.frameworks.LocationAndSchemeSelection.empty
-import models.frameworks.{ LocationAndSchemeSelection, Region }
+import models.frameworks.{LocationAndSchemeSelection, Region}
 import play.api.data.Form
-import play.api.mvc.{ Request, Result }
+import play.api.mvc.{Request, Result}
 import play.twirl.api.Html
 import security.Roles.SchemesRole
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -35,6 +35,7 @@ import scala.concurrent.Future
 
 object SchemeController extends SchemeController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait SchemeController extends BaseController with SchemeClient with ApplicationClient {

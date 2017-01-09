@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-import scala.language.implicitConversions
+package forms
 
-/**
- * Consider breaking this into multiple exchange objects (e.g. Email Exchange objects etc).
- */
-package object connectors {
-  val FrameworkId = "FastTrack-2015" // TODO
+import controllers.BaseSpec
 
-  type LoginInfo = String
+class resetPasswordFormSpec extends BaseSpec {
+
+  "the validate method" should {
+    "validate an email" in {
+      ResetPasswordForm.validateEmail("test@test.com") must be(true)
+    }
+
+    "return false on invalid email" in {
+      ResetPasswordForm.validateEmail("not_an_email") must be(false)
+    }
+  }
+
 }

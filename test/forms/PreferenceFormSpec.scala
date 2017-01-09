@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.forms
+package forms
 
 import controllers.BaseSpec
-import forms.SchemeLocationPreferenceForm.{ Data, form, resetPreference, validateSchemeLocation }
-import models.frameworks.{ Location, Preference, Region }
+import forms.SchemeLocationPreferenceForm.{Data, form, resetPreference, validateSchemeLocation}
+import models.frameworks.{Location, Preference, Region}
 import org.junit.Assert._
 
 class PreferenceFormSpec extends BaseSpec {

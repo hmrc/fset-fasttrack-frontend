@@ -18,7 +18,7 @@ package controllers
 
 import _root_.forms.SignUpForm
 import com.mohiva.play.silhouette.api.SignUpEvent
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient
 import connectors.ExchangeObjects.Implicits._
 import connectors.UserManagementClient.EmailTakenException
@@ -30,6 +30,7 @@ import scala.concurrent.Future
 
 object SignUpController extends SignUpController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait SignUpController extends BaseController with SignInUtils with ApplicationClient {

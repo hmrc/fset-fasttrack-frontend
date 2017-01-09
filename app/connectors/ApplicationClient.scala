@@ -20,7 +20,7 @@ import config.CSRHttp
 import connectors.AllocationExchangeObjects._
 import connectors.ExchangeObjects._
 import connectors.exchange.{AssistanceDetails, ProgressResponse}
-import forms.{AssistanceDetailsForm, GeneralDetailsForm}
+import forms.GeneralDetailsForm
 import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
