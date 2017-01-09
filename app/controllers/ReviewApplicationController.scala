@@ -17,32 +17,38 @@
 package controllers
 
 import config.CSRHttp
-import connectors.ApplicationClient.{ AssistanceDetailsNotFound, PersonalDetailsNotFound }
-import connectors.SchemeClient.CannotFindSelection
-import connectors.{ ApplicationClient, SchemeClient }
+import connectors.ApplicationClient._
+import connectors.ApplicationClient
 import helpers.NotificationType._
+import play.api.Logger
 import security.Roles.{ QuestionnaireInProgressRole, ReviewRole, StartQuestionnaireRole }
 
 object ReviewApplicationController extends ReviewApplicationController {
   val http = CSRHttp
+  val applicationClient = ApplicationClient
 }
 
-trait ReviewApplicationController extends BaseController with ApplicationClient with SchemeClient {
+trait ReviewApplicationController extends BaseController {
+
+  val applicationClient: ApplicationClient
 
   def present = CSRSecureAppAction(ReviewRole) { implicit request =>
     implicit user =>
       val personalDetailsFut = findPersonalDetails(user.user.userID, user.application.applicationId)
       val assistanceDetailsFut = findAssistanceDetails(user.user.userID, user.application.applicationId)
-      val frameworkLocationFut = getSelection(user.application.applicationId)
+      val locationChoicesFut = applicationClient.getSchemeLocationChoices(user.application.applicationId)
+      val schemeChoicesFut = applicationClient.getSchemeChoices(user.application.applicationId)
 
       (for {
         gd <- personalDetailsFut
         ad <- assistanceDetailsFut
-        fl <- frameworkLocationFut
+        slc <- locationChoicesFut
+        sc <- schemeChoicesFut
       } yield {
-        Ok(views.html.application.review(gd, ad, fl, user.application))
+        Ok(views.html.application.review(gd, ad, slc, sc, user.application))
       }).recover {
-        case e @ (_: PersonalDetailsNotFound | _: AssistanceDetailsNotFound | _: CannotFindSelection) =>
+        case ex @ (_: PersonalDetailsNotFound | _: AssistanceDetailsNotFound | _: ErrorRetrievingLocationSchemes | _: ErrorRetrievingSchemes) =>
+          Logger.warn("Preview section reached prematurely with exception", ex)
           Redirect(routes.HomeController.present()).flashing(warning("info.cannot.review.yet"))
       }
   }

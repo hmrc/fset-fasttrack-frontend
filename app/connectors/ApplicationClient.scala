@@ -25,6 +25,7 @@ import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
 import org.joda.time.LocalDate
+import play.api.Logger
 import play.api.Play.current
 import play.api.http.Status._
 import play.api.libs.iteratee.Iteratee
@@ -219,11 +220,11 @@ trait ApplicationClient {
       s"&latitude=$latitude&longitude=$longitude"
     }).getOrElse("")
 
-    http.GET(s"$hostBase/scheme-locations/by-eligibility" +
+    http.GET(s"$hostBase/scheme-locations/available/by-eligibility" +
       s"?hasALevels=$hasALevels&hasStemALevels=$hasStemALevels$optionalLocation").map { response =>
       response.json.as[List[LocationSchemes]]
     } recover {
-      case ex: Throwable => throw new ErrorRetrievingLocationSchemes(ex)
+      case ex: Throwable => throw new ErrorRetrievingEligibleLocationSchemes(ex)
     }
   }
 
@@ -233,6 +234,22 @@ trait ApplicationClient {
 
   def saveSchemeChoices(applicationId: UniqueIdentifier, schemeNames: List[String])(implicit hc: HeaderCarrier): Future[Unit] = {
     http.PUT(s"$hostBase/schemes/$applicationId", schemeNames).map(_ => ())
+  }
+
+  def getSchemeLocationChoices(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[String]] = {
+    http.GET(s"$hostBase/scheme-locations/$applicationId").map { response =>
+      response.json.as[List[String]]
+    } recover {
+      case ex: Throwable => throw new ErrorRetrievingLocationSchemes(ex)
+    }
+  }
+
+  def getSchemeChoices(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[String]] = {
+    http.GET(s"$hostBase/schemes/$applicationId").map { response =>
+      response.json.as[List[String]]
+    } recover {
+      case ex: Throwable => throw new ErrorRetrievingSchemes(ex)
+    }
   }
 
   def getSchemesAvailable(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
@@ -264,9 +281,13 @@ object ApplicationClient extends ApplicationClient {
 
   sealed class OnlineTestNotFound extends Exception
 
+  sealed class ErrorRetrievingEligibleLocationSchemes(throwable: Throwable) extends Exception(throwable)
+
   sealed class ErrorRetrievingLocationSchemes(throwable: Throwable) extends Exception(throwable)
 
   sealed class ErrorRetrievingAvailableSchemes(throwable: Throwable) extends Exception(throwable)
+
+  sealed class ErrorRetrievingSchemes(throwable: Throwable) extends Exception(throwable)
 
   sealed class PdfReportNotFoundException extends Exception
 }
