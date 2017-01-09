@@ -90,6 +90,7 @@ $(function(){
         loadLocationsJson(function(response) {
             // Parse JSON string into object
             locations = response
+            setTimeout(addDistance, 100)
         }, hasALevels, hasStemALevels, latitude, longitude);
 
         /* Post code lookup
@@ -121,8 +122,6 @@ $(function(){
             // $('#noLocationsFound').removeClass('toggle-content');
         }
         */
-        setTimeout(addDistance, 100)
-
     }
 
     function addDistance() {
