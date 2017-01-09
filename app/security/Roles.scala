@@ -80,7 +80,7 @@ object Roles {
   object ReviewRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       activeUserWithApp(user) && !statusIn(user)(CREATED) &&
-        hasPersonalDetails(user) && hasAssistance(user) && hasSchemes(user)
+        hasPersonalDetails(user) && hasAssistanceDetails(user) && hasSchemes(user)
   }
 
   object StartQuestionnaireRole extends CsrAuthorization {
@@ -214,7 +214,7 @@ object RoleUtils {
 
   def hasSchemes(implicit user: CachedData) = progress.frameworksLocation
 
-  def hasAssistance(implicit user: CachedData) = progress.assistanceDetails
+  def hasAssistanceDetails(implicit user: CachedData) = progress.assistanceDetails
 
   def hasReview(implicit user: CachedData) = progress.review
 
