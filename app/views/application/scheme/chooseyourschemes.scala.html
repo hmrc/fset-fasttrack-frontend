@@ -1,0 +1,88 @@
+@import viewmodels.application.scheme.SchemePreferenceViewModel
+
+@import connectors.exchange.SchemeInfo
+@(
+        schemesForm: Form[_root_.forms.SchemePreferenceForm.Data],
+        viewModel: SchemePreferenceViewModel
+)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+
+@import helpers.CSRFieldConstructor._
+@import views.html.widgets.{guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
+
+@schemeRequirements(scheme: SchemeInfo) = {
+    @if(scheme.requiresALevelInStem) {
+        2 A levels A* to C in STEM subjects and 5 GCSEs A* to C including English language and maths
+    } else {
+        @if(scheme.requiresALevel) {
+            5 GCSEs A* to C including English language and maths
+        } else {
+            2 A levels A* to D in any subject and 5 GCSEs A* to C including English language and maths
+        }
+    }
+}
+
+@main_template(title = "Choose your preferred schemes", pageForms = Seq(schemesForm), None, List("scheme-preference-selector.js")) {
+
+    @helper.form(action = routes.SchemeController.submitSchemes(), 'novalidate -> "novalidate") {
+        @helper.CSRF.formField
+        <h1 class="heading-xlarge">Choose your preferred schemes</h1>
+
+        <div class="panel-indent">
+            <p>In preference order, select only the schemes you'd like to work in.</p>
+        </div>
+        <section class="grid-wrapper scheme-wrapper">
+            <div class="scheme-input-container">
+                <div class="inner-block-padr">
+                    <ul class="schemes-list">
+                        @for(scheme <- viewModel.schemeOptions) {
+                            <li class="scheme-container">
+                                <span class="selected-preference invisible">N/A</span>
+                                <label for="scheme-@scheme.name" class="block-label block-label-slim">
+                                    <input type="checkbox" id="scheme-@scheme.name" data-schemename>@scheme.name
+                                </label>
+                                <span class="alwayshidden" data-scheme-req>@schemeRequirements(scheme)</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <section id="selectedPreferences" class="hide-nojs">
+            <h2 class="heading-large">Your chosen schemes</h2>
+            <div data-scheme-placeholder>
+                <div class="scheme-warning text">
+                    <p>Your schemes will appear here as you select them from the list</p>
+                </div>
+            </div>
+            <ol id="selectedPrefList" class="list-text">
+                <li></li>
+            </ol>
+                &nbsp;
+        </section>
+        <section class="text panel-indent">
+            <p>Your schemes will be offered to you in order of preference.</p>
+            <p>You will not be able to reorder them after submitting your application.</p>
+        </section>
+        <section class="text clearfix">
+            <fieldset>
+                <legend class="form-label">Are you happy with the order of your schemes?</legend>
+                <div class="form-group no-btm-margin">
+                    <label for="happyWithOrder-yes" class="block-label">
+                        <input name="happyWithOrder" type="radio" id="happyWithOrder-yes">Yes
+                    </label>
+                    <label data-target="order-panel" for="reorder-no" class="block-label">
+                        <input name="happyWithOrder" type="radio" id="happyWithOrder-no" aria-controls="order-panel"
+                        aria-expanded="false">No
+                    </label>
+                </div>
+                <div id="order-panel" class="toggle-content">
+                    <div class="panel-danger">
+                        <p>Review your preferences and confirm your happy with the order to
+                            continue</p>
+                    </div>
+                </div>
+            </fieldset>
+        </section>
+        <button type="submit" id="schemeSaveBtn" class="button">Save and continue</button>
+    }
+}

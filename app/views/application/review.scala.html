@@ -1,6 +1,7 @@
 @(generalDetails: connectors.ExchangeObjects.GeneralDetailsExchange,
         assistanceDetails: connectors.exchange.AssistanceDetails,
-        schemesAndLocations: models.frameworks.LocationAndSchemeSelection,
+        schemeLocations: List[String],
+        schemes: List[String],
         applicationData: models.ApplicationData)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import models.ApplicationData.ApplicationStatus._
@@ -37,7 +38,7 @@
 
     @generalDetailsViewSection(generalDetails)(edit_link(routes.FastTrackApplication.generalDetails(None)))
 
-    @schemeSummaryView(schemesAndLocations)(edit_link(routes.SchemeController.entryPoint()))
+    @schemeSummaryView(schemeLocations, schemes)(edit_link(routes.SchemeController.schemeLocations()))
 
     @assistanceDetailsViewSection(assistanceDetails)(edit_link(routes.AssistanceDetailsController.present()))
 
