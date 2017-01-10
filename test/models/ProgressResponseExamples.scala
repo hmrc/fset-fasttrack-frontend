@@ -21,31 +21,32 @@ import java.util.UUID
 import connectors.exchange._
 
 object ProgressResponseExamples {
-  val Initial = ProgressResponse(applicationId = UUID.randomUUID().toString(),
+  val Initial = ProgressResponse(UniqueIdentifier(UUID.randomUUID().toString),
     personalDetails = false,
-    frameworksLocation = false,
+    hasLocations = false,
+    hasSchemes = false,
     assistanceDetails = false,
     review = false,
     questionnaire = Nil,
     submitted = false,
     withdrawn = false,
-    onlineTestInvited = false,
-    onlineTestStarted = false,
-    onlineTestCompleted = false,
-    onlineTestExpired = false,
-    onlineTestAwaitingReevaluation = false,
-    onlineTestFailed = false,
-    onlineTestFailedNotified = false,
-    onlineTestAwaitingAllocation = false,
-    onlineTestAllocationConfirmed = false,
-    onlineTestAllocationUnconfirmed = false,
+    OnlineTestProgressResponse(invited = false,
+      started = false,
+      completed = false,
+      expired = false,
+      awaitingReevaluation = false,
+      failed = false,
+      failedNotified = false,
+      awaitingAllocation = false,
+      allocationConfirmed = false,
+      allocationUnconfirmed = false),
     failedToAttend = false,
     assessmentScores = AssessmentScores(),
     assessmentCentre = AssessmentCentre()
   )
   val InProgress = Initial.copy(personalDetails = true)
   val InPersonalDetails = Initial.copy(personalDetails = true)
-  val InSchemePreferencesDetails = InPersonalDetails.copy(frameworksLocation = true)
+  val InSchemePreferencesDetails = InPersonalDetails.copy(hasSchemes = true)
   val InAssistanceDetails = InSchemePreferencesDetails.copy(assistanceDetails = true)
   val InQuestionnaire = InAssistanceDetails.copy(questionnaire = List("start_questionnaire", "diversity_questionnaire",
     "education_questionnaire", "occupation_questionnaire"))
