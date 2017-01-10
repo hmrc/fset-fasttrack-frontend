@@ -35,7 +35,6 @@ abstract class AssistanceDetailsController(applicationClient: ApplicationClient,
 
   def present = CSRSecureAppAction(AssistanceDetailsRole) { implicit request =>
     implicit user =>
-
       applicationClient.getAssistanceDetails(user.user.userID, user.application.applicationId).map { ad =>
         val form = AssistanceDetailsForm.form.fill(AssistanceDetailsForm.Data(ad))
         Ok(views.html.application.assistanceDetails(form))

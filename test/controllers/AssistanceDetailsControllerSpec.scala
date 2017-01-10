@@ -26,7 +26,7 @@ import org.mockito.Mockito._
 import play.api.test.Helpers._
 import testkit.BaseControllerSpec
 import uk.gov.hmrc.play.http.HeaderCarrier
-import connectors.exchange.AssistanceDetailsExamples
+import connectors.exchange.{AssistanceDetailsExamples, ProgressResponse}
 import forms.AssistanceDetailsFormExamples
 import models.services.UserService
 
@@ -102,11 +102,8 @@ class AssistanceDetailsControllerSpec extends BaseControllerSpec {
         new TestableAssistanceDetailsControllerWithUserInQuestionnaire
 
       val Request = fakeRequest.withFormUrlEncodedBody(AssistanceDetailsFormExamples.DisabilityGisAndAdjustmentsFormUrlEncodedBody: _*)
-      //when(mockApplicationClient.updateAssistanceDetails(eqTo(currentApplicationId), eqTo(currentUserId),
-      //  eqTo(AssistanceDetailsExamples.DisabilityGisAndAdjustments))(any[HeaderCarrier])).thenReturn(Future.successful(()))
-      when(mockApplicationClient.updateAssistanceDetails(any(), any(),
-        any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
-
+      when(mockApplicationClient.updateAssistanceDetails(eqTo(currentApplicationId), eqTo(currentUserId),
+        eqTo(AssistanceDetailsExamples.DisabilityGisAndAdjustments))(any[HeaderCarrier])).thenReturn(Future.successful(()))
       when(mockApplicationClient.getApplicationProgress(eqTo(currentApplicationId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(ProgressResponseExamples.InQuestionnaire))
       val Application = currentCandidateWithApp.application.copy(progress = ProgressResponseExamples.InQuestionnaire)
@@ -133,6 +130,10 @@ class AssistanceDetailsControllerSpec extends BaseControllerSpec {
       override protected def env = mockSecurityEnvironment
 
       when(mockSecurityEnvironment.userService).thenReturn(mockUserService)
+
+      override def getApplicationProgress(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[ProgressResponse] = {
+        Future.successful(ProgressResponseExamples.InQuestionnaire)
+      }
     }
 
     def controller(implicit candidateWithApp: CachedDataWithApp = currentCandidateWithApp) = new TestableAssistanceDetailsController {
