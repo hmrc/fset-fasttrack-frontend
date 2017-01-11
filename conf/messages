@@ -81,7 +81,7 @@ typeOfAdjustments.chooseone = Tell us what adjustments you need
 #locations & schemes
 location.required = Select your preferred location(s)
 scheme.required = Select your preferred scheme(s)
-schemeorderhappiness.required = Please confirm whether you are happy with your scheme preferences
+orderAgreed.required = Please confirm whether you are happy with your scheme preferences
 
 error.alternativeLocation= Choose whether you would consider an alternative location
 error.alternativeScheme= Choose whether you would consider an alternative scheme

@@ -19,11 +19,11 @@ package controllers
 import _root_.forms.{ SchemeLocationPreferenceForm, SchemePreferenceForm }
 import config.{ AppConfig, CSRHttp, FrontendAppConfig }
 import connectors.ApplicationClient
-import play.api.libs.json.Json
+import models.CachedDataWithApp
+import play.api.data.Form
+import play.api.mvc.Request
 import security.Roles.SchemesRole
 import viewmodels.application.scheme.{ SchemeLocationsViewModel, SchemePreferenceViewModel }
-
-import scala.concurrent.Future
 
 object SchemeController extends SchemeController {
   val http = CSRHttp
@@ -41,33 +41,21 @@ trait SchemeController extends BaseController {
 
   def schemeLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-      applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId).map { personalDetails =>
-        val viewModel = SchemeLocationsViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup,
-          personalDetails.aLevel, personalDetails.stemLevel)
-
-        Ok(views.html.application.scheme.wherecouldyouwork(schemeLocationForm, viewModel))
-      }
+      displaySchemeLocations(schemeLocationForm)
   }
 
   def schemes = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-      applicationClient.getSchemesAvailable(cachedData.application.applicationId).map { availableSchemes =>
-        val viewModel = SchemePreferenceViewModel(availableSchemes.distinct)
-        Ok(views.html.application.scheme.chooseyourschemes(schemeForm, viewModel))
-      }
+      displaySchemes(schemeForm)
   }
 
   def submitLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-      // TODO: Process form
       schemeLocationForm.bindFromRequest.fold(
-        formWithErrors => {
-          Future.successful(BadRequest)
-        },
+        displaySchemeLocations,
         locationsForm => {
-          // TODO: Validate locations chosen should be able to be chosen by this user (alevels/stem etc.)
           applicationClient.saveLocationChoices(cachedData.application.applicationId, locationsForm.locationIds).flatMap { _ =>
-            updateProgress()(_ => Redirect(routes.SchemeController.schemes))
+            updateProgress()(_ => Redirect(routes.SchemeController.schemes()))
           }
         }
       )
@@ -75,17 +63,31 @@ trait SchemeController extends BaseController {
 
   def submitSchemes = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-      // TODO: Process form
       schemeForm.bindFromRequest.fold(
-        formWithErrors => {
-          Future.successful(BadRequest(Json.toJson(formWithErrors.errors.map(_.toString).toList)))
-        },
+        displaySchemes,
         schemeForm => {
-          // TODO: Validate schemes chosen should be able to be chosen by this user (alevels/stem etc.)
-          applicationClient.saveSchemeChoices(cachedData.application.applicationId, schemeForm.schemeNames).flatMap { _ =>
-            updateProgress()(_ => Redirect(routes.AssistanceController.present))
+          applicationClient.saveSchemeChoices(cachedData.application.applicationId, schemeForm.schemes).flatMap { _ =>
+            updateProgress()(_ => Redirect(routes.AssistanceController.present()))
           }
         }
       )
+  }
+
+  private def displaySchemeLocations(form: Form[SchemeLocationPreferenceForm.Data])
+                            (implicit request: Request[_], cachedData: CachedDataWithApp) = {
+    applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId).map { personalDetails =>
+      val viewModel = SchemeLocationsViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup,
+        personalDetails.aLevel, personalDetails.stemLevel)
+
+      Ok(views.html.application.scheme.wherecouldyouwork(form, viewModel))
+    }
+  }
+
+  private def displaySchemes(form: Form[SchemePreferenceForm.Data])
+                                    (implicit request: Request[_], cachedData: CachedDataWithApp) = {
+    applicationClient.getSchemesAvailable(cachedData.application.applicationId).map { availableSchemes =>
+      val viewModel = SchemePreferenceViewModel(availableSchemes.distinct)
+      Ok(views.html.application.scheme.chooseyourschemes(form, viewModel))
+    }
   }
 }

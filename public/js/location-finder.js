@@ -8,13 +8,13 @@ $(function(){
     };
 
     function loadLocationsJson(callback, hasALevels, hasStemALevels, latitude, longitude) {
-
+        var locationsUrl = "/fset-fast-track/application/schemes/by-eligibility";
         var latLongParams = "";
         if (typeof latitude !== "undefined" && typeof longitude !== "undefined") {
             latLongParams = "&latitudeOpt=" + latitude + "&longitudeOpt=" + longitude;
         }
-
-        $.getJSON("/fset-fast-track/application/schemes/by-eligibility?hasALevels=" + hasALevels + "&hasStemALevels=" + hasStemALevels + latLongParams, function(data) {
+        var urlParams = "hasALevels=" + hasALevels + "&hasStemALevels=" + hasStemALevels + latLongParams;
+        $.getJSON(locationsUrl + "?" + urlParams, function(data) {
             callback(data);
         });
     }
@@ -25,7 +25,6 @@ $(function(){
 
     $("#yourPostcode").autocomplete({
         source: function (request, response) {
-            //data :: JSON list defined
             locations.sort(sort_by('name', true, function(a){return a.toUpperCase()}));
             array = $.map(locations, function (value, key) {
                 return {
@@ -90,7 +89,7 @@ $(function(){
         loadLocationsJson(function(response) {
             // Parse JSON string into object
             locations = response
-            setTimeout(addDistance, 100)
+            addDistance();
         }, hasALevels, hasStemALevels, latitude, longitude);
 
         /* Post code lookup
@@ -126,8 +125,7 @@ $(function(){
 
     function addDistance() {
         locations.sort(sort_by('distance', true, parseInt));
-
-        setTimeout(showNearby, 0);
+        showNearby();
     }
 
     function showNearby() {
@@ -155,7 +153,7 @@ $(function(){
                     '</li>' );
             }
         }
-        //$('#scrollingList').scrollTo($('#listOfLocations li:first-child'), 400);
+        $('#scrollingList').scrollTo($('#listOfLocations li:first-child'), 400);
     }
 
     $('#updateLocation').on('click', function(e) {
@@ -227,7 +225,7 @@ $(function(){
             var schemesAsHTML = '';
 
             for (var i = 0; i < schemesLength; i++) {
-                schemesAsHTML += '<li>' + result[0].schemes[i] + '</li>';
+                schemesAsHTML += '<li>' + result[0].schemes[i].name + '</li>';
             }
 
             $('#selectedPrefList > li').eq(arrayPositionNow).after(

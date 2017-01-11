@@ -7,6 +7,7 @@ $(function(){
                 '7th', '8th', '9th', '10th', '11th', '12th', '13th', '14th',
                 '15th', '16th', '17th'
             ],
+            numberOfSchemes = preferencesAs123.length,
             preferencesAsText = [
                 '1st preference',
                 '2nd preference',
@@ -31,6 +32,7 @@ $(function(){
             var $this = $(this),
                 thisScheme = $this.closest('.block-label').text(),
                 thisSchemeID = $this.attr('id'),
+                thisSchemeValue = $this.attr('value'),
                 schemeReq = $this.closest('.scheme-container').find(
                     '[data-scheme-req]').html(),
                 isSpecial = $this.closest('.scheme-container').find(
@@ -42,11 +44,7 @@ $(function(){
                     schemeReq + '</p></div>',
                 arrayPosition = $.inArray(thisSchemeID, schemePrefArray),
                 emptyPosition = $.inArray('Empty', schemePrefArray);
-            if (arrayPosition >= 0)
-            {
-                //Do nothing
-            }
-            else if ($this.is(':checked'))
+            if (arrayPosition < 0 && $this.is(':checked'))
             {
                 if (emptyPosition < 0)
                 {
@@ -59,12 +57,13 @@ $(function(){
                 var arrayPositionNow = $.inArray(thisSchemeID,
                     schemePrefArray);
 
+                var hiddenSchemeId = "#schemes_"+arrayPositionNow;
+                $(hiddenSchemeId).val(thisSchemeValue);
                 $('#selectedPrefList li').eq(arrayPositionNow).after(
                     '<li class="scheme-prefcontainer" data-scheme-id="' +
                     thisSchemeID + '"><span data-schemeorder>' +
                     preferencesAsText[arrayPositionNow] +
                     '</span><div class="text scheme-elegrepeat">' +
-                    '<input type="hidden" name="schemeNames[' + arrayPositionNow + ']" value="' + thisScheme + '" />' +
                     '<span class="bold-small" data-schemenameinlist>' +
                     thisScheme + '</span>' + specialEligibility +
                     '<a href="#" class="link-unimp scheme-remove"><i class="fa fa-times" aria-hidden="true"></i>Remove</a></div>'
@@ -77,6 +76,8 @@ $(function(){
             }
             if (!$this.is(':checked'))
             {
+                var hiddenSchemeId = "#schemes_"+arrayPosition;
+                $(hiddenSchemeId).val('');
                 schemePrefArray.splice(arrayPosition, 1, 'Empty');
                 $('#selectedPrefList').find('[data-scheme-id="' +
                     thisSchemeID + '"]').remove();
@@ -126,5 +127,24 @@ $(function(){
                 $('#' + schemeID).trigger('click');
             });
         });
+
+        function selectSchemes(){
+            for(i = 0; i < numberOfSchemes; i++){
+                var hiddenScheme = $('#schemes_'+i)
+                if(hiddenScheme !== "undefined") {
+                    var scheme = hiddenScheme.val();
+                    if(scheme !== ''){
+                        var sid = "#scheme-" + scheme;
+                        var initialStatus = $(sid).is(':checked');
+                        if(initialStatus == false){
+                            $(sid).click();
+                        }
+                        $(sid).checked = true;
+                        $(sid).trigger('change');
+                    }
+                }
+            }
+        }
+        selectSchemes();
     });
 });

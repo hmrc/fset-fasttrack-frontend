@@ -19,6 +19,7 @@ package forms
 import forms.Mappings._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
 
 import scala.language.implicitConversions
 
@@ -27,7 +28,7 @@ object SchemeLocationPreferenceForm {
   val form = Form(
     mapping(
       "locationIds" -> list(nonEmptyTrimmedText("location.required", 128))
-    )(Data.apply)(Data.unapply)
+    )(Data.apply)(Data.unapply).verifying(Messages("location.required"), _.locationIds.nonEmpty)
   )
 
   case class Data(

@@ -16,10 +16,10 @@
 
 package forms
 
-import forms.Mappings._
-import play.api.Logger
-import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.format.Formatter
+import play.api.data.{ Form, FormError }
+import play.api.i18n.Messages
 
 import scala.language.implicitConversions
 
@@ -27,14 +27,43 @@ object SchemePreferenceForm {
 
   val form = Form(
     mapping(
-      "schemeNames" -> list(nonEmptyTrimmedText("scheme.required", 128)),
-      "happyWithOrder" -> nonEmptyTrimmedText("schemeorderhappiness.required", 3)
-        .verifying("schemeorderhappiness.required", str => { List("on", "off").contains(str.trim) })
-    )(Data.apply)(Data.unapply)
+      "schemes" -> of(schemesFormatter("schemes")),
+      "orderAgreed" -> checked(Messages("orderAgreed.required"))
+    )(Data.apply)(Data.unapply).verifying(Messages("scheme.required"), _.schemes.nonEmpty)
   )
 
+  def schemesFormatter(formKey: String) = new Formatter[List[String]] {
+    def bind(key: String, data: Map[String, String]): Either[Seq[FormError], List[String]] = {
+      getSchemesByPriority(key, data) match {
+        case selectedSchemes if selectedSchemes.isEmpty => Left(List(FormError(formKey, Messages("scheme.required"))))
+        case selectedSchemes => Right(selectedSchemes)
+      }
+    }
+
+    def unbind(key: String, value: List[String]): Map[String, String] = {
+      value.zipWithIndex.collect {
+        case (scheme, index) => s"$key[$index]" -> scheme
+      }.toMap
+    }
+  }
+
+  def getSchemesByPriority(key: String, data: Map[String, String]) = {
+    val validSchemeParams = (name: String, value: String) => name.startsWith(s"${key}_") && value.nonEmpty
+    val priority: String => Int = _.split("_").last.toInt
+    data.filter(pair => validSchemeParams(pair._1, pair._2))
+      .collect { case (name, value) => priority(name) -> value }
+      .toList
+      .sortBy {
+        _._1
+      }
+      .map {
+        _._2
+      }
+      .distinct
+  }
+
   case class Data(
-    schemeNames: List[String],
-    happyWithOrder: String
+    schemes: List[String],
+    orderAgreed: Boolean
   )
 }
