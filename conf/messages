@@ -105,7 +105,7 @@ last.attempt = Your account will be locked after another unsuccessful attempt to
 locked.account = You''ve made too many unsuccessful attempts to sign in and your account is now locked
 
 # Questionnaire error messages:
-
+error.required.acceptance = Confirm you understand that the information you give here won''t affect your application
 error.required.gender = What is your gender identity?
 error.required.sexOrientation = What is your sexual orientation?
 error.required.ethnicity = What is your ethnic group?
