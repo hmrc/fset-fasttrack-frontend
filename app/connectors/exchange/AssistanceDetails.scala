@@ -30,6 +30,7 @@ final case class AssistanceDetails(
                                     needsSupportAtVenue: Boolean,
                                     needsSupportAtVenueDescription: Option[String],
                                     // TODO: Change adjustments
+                                    typeOfAdjustments: Option[List[String]],
                                     confirmedAdjustments: Option[Boolean],
                                     numericalTimeAdjustmentPercentage: Option[Int],
                                     verbalTimeAdjustmentPercentage: Option[Int]
@@ -53,6 +54,7 @@ object AssistanceDetails {
       needsSupportForOnlineAssessmentDescription = formData.needsSupportForOnlineAssessmentDescription,
       needsSupportAtVenue = if (formData.needsSupportAtVenue == "Yes") true else false,
       needsSupportAtVenueDescription = formData.needsSupportAtVenueDescription,
+      typeOfAdjustments = None,
       confirmedAdjustments = None,
       numericalTimeAdjustmentPercentage = None,
       verbalTimeAdjustmentPercentage = None
