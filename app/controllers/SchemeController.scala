@@ -41,12 +41,18 @@ trait SchemeController extends BaseController {
 
   def schemeLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-      displaySchemeLocations(schemeLocationForm)
+      applicationClient.getSchemeLocationChoices(cachedData.application.applicationId).flatMap {
+        case Nil => displaySchemeLocations(schemeLocationForm)
+        case locations: List[_] => displaySchemeLocations(schemeLocationForm.fill(SchemeLocationPreferenceForm.Data(locations)))
+      }
   }
 
   def schemes = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-      displaySchemes(schemeForm)
+      applicationClient.getSchemeChoices(cachedData.application.applicationId).flatMap {
+        case Nil => displaySchemes(schemeForm)
+        case schemes: List[_] => displaySchemes(schemeForm.fill(SchemePreferenceForm.Data(schemes, orderAgreed = true)))
+      }
   }
 
   def submitLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
@@ -75,11 +81,15 @@ trait SchemeController extends BaseController {
 
   private def displaySchemeLocations(form: Form[SchemeLocationPreferenceForm.Data])
                             (implicit request: Request[_], cachedData: CachedDataWithApp) = {
-    applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId).map { personalDetails =>
+    for {
+      personalDetails <- applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId)
+      schemeLocations <- applicationClient.getSchemesAndLocationsByEligibility(personalDetails.aLevel,
+        personalDetails.stemLevel, None, None)
+    } yield {
       val viewModel = SchemeLocationsViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup,
         personalDetails.aLevel, personalDetails.stemLevel)
 
-      Ok(views.html.application.scheme.wherecouldyouwork(form, viewModel))
+      Ok(views.html.application.scheme.wherecouldyouwork(form, viewModel, schemeLocations))
     }
   }
 

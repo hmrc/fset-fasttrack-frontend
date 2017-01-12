@@ -1,12 +1,22 @@
 @import viewmodels.application.scheme.SchemeLocationsViewModel
+@import connectors.exchange.LocationSchemes
+@import _root_.forms.SchemeLocationPreferenceForm
 
 @(
         locationForm: Form[_root_.forms.SchemeLocationPreferenceForm.Data],
-        viewModel: SchemeLocationsViewModel
+        viewModel: SchemeLocationsViewModel,
+        schemeLocations: List[LocationSchemes]
 )(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
 @import views.html.widgets.{guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
+
+@selectedLocations = @{
+    locationForm.value match {
+        case Some(locForm) => locForm.locationIds.lift(_)
+        case _ => SchemeLocationPreferenceForm.getLocationSchemesByPriority("locationIds", locationForm.data).lift(_)
+    }
+}
 
 @main_template(title = "Where could you work from?", pageForms = Seq(locationForm), None, List("location-finder.js")) {
 
@@ -23,7 +33,7 @@
                     @if(viewModel.postCodeLookupEnabled) {
                     <div class="form-group form-group-compound">
                         <label for="yourPostcode" class="form-label" id="yourPostcodeLabel">Enter postcode or town/city</label>
-                        <input type="text" id="yourPostcode" class="form-control form-control-3-4" value="CV1 2WT"
+                        <input type="text" id="yourPostcode" class="form-control form-control-3-4" value=""
                         autocorrect="off" spellcheck="false">
                         <div id="updateLocationWrapper" style="display: none">
                             <a id="updateLocation" href="#" class="button-link no-btm-margin">Update list</a>
@@ -41,6 +51,9 @@
                         <div class="toggle-content loading-panel" id="loadingLocations">
                             <h3 class="heading-small">Loading locations...</h3>
                         </div>
+                        @for(i <- 0 until schemeLocations.size) {
+                            <input type="hidden" id="locationIds_@i" name="locationIds_@i" value='@selectedLocations(i).getOrElse("")' />
+                        }
                         <div class="toggle-content noresults-panel" id="noLocationsFound">
                             <h3 class="heading-small">Postcode not found</h3>
                             <p>Make sure you've entered a correct postcode</p>

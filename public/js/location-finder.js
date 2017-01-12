@@ -87,7 +87,6 @@ $(function(){
         $('#noLocationsFound').addClass('toggle-content');
 
         loadLocationsJson(function(response) {
-            // Parse JSON string into object
             locations = response
             addDistance();
         }, hasALevels, hasStemALevels, latitude, longitude);
@@ -124,8 +123,8 @@ $(function(){
     }
 
     function addDistance() {
-        locations.sort(sort_by('distance', true, parseInt));
         showNearby();
+        displaySelectedLocations();
     }
 
     function showNearby() {
@@ -146,7 +145,7 @@ $(function(){
                     '<li class="scheme-container">' +
                     '<span class="selected-preference invisible">N/A</span>' +
                     '<label for="' + locations[i].locationId + '" class="block-label block-label-slim">' +
-                    '<input type="checkbox" id="' + locations[i].locationId + '" data-schemename>' +
+                    '<input type="checkbox" id="' + locations[i].locationId + '" data-schemename value="'+locations[i].locationId+'">' +
                     '<span class="location-name">' + locations[i].locationName + '</span>' +
                     distanceText +
                     '</label>' +
@@ -179,39 +178,23 @@ $(function(){
 
     var schemePrefArray = ['Empty'],
         firstEmptyPosition = $.inArray('Empty', schemePrefArray),
-        preferencesAs123 = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th', '13th', '14th', '15th', '16th', '17th'],
-        preferencesAsText = [
-            '1st preference',
-            '2nd preference',
-            '3rd preference',
-            '4th preference',
-            '5th preference',
-            '6th preference',
-            '7th preference',
-            '8th preference',
-            '9th preference',
-            '10th preference',
-            '11th preference',
-            '12th preference',
-            '13th preference',
-            '14th preference',
-            '15th preference',
-            '16th preference',
-            '17th preference'
-        ];
+        getOrdinal = function(n) {
+            var s=["th","st","nd","rd"],
+            v=n%100;
+            return n+(s[(v-20)%10]||s[v]||s[0]);
+        };
 
     $('html').on('change', '[data-schemename]', function() {
         var $this = $(this),
             thisScheme = $this.closest('.block-label').find('.location-name').text(),
             thisSchemeID = $this.attr('id'),
+            thisSchemeValue = $this.attr('value'),
             schemeReq = $this.closest('.scheme-container').find('[data-scheme-req]').html(),
             isSpecial = $this.closest('.scheme-container').find('[data-spec-scheme]').length,
             arrayPosition = $.inArray(thisSchemeID, schemePrefArray),
             emptyPosition = $.inArray('Empty', schemePrefArray);
 
-        if(arrayPosition >= 0) {
-            //Do nothing
-        } else if($this.is(':checked')) {
+        if(arrayPosition < 0 && $this.is(':checked')) {
             if(emptyPosition < 0) {
                 schemePrefArray.push(thisSchemeID);
             } else {
@@ -228,10 +211,12 @@ $(function(){
                 schemesAsHTML += '<li>' + result[0].schemes[i].name + '</li>';
             }
 
+            var hiddenLocationId = "#locationIds_"+arrayPositionNow;
+            $(hiddenLocationId).val(thisSchemeValue);
+
             $('#selectedPrefList > li').eq(arrayPositionNow).after(
                 '<li class="location-prefcontainer" data-scheme-id="' + thisSchemeID + '">' +
-                '<span data-schemprefinlist>' + preferencesAsText[arrayPositionNow] + '</span>' +
-                '<input type="hidden" name="locationIds[' + arrayPositionNow +']" value="' + id + '" />' +
+                '<span data-schemprefinlist>' + getOrdinal(arrayPositionNow + 1) + ' preference </span>' +
                 '<div class="text scheme-elegrepeat">' +
                 '<span class="bold-small" data-schemenameinlist>' + thisScheme +
                 '</span><a href="#" class="link-unimp scheme-remove">' +
@@ -240,31 +225,16 @@ $(function(){
                 schemesLength + ' available schemes</summary>' +
                 '<div class="detail-content panel-indent"><ul>' + schemesAsHTML + '</ul></div></details></div>');
 
-            $this.closest('.scheme-container').addClass('selected-scheme').find('.selected-preference').text(preferencesAs123[arrayPositionNow]).removeClass('invisible');
+            $this.closest('.scheme-container').addClass('selected-scheme').find('.selected-preference').text(getOrdinal(arrayPositionNow + 1)).removeClass('invisible');
         }
 
         if(!$this.is(':checked')) {
+            var hiddenLocationId = "#locationIds_"+arrayPosition;
+            $(hiddenLocationId).val('');
             schemePrefArray.splice(arrayPosition, 1, 'Empty');
             $('#selectedPrefList').find('[data-scheme-id="' + thisSchemeID + '"]').remove();
             $this.closest('.scheme-container').removeClass('selected-scheme').find('.selected-preference').text('N/A').addClass('invisible');
         }
-
-        var chosenPreferences = $('[data-schemeorder]').map(function() {
-            return $( this ).text();
-        })
-            .get();
-
-        var arrayOfChosen = $.makeArray(chosenPreferences);
-        var differenceArray = [],
-            initialVal = 0;
-
-
-        $.grep(preferencesAsText, function(el) {
-            if($.inArray(el, arrayOfChosen) == -1) differenceArray.push(el);
-
-            initialVal++;
-        });
-
     });
 
     $('#selectedPrefList').on('click', '.scheme-remove', function(e) {
@@ -285,4 +255,21 @@ $(function(){
 
     });
 
+    function displaySelectedLocations(){
+        for(i = 0; i < $("[id^='locationIds_']").length; i++){
+            var hiddenLocation = $('#locationIds_'+i)
+            if(hiddenLocation !== "undefined") {
+                var location = hiddenLocation.val();
+                if(location !== ''){
+                    var sid = "#" + location;
+                    var initialStatus = $(sid).is(':checked');
+                    if(initialStatus == false){
+                        $(sid).click();
+                    }
+                    $(sid).checked = true;
+                    $(sid).trigger('change');
+                }
+            }
+        }
+    }
 });

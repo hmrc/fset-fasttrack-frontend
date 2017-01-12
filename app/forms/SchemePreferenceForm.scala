@@ -29,7 +29,7 @@ object SchemePreferenceForm {
     mapping(
       "schemes" -> of(schemesFormatter("schemes")),
       "orderAgreed" -> checked(Messages("orderAgreed.required"))
-    )(Data.apply)(Data.unapply).verifying(Messages("scheme.required"), _.schemes.nonEmpty)
+    )(Data.apply)(Data.unapply)
   )
 
   def schemesFormatter(formKey: String) = new Formatter[List[String]] {

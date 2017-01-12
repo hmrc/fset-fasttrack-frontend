@@ -16,9 +16,9 @@
 
 package forms
 
-import forms.Mappings._
-import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.format.Formatter
+import play.api.data.{ Form, FormError }
 import play.api.i18n.Messages
 
 import scala.language.implicitConversions
@@ -27,9 +27,39 @@ object SchemeLocationPreferenceForm {
 
   val form = Form(
     mapping(
-      "locationIds" -> list(nonEmptyTrimmedText("location.required", 128))
-    )(Data.apply)(Data.unapply).verifying(Messages("location.required"), _.locationIds.nonEmpty)
+      "locationIds" -> of(schemeLocationsFormatter("locationIds"))
+    )(Data.apply)(Data.unapply)
   )
+
+  def schemeLocationsFormatter(formKey: String) = new Formatter[List[String]] {
+    def bind(key: String, data: Map[String, String]): Either[Seq[FormError], List[String]] = {
+      getLocationSchemesByPriority(key, data) match {
+        case selectedLocations if selectedLocations.isEmpty => Left(List(FormError(formKey, Messages("location.required"))))
+        case selectedLocations => Right(selectedLocations)
+      }
+    }
+
+    def unbind(key: String, value: List[String]): Map[String, String] = {
+      value.zipWithIndex.collect {
+        case (scheme, index) => s"$key[$index]" -> scheme
+      }.toMap
+    }
+  }
+
+  def getLocationSchemesByPriority(key: String, data: Map[String, String]) = {
+    val validLocationSchemesParams = (name: String, value: String) => name.startsWith(s"${key}_") && value.nonEmpty
+    val priority: String => Int = _.split("_").last.toInt
+    data.filter(pair => validLocationSchemesParams(pair._1, pair._2))
+      .collect { case (name, value) => priority(name) -> value }
+      .toList
+      .sortBy {
+        _._1
+      }
+      .map {
+        _._2
+      }
+      .distinct
+  }
 
   case class Data(
     locationIds: List[String]
