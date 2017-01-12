@@ -25,10 +25,10 @@ $(function(){
 
     $("#yourPostcode").autocomplete({
         source: function (request, response) {
-            locations.sort(sort_by('name', true, function(a){return a.toUpperCase()}));
+            locations.sort(sort_by('locationName', true, function(a){return a.toUpperCase()}));
             array = $.map(locations, function (value, key) {
                 return {
-                    label: value.name
+                    label: value.locationName
                 }
             });
             response($.ui.autocomplete.filter(array, request.term));
@@ -58,8 +58,6 @@ $(function(){
         }
     });
 
-    var lat, lng;
-
     var locations = [];
 
     var sort_by = function(field, reverse, primer){
@@ -74,52 +72,34 @@ $(function(){
     var sic = $('#scheme-input-container');
 
     if (sic.length) {
-        getLatLongFromPostCode(
+        loadLocationsFromPostCode(
          sic.attr('data-hasALevels'),
-         sic.attr('data-hasStemALevels'),
-         lat,
-         lng
+         sic.attr('data-hasStemALevels')
         )
     }
 
-    function getLatLongFromPostCode(hasALevels, hasStemALevels, latitude, longitude) {
+    function loadLocationsFromPostCode(hasALevels, hasStemALevels) {
         $('#loadingLocations').removeClass('toggle-content');
         $('#noLocationsFound').addClass('toggle-content');
 
-        loadLocationsJson(function(response) {
-            locations = response
-            addDistance();
-        }, hasALevels, hasStemALevels, latitude, longitude);
+        var currentPostcode = $('#yourPostcode').val().toUpperCase();
+        var addressLookupUrl = "/fset-fast-track/address-search/"+currentPostcode;
+        var locationsCallback = function(response) {
+                                    locations = response
+                                    addDistance();
+                                }
 
-        /* Post code lookup
-        var currentPostcode = $('#yourPostcode').val().toUpperCase(),
-            parts = currentPostcode.match(/^([A-Z]{1,2}\d{1,2}[A-Z]?)\s*(\d[A-Z]{2})$/);
-
-        if(parts != null) {
-            parts.shift();
-
-            var postcodesJsonURL = 'http://api.geonames.org/postalCodeLookupJSON?postalcode=' + parts[0] + '&country=GB&username=henrycharge&style=full';
-
-            $.getJSON( postcodesJsonURL, function( data ) {
-
-                if(jQuery.isEmptyObject(data.postalcodes[0])) {
-                    $('#loadingLocations').addClass('toggle-content');
-                    $('#noLocationsFound').removeClass('toggle-content');
-                } else {
-                    lat = data.postalcodes[0].lat,
-                        lng = data.postalcodes[0].lng;
-
-                    myGeoLocation = new GeoPoint(lat, lng);
-
-                    setTimeout(addDistance, 0);
-                }
-
-            });
+        if(currentPostcode == "" && locations.length === 0) {
+            loadLocationsJson(locationsCallback, hasALevels, hasStemALevels);
         } else {
-            $('#loadingLocations').addClass('toggle-content');
-            // $('#noLocationsFound').removeClass('toggle-content');
+            $.getJSON(addressLookupUrl, function(data) {
+                loadLocationsJson(locationsCallback, hasALevels, hasStemALevels, 51.5149017, -0.603681599999959);
+            }).fail(function(xhr, textStatus, error ) {
+                console.error( "Request Failed: " + textStatus + ", " + error);
+            }).always(function(){
+                $('#loadingLocations').addClass('toggle-content');
+            });
         }
-        */
     }
 
     function addDistance() {
@@ -131,7 +111,7 @@ $(function(){
         $('#listOfLocations input').not(':checked').closest('li').remove();
         $('#loadingLocations').addClass('toggle-content');
         for (var i = 0; i < locations.length; i++) {
-            if($('#listOfLocations label:contains("' + locations[i].name + '")').length ) {
+            if($('#listOfLocations label:contains("' + locations[i].locationName + '")').length ) {
 
             } else {
 
@@ -156,24 +136,29 @@ $(function(){
     }
 
     $('#updateLocation').on('click', function(e) {
-
         $('#updateLocationWrapper').slideUp(300);
-
-        setTimeout(getLatLongFromPostCode(), 300);
-
+        setTimeout(loadLocationsFromPostCode(sic.attr('data-hasALevels'), sic.attr('data-hasStemALevels')), 300);
         e.preventDefault();
     });
 
     $('#yourPostcode').on('keyup', function(e) {
-        if($(this).val().length > 5 && hasNumber($(this).val())) {
+        var searchByPostcode = $(this).val().length > 5 && hasNumber($(this).val());
+        if(searchByPostcode) {
             $('#updateLocationWrapper').slideDown(300);
         }
-
-        if(e.which == 13) {
+        if(e.which == 13 && searchByPostcode) {
             $('#updateLocationWrapper').slideUp(300);
-
-            setTimeout(getLatLongFromPostCode(), 300);
+            setTimeout(loadLocationsFromPostCode(sic.attr('data-hasALevels'), sic.attr('data-hasStemALevels')), 300);
         }
+    });
+
+    $(document).ready(function() {
+      $(window).keydown(function(event){
+        if(event.keyCode == 13) {
+          event.preventDefault();
+          return false;
+        }
+      });
     });
 
     var schemePrefArray = ['Empty'],

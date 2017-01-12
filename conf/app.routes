@@ -74,4 +74,4 @@ GET         /online-tests/pdf-report/download                       controllers.
 GET         /assets/*file                                           controllers.Assets.versioned(path="/public", file: Asset)
 
 # Postcode Lookup
-GET     /fset-fast-track/address-search/:postcode                   controllers.AddressLookupController.addressLookup(postcode: String)
+GET         /address-search/:postcode                               controllers.AddressLookupController.addressLookup(postcode: String)
