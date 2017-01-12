@@ -1,11 +1,11 @@
 @import viewmodels.application.scheme.SchemeLocationsViewModel
-@import connectors.exchange.LocationSchemes
+@import connectors.exchange.GeoLocationSchemeResult
 @import _root_.forms.SchemeLocationPreferenceForm
 
 @(
         locationForm: Form[_root_.forms.SchemeLocationPreferenceForm.Data],
         viewModel: SchemeLocationsViewModel,
-        schemeLocations: List[LocationSchemes]
+        schemeLocations: List[GeoLocationSchemeResult]
 )(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._

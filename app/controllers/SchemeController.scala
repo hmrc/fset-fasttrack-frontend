@@ -43,7 +43,8 @@ trait SchemeController extends BaseController {
     implicit cachedData =>
       applicationClient.getSchemeLocationChoices(cachedData.application.applicationId).flatMap {
         case Nil => displaySchemeLocations(schemeLocationForm)
-        case locations: List[_] => displaySchemeLocations(schemeLocationForm.fill(SchemeLocationPreferenceForm.Data(locations)))
+        case locations: List[_] => displaySchemeLocations(
+          schemeLocationForm.fill(SchemeLocationPreferenceForm.Data(locations.map(_.id))))
       }
   }
 
@@ -51,7 +52,8 @@ trait SchemeController extends BaseController {
     implicit cachedData =>
       applicationClient.getSchemeChoices(cachedData.application.applicationId).flatMap {
         case Nil => displaySchemes(schemeForm)
-        case schemes: List[_] => displaySchemes(schemeForm.fill(SchemePreferenceForm.Data(schemes, orderAgreed = true)))
+        case schemes: List[_] => displaySchemes(
+          schemeForm.fill(SchemePreferenceForm.Data(schemes.map(_.id), orderAgreed = true)))
       }
   }
 
