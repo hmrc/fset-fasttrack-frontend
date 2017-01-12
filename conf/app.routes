@@ -59,7 +59,7 @@ GET         /application/success                                    controllers.
 #POST        /questionnaire/start                                    controllers.QuestionnaireController.submitStart
 POST        /questionnaire/continue                                 controllers.QuestionnaireController.submitContinue
 #GET         /questionnaire/page/1                                   controllers.QuestionnaireController.firstPageView
-POST        /questionnaire/page/1                                   controllers.QuestionnaireController.firstPageSubmit
+#POST        /questionnaire/page/1                                   controllers.QuestionnaireController.firstPageSubmit
 GET         /questionnaire/page/2                                   controllers.QuestionnaireController.secondPageView
 POST        /questionnaire/page/2                                   controllers.QuestionnaireController.secondPageSubmit
 GET         /questionnaire/page/3                                   controllers.QuestionnaireController.thirdPageView
@@ -70,7 +70,7 @@ GET         /questionnaire/start                                    controllers.
 POST        /questionnaire/start                                    controllers.QuestionnaireControllerV2.submitStart
 #POST        /questionnaire/continue                                 controllers.QuestionnaireController.submitContinue
 GET         /questionnaire/page/1                                   controllers.QuestionnaireControllerV2.presentFirstPage
-#POST        /questionnaire/page/1                                   controllers.QuestionnaireController.submitFirstPage
+POST        /questionnaire/page/1                                   controllers.QuestionnaireControllerV2.submitFirstPage
 #GET         /questionnaire/page/2                                   controllers.QuestionnaireController.presentSecondPage
 #POST        /questionnaire/page/2                                   controllers.QuestionnaireController.submitSecondPage
 #GET         /questionnaire/page/3                                   controllers.QuestionnaireController.presentThirdPage

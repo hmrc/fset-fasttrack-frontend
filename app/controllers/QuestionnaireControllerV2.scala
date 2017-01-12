@@ -44,9 +44,6 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
 
   def submitStart = CSRSecureAppAction(StartQuestionnaireRole) { implicit request =>
     implicit user =>
-//      val empty = Questionnaire(List())
-//      submitQuestionnaire(empty, "start_questionnaire")(Redirect(routes.QuestionnaireController.firstPageView()))
-
       DiversityQuestionnaireForm.acceptanceForm.bindFromRequest.fold(
         errorForm => {
           Future.successful(Ok(views.html.questionnaire.intro(errorForm)))
@@ -65,8 +62,41 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
 
   def presentFirstPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
     implicit user =>
-//      Future.successful(Ok(views.html.questionnaire.firstpage(QuestionnaireDiversityInfoForm.form)))
-      Future.successful(Ok("page 1"))
+      Future.successful(Ok(views.html.questionnaire.firstpageV2(DiversityQuestionnaireForm.form)))
+  }
+
+  // FS
+  /*
+  def submitFirstPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
+    implicit user =>
+      DiversityQuestionnaireCompletedRole.isAuthorized(user) match {
+        case true => Future.successful(Redirect(routes.QuestionnaireController.presentStartOrContinue()).flashing(QuestionnaireCompletedBanner))
+        case false => DiversityQuestionnaireForm.form.bindFromRequest.fold(
+          errorForm => {
+            Future.successful(Ok(views.html.questionnaire.firstpage(errorForm)))
+          },
+          data => {
+            submitQuestionnaire(data.exchange, "diversity_questionnaire")(Redirect(routes.QuestionnaireController.presentSecondPage()))
+          }
+        )
+      }
+  }
+  */
+
+  // FT
+  def submitFirstPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
+    implicit user =>
+    ???
+/*
+      QuestionnaireDiversityInfoForm.form.bindFromRequest.fold(
+        errorForm => {
+          Future.successful(Ok(views.html.questionnaire.firstpage(errorForm)))
+        },
+        data => {
+          submitQuestionnaire(data.toQuestionnaire, "diversity_questionnaire")(Redirect(routes.QuestionnaireController.secondPageView()))
+        }
+      )
+*/
   }
 
 

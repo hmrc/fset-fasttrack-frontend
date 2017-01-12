@@ -29,7 +29,7 @@
         Diversity
     </h2>
 
-    @helper.form(action = routes.QuestionnaireController.firstPageSubmit(), 'novalidate -> "novalidate") {
+    @*helper.form(action = routes.QuestionnaireController.firstPageSubmit(), 'novalidate -> "novalidate") {
         @helper.CSRF.formField
         @select_guard(questionnaireForm("gender"), models.Gender.list,
             "genderDescribe", "-- Select one --") {
@@ -86,5 +86,5 @@
         <div class="form-group">
             <button id="submit" type="submit" value="submit" class="button">Save and continue</button>
         </div>
-    }
+    }*@
 }
