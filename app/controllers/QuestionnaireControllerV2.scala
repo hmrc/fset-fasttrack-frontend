@@ -18,10 +18,8 @@ package controllers
 
 import config.CSRHttp
 import connectors.ApplicationClient
-import forms.DiversityQuestionnaireForm
-import security.Roles.StartQuestionnaireRole
-
-//import forms.DiversityQuestionnaireForm
+import _root_.forms.DiversityQuestionnaireForm
+import security.Roles.{ DiversityQuestionnaireRole, EducationQuestionnaireRole, OccupationQuestionnaireRole, StartQuestionnaireRole }
 
 import scala.concurrent.Future
 import scala.language.reflectiveCalls
@@ -37,12 +35,40 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
       val p = user.application.progress
       Future.successful {
         if (!p.diversityQuestionnaire && !p.educationQuestionnaire && !p.occupationQuestionnaire) {
-          Ok(views.html.questionnaire.intro(forms.DiversityQuestionnaireForm.acceptanceForm))
+          Ok(views.html.questionnaire.intro(DiversityQuestionnaireForm.acceptanceForm))
         } else {
           Ok(views.html.questionnaire.continue())
         }
       }
   }
+
+  def submitStart = CSRSecureAppAction(StartQuestionnaireRole) { implicit request =>
+    implicit user =>
+//      val empty = Questionnaire(List())
+//      submitQuestionnaire(empty, "start_questionnaire")(Redirect(routes.QuestionnaireController.firstPageView()))
+
+      DiversityQuestionnaireForm.acceptanceForm.bindFromRequest.fold(
+        errorForm => {
+          Future.successful(Ok(views.html.questionnaire.intro(errorForm)))
+        },
+        _ => {
+          Future.successful(Redirect(routes.QuestionnaireControllerV2.presentFirstPage()))
+        }
+      )
+  }
+
+//  def presentFirstPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
+//    implicit user =>
+//      presentPageIfNotFilledInPreviously(DiversityQuestionnaireCompletedRole,
+//        Ok(views.html.questionnaire.firstpage(DiversityQuestionnaireForm.form)))
+//  }
+
+  def presentFirstPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
+    implicit user =>
+//      Future.successful(Ok(views.html.questionnaire.firstpage(QuestionnaireDiversityInfoForm.form)))
+      Future.successful(Ok("page 1"))
+  }
+
 
 
 /*
