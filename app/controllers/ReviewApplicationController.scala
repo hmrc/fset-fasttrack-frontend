@@ -58,7 +58,8 @@ trait ReviewApplicationController extends BaseController {
       updateReview(user.application.applicationId).flatMap { _ =>
         updateProgress() { u =>
           if (StartQuestionnaireRole.isAuthorized(u) || QuestionnaireInProgressRole.isAuthorized(u)) {
-            Redirect(routes.QuestionnaireController.start())
+//            Redirect(routes.QuestionnaireController.start())
+            Redirect(routes.QuestionnaireControllerV2.start())
           } else {
             Redirect(routes.SubmitApplicationController.present())
           }
