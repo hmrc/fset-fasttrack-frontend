@@ -57,7 +57,7 @@ GET         /application/success                                    controllers.
 # Questionnaire
 #GET         /questionnaire/start                                    controllers.QuestionnaireController.start
 #POST        /questionnaire/start                                    controllers.QuestionnaireController.submitStart
-POST        /questionnaire/continue                                 controllers.QuestionnaireController.submitContinue
+#POST        /questionnaire/continue                                 controllers.QuestionnaireController.submitContinue
 #GET         /questionnaire/page/1                                   controllers.QuestionnaireController.firstPageView
 #POST        /questionnaire/page/1                                   controllers.QuestionnaireController.firstPageSubmit
 #GET         /questionnaire/page/2                                   controllers.QuestionnaireController.secondPageView
@@ -68,7 +68,7 @@ POST        /questionnaire/page/3-old                               controllers.
 # Questionnaire
 GET         /questionnaire/start                                    controllers.QuestionnaireControllerV2.start
 POST        /questionnaire/start                                    controllers.QuestionnaireControllerV2.submitStart
-#POST        /questionnaire/continue                                 controllers.QuestionnaireController.submitContinue
+POST        /questionnaire/continue                                 controllers.QuestionnaireControllerV2.submitContinue
 GET         /questionnaire/page/1                                   controllers.QuestionnaireControllerV2.presentFirstPage
 POST        /questionnaire/page/1                                   controllers.QuestionnaireControllerV2.submitFirstPage
 
