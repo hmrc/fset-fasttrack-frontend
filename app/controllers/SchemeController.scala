@@ -17,17 +17,14 @@
 package controllers
 
 import _root_.forms.{ SchemeLocationPreferenceForm, SchemePreferenceForm }
-import config.CSRHttp
-import _root_.forms.SchemeLocationPreferenceForm.{form => preferenceForm}
-import _root_.forms.{SchemeLocationPreferenceForm, SchemePreferenceForm}
-import config.{AppConfig, CSRCache, CSRHttp, FrontendAppConfig}
+import config.{ CSRCache, CSRHttp, FrontendAppConfig }
 import connectors.ApplicationClient
 import connectors.ApplicationClient.{ LocationPreferencesNotFound, SchemePreferencesNotFound }
 import models.CachedDataWithApp
 import play.api.data.Form
 import play.api.mvc.Request
 import security.Roles.SchemesRole
-import viewmodels.application.scheme.{SchemeLocationsViewModel, SchemePreferenceViewModel}
+import viewmodels.application.scheme.{ SchemeLocationsViewModel, SchemePreferenceViewModel }
 
 object SchemeController extends SchemeController {
   val http = CSRHttp
@@ -63,7 +60,6 @@ trait SchemeController extends BaseController {
       }
   }
 
-
   def submitLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
       schemeLocationForm.bindFromRequest.fold(
@@ -82,17 +78,14 @@ trait SchemeController extends BaseController {
         displaySchemes,
         schemeForm => {
           applicationClient.saveSchemeChoices(cachedData.application.applicationId, schemeForm.schemes).flatMap { _ =>
-            updateProgress()(_ => Redirect(routes.AssistanceController.present()))
-          // TODO: Validate schemes chosen should be able to be chosen by this user (alevels/stem etc.)
-          applicationClient.saveSchemeChoices(cachedData.application.applicationId, schemeForm.schemeNames).flatMap { _ =>
-            updateProgress()(_ => Redirect(routes.AssistanceDetailsController.present))
+            updateProgress()(_ => Redirect(routes.AssistanceDetailsController.present()))
           }
         }
       )
   }
 
   private def displaySchemeLocations(form: Form[SchemeLocationPreferenceForm.Data])
-                            (implicit request: Request[_], cachedData: CachedDataWithApp) = {
+                                    (implicit request: Request[_], cachedData: CachedDataWithApp) = {
     for {
       personalDetails <- applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId)
       schemeLocations <- applicationClient.getSchemesAndLocationsByEligibility(personalDetails.aLevel,

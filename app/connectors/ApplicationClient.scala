@@ -19,12 +19,8 @@ package connectors
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
 import connectors.ExchangeObjects._
-import connectors.exchange.AssistanceDetails
+import connectors.exchange._
 import forms.GeneralDetailsForm
-import connectors.exchange.{LocationSchemes, ProgressResponse, SchemeInfo}
-import forms.{AssistanceDetailsForm, GeneralDetailsForm}
-import connectors.exchange.{ GeoLocationSchemeResult, LocationSchemes, ProgressResponse, SchemeInfo }
-import forms.{ AssistanceForm, GeneralDetailsForm }
 import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
