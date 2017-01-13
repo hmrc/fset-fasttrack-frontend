@@ -243,8 +243,8 @@ $(function(){
             var hiddenLocation = $('#locationIds_'+i)
             if(hiddenLocation !== "undefined") {
                 var location = hiddenLocation.val();
-                if(location !== ''){
-                    var sid = "#" + location;
+                var sid = "#" + location;
+                if(location !== '' && typeof $(sid) !== "undefined"){
                     var initialStatus = $(sid).is(':checked');
                     if(initialStatus == false){
                         $(sid).click();

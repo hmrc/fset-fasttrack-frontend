@@ -100,8 +100,8 @@ $(function(){
                 var hiddenScheme = $('#schemes_'+i)
                 if(hiddenScheme !== "undefined") {
                     var scheme = hiddenScheme.val();
-                    if(scheme !== ''){
-                        var sid = "#scheme-" + scheme;
+                    var sid = "#scheme-" + scheme;
+                    if(scheme !== '' && typeof $(sid) !== "undefined"){
                         var initialStatus = $(sid).is(':checked');
                         if(initialStatus == false){
                             $(sid).click();
