@@ -62,8 +62,8 @@ GET         /application/success                                    controllers.
 #POST        /questionnaire/page/1                                   controllers.QuestionnaireController.firstPageSubmit
 #GET         /questionnaire/page/2                                   controllers.QuestionnaireController.secondPageView
 POST        /questionnaire/page/2                                   controllers.QuestionnaireController.secondPageSubmit
-GET         /questionnaire/page/3                                   controllers.QuestionnaireController.thirdPageView
-POST        /questionnaire/page/3                                   controllers.QuestionnaireController.thirdPageSubmit
+GET         /questionnaire/page/3-old                               controllers.QuestionnaireController.thirdPageView
+POST        /questionnaire/page/3-old                               controllers.QuestionnaireController.thirdPageSubmit
 
 # Questionnaire
 GET         /questionnaire/start                                    controllers.QuestionnaireControllerV2.start
@@ -71,10 +71,11 @@ POST        /questionnaire/start                                    controllers.
 POST        /questionnaire/continue                                 controllers.QuestionnaireControllerV2.submitContinue
 GET         /questionnaire/page/1                                   controllers.QuestionnaireControllerV2.presentFirstPage
 POST        /questionnaire/page/1                                   controllers.QuestionnaireControllerV2.submitFirstPage
+
 GET         /questionnaire/page/2                                   controllers.QuestionnaireControllerV2.presentSecondPage
 #POST        /questionnaire/page/2                                   controllers.QuestionnaireControllerV2.submitSecondPage
-#GET         /questionnaire/page/3                                   controllers.QuestionnaireControllerV2.presentThirdPage
-#POST        /questionnaire/page/3                                   controllers.QuestionnaireControllerV2.submitThirdPage
+GET         /questionnaire/page/3                                   controllers.QuestionnaireControllerV2.presentThirdPage
+POST        /questionnaire/page/3                                   controllers.QuestionnaireControllerV2.submitThirdPage
 #GET         /schools                                                controllers.SchoolsController.getSchools(item: String)
 
 # Online Test
