@@ -41,7 +41,7 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
         if (!p.diversityQuestionnaire && !p.educationQuestionnaire && !p.occupationQuestionnaire) {
           Ok(views.html.questionnaire.intro(DiversityQuestionnaireForm.acceptanceForm))
         } else {
-          Ok(views.html.questionnaire.continue())
+          Ok(views.html.questionnaire.continueV2())
         }
       }
   }
@@ -56,6 +56,17 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
           Future.successful(Redirect(routes.QuestionnaireControllerV2.presentFirstPage()))
         }
       )
+  }
+
+  def submitContinue = CSRSecureAppAction(StartQuestionnaireRole) { implicit request =>
+    implicit user =>
+      val p = user.application.progress
+      Future.successful((p.diversityQuestionnaire, p.educationQuestionnaire, p.occupationQuestionnaire) match {
+        case (_, _, true) => Redirect(routes.SubmitApplicationController.present())
+//        case (_, true, _) => Redirect(routes.QuestionnaireControllerV2.presentThirdPage())
+        case (true, _, _) => Redirect(routes.QuestionnaireControllerV2.presentSecondPage())
+        case (_, _, _) => Redirect(routes.QuestionnaireControllerV2.presentFirstPage())
+      })
   }
 
   def presentFirstPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
@@ -88,6 +99,11 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
     }
   }
 
+  def presentThirdPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
+    implicit user =>
+      //      Future.successful(Ok(views.html.questionnaire.thirdPageV2(DiversityQuestionnaireForm.form)))
+      Future.successful(Ok("Presenting page 3 stub"))
+  }
 /*
 // This is the FAST STREAM version of the controller pulled across for reference as we implement the FS functionality in FT
 object QuestionnaireController extends QuestionnaireController(ApplicationClient, CSRCache)
