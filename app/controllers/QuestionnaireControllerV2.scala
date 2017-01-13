@@ -54,7 +54,8 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
           Future.successful(Ok(views.html.questionnaire.intro(errorForm)))
         },
         _ => {
-          Future.successful(Redirect(routes.QuestionnaireControllerV2.presentFirstPage()))
+          val empty = Questionnaire(List())
+          submitQuestionnaire(empty, "start_questionnaire")(Redirect(routes.QuestionnaireControllerV2.presentFirstPage()))
         }
       )
   }

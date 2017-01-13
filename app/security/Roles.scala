@@ -98,10 +98,7 @@ object Roles {
 
   object DiversityQuestionnaireRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
-      val res = activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuest(user) && !hasDiversity(user)
-      play.api.Logger.warn(s"DiversityQuestionnaireRole:: res = $res")
-      //TODO: I&K fix me
-      true
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuestionnaire(user) && !hasDiversity(user)
     }
   }
 
@@ -227,7 +224,7 @@ object RoleUtils {
 
   def hasReview(implicit user: CachedData) = progress.review
 
-  def hasStartedQuest(implicit user: CachedData) = progress.startedQuestionnaire
+  def hasStartedQuestionnaire(implicit user: CachedData) = progress.startedQuestionnaire
 
   def hasDiversity(implicit user: CachedData) = progress.diversityQuestionnaire
 
