@@ -91,7 +91,7 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
   def presentSecondPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
     implicit user =>
       //      Future.successful(Ok(views.html.questionnaire.secondpageV2(DiversityQuestionnaireForm.form)))
-      Future.successful(Ok("Data saved - presenting page 2 stub"))
+      Future.successful(Ok("Presenting page 2 stub"))
   }
 
   def presentThirdPage = CSRSecureAppAction(OccupationQuestionnaireRole) { implicit request =>
