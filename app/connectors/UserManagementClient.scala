@@ -19,9 +19,9 @@ package connectors
 import config.CSRHttp
 import connectors.ExchangeObjects._
 import connectors.UserManagementClient._
-import connectos.exchange.FindByUserIdRequest
+import connectors.exchange.FindByUserIdRequest
 import models.UniqueIdentifier
-import uk.gov.hmrc.play.http.{HeaderCarrier, _}
+import uk.gov.hmrc.play.http.{ HeaderCarrier, _ }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

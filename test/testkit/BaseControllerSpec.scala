@@ -20,7 +20,7 @@ import java.util.UUID
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import controllers.{BaseController, routes}
+import models.SecurityUserExamples._
 import models._
 import org.joda.time.DateTime
 import play.api.mvc._
@@ -28,9 +28,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.filters.csrf.CSRF
 import security.Roles.CsrAuthorization
-import security.{SecureActions, SecurityEnvironment, SignInService}
+import security.SecureActions
 import uk.gov.hmrc.play.http.HeaderCarrier
-import models.SecurityUserExamples._
 
 import scala.concurrent.Future
 
@@ -61,23 +60,6 @@ abstract class BaseControllerSpec extends UnitWithAppSpec {
   def randomUUID = UniqueIdentifier(UUID.randomUUID().toString)
 
   def fakeRequest = FakeRequest().withSession(CSRF.TokenName -> CSRF.SignedTokenProvider.generateToken)
-
-  /**
-    * Wrapper on SignInService class to allow mocking
-    *
-    * @see security.SignInService
-    */
-  trait TestableSignInService extends SignInService {
-    self: BaseController =>
-
-    val signInService: SignInService
-
-    override def signInUser(user: CachedUser,
-                            env: SecurityEnvironment,
-                            redirect: Result = Redirect(routes.HomeController.present())
-                           )(implicit request: Request[_]): Future[Result] =
-      signInService.signInUser(user, env, redirect)(request)
-  }
 
   def assertPageTitle(result: Future[Result], expectedTitle: String) = {
     status(result) must be(OK)

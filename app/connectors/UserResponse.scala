@@ -31,7 +31,7 @@ case class UserResponse(
   role: String)
 
 object UserResponse {
-  implicit val format = Json.format[UserResponse]
+  implicit val userResponseFormat = Json.format[UserResponse]
 
   implicit class exchangeUserToCachedUser(exchUser: UserResponse) {
     def toCached: models.CachedUser =

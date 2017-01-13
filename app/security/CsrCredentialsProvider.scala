@@ -62,13 +62,6 @@ trait CsrCredentialsProvider extends Provider with UserManagementClient {
 
 }
 
-/**
-  * The companion object.
-  */
 object CredentialsProvider {
-
-  /**
-    * The provider constants.
-    */
   val ID = "credentials"
 }

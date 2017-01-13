@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package connectors.exchange
+package models
 
-import models.{OnlineTestProgress, Progress}
+import connectors.exchange.{ AssessmentCentre, AssessmentScores }
 
 object ProgressExamples {
   val InitialProgress = Progress(false, false, false, false, false, false, false, false, false, false, false,

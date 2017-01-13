@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package connectos.exchange
+package connectors.exchange
 
 import models.UniqueIdentifier
 import play.api.libs.json.Json
 
 case class FindByUserIdRequest(userId: UniqueIdentifier)
+
 object FindByUserIdRequest {
-  implicit val format = Json.format[FindByUserIdRequest]
+  implicit val findByUserIdRequestFormat = Json.format[FindByUserIdRequest]
 }

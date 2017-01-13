@@ -18,7 +18,6 @@ package models
 
 import java.util.UUID
 
-import connectors.exchange.ProgressExamples
 import models.ApplicationData.ApplicationStatus
 
 object CachedDataExample {

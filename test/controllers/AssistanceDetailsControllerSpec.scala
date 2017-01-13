@@ -16,18 +16,18 @@
 
 package controllers
 
-import config.{CSRCache, CSRHttp}
+import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import connectors.ApplicationClient.AssistanceDetailsNotFound
 import models.SecurityUserExamples._
 import models._
-import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.Matchers.{ eq => eqTo, _ }
 import org.mockito.Mockito._
 import play.api.test.Helpers._
 import testkit.BaseControllerSpec
 import uk.gov.hmrc.play.http.HeaderCarrier
-import connectors.exchange.{AssistanceDetailsExamples, ProgressResponse}
-import forms.AssistanceDetailsFormExamples
+import connectors.exchange.{ AssistanceDetailsExamples, ProgressResponse }
+import _root_.forms.AssistanceDetailsFormExamples
 import models.services.UserService
 
 import scala.concurrent.Future
