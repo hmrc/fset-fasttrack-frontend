@@ -55,15 +55,27 @@ POST        /application/submit                                     controllers.
 GET         /application/success                                    controllers.SubmitApplicationController.success
 
 # Questionnaire
-GET         /questionnaire/start                                    controllers.QuestionnaireController.start
-POST        /questionnaire/start                                    controllers.QuestionnaireController.submitStart
+#GET         /questionnaire/start                                    controllers.QuestionnaireController.start
+#POST        /questionnaire/start                                    controllers.QuestionnaireController.submitStart
 POST        /questionnaire/continue                                 controllers.QuestionnaireController.submitContinue
-GET         /questionnaire/page/1                                   controllers.QuestionnaireController.firstPageView
-POST        /questionnaire/page/1                                   controllers.QuestionnaireController.firstPageSubmit
+#GET         /questionnaire/page/1                                   controllers.QuestionnaireController.firstPageView
+#POST        /questionnaire/page/1                                   controllers.QuestionnaireController.firstPageSubmit
 GET         /questionnaire/page/2                                   controllers.QuestionnaireController.secondPageView
 POST        /questionnaire/page/2                                   controllers.QuestionnaireController.secondPageSubmit
 GET         /questionnaire/page/3                                   controllers.QuestionnaireController.thirdPageView
 POST        /questionnaire/page/3                                   controllers.QuestionnaireController.thirdPageSubmit
+
+# Questionnaire
+GET         /questionnaire/start                                    controllers.QuestionnaireControllerV2.start
+POST        /questionnaire/start                                    controllers.QuestionnaireControllerV2.submitStart
+#POST        /questionnaire/continue                                 controllers.QuestionnaireController.submitContinue
+GET         /questionnaire/page/1                                   controllers.QuestionnaireControllerV2.presentFirstPage
+POST        /questionnaire/page/1                                   controllers.QuestionnaireControllerV2.submitFirstPage
+#GET         /questionnaire/page/2                                   controllers.QuestionnaireController.presentSecondPage
+#POST        /questionnaire/page/2                                   controllers.QuestionnaireController.submitSecondPage
+#GET         /questionnaire/page/3                                   controllers.QuestionnaireController.presentThirdPage
+#POST        /questionnaire/page/3                                   controllers.QuestionnaireController.submitThirdPage
+#GET         /schools                                                controllers.SchoolsController.getSchools(item: String)
 
 # Online Test
 POST        /online-tests/start                                     controllers.OnlineTestController.startTests

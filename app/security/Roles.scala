@@ -97,8 +97,12 @@ object Roles {
   }
 
   object DiversityQuestionnaireRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuest(user) && !hasDiversity(user)
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
+      val res = activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuest(user) && !hasDiversity(user)
+      play.api.Logger.warn(s"DiversityQuestionnaireRole:: res = $res")
+      //TODO: I&K fix me
+      true
+    }
   }
 
   object EducationQuestionnaireRole extends CsrAuthorization {
@@ -187,8 +191,10 @@ object Roles {
     SchemesRole -> routes.SchemeController.schemeLocations,
     AssistanceRole -> routes.AssistanceController.present,
     ReviewRole -> routes.ReviewApplicationController.present,
-    StartQuestionnaireRole -> routes.QuestionnaireController.start,
-    DiversityQuestionnaireRole -> routes.QuestionnaireController.firstPageView,
+//    StartQuestionnaireRole -> routes.QuestionnaireController.start,
+    StartQuestionnaireRole -> routes.QuestionnaireControllerV2.start,
+//    DiversityQuestionnaireRole -> routes.QuestionnaireController.firstPageView,
+    DiversityQuestionnaireRole -> routes.QuestionnaireControllerV2.presentFirstPage,
     EducationQuestionnaireRole -> routes.QuestionnaireController.secondPageView,
     OccupationQuestionnaireRole -> routes.QuestionnaireController.thirdPageView,
     SubmitApplicationRole -> routes.SubmitApplicationController.present,

@@ -21,7 +21,7 @@
             </p>
         </div>
     </details>
-    @helper.form(action = routes.QuestionnaireController.submitStart(), 'novalidate -> "novalidate") {
+    @*helper.form(action = routes.QuestionnaireController.submitStart(), 'novalidate -> "novalidate") {
         @helper.CSRF.formField
         <div class="panel-indent text">
             <p>Once you save a page on the form, you won't be able to go back and change your answers.</p>
@@ -30,4 +30,5 @@
             <button id="btnStart" type="submit" value="submit" class="button">Start questions</button>
         </div>
     }
+    *@
 }

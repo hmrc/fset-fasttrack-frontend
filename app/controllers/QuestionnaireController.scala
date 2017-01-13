@@ -60,13 +60,13 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
     implicit user =>
       Future.successful(Ok(views.html.questionnaire.thirdpage(QuestionnaireOccupationInfoForm.form)))
   }
-
+/*
   def submitStart = CSRSecureAppAction(StartQuestionnaireRole) { implicit request =>
     implicit user =>
       val empty = Questionnaire(List())
       submitQuestionnaire(empty, "start_questionnaire")(Redirect(routes.QuestionnaireController.firstPageView()))
   }
-
+*/
   def submitContinue = CSRSecureAppAction(StartQuestionnaireRole) { implicit request =>
     implicit user =>
       val p = user.application.progress
@@ -74,7 +74,7 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
         case (_, _, true) => Redirect(routes.SubmitApplicationController.present())
         case (_, true, _) => Redirect(routes.QuestionnaireController.thirdPageView())
         case (true, _, _) => Redirect(routes.QuestionnaireController.secondPageView())
-        case (_, _, _) => Redirect(routes.QuestionnaireController.firstPageView())
+//        case (_, _, _) => Redirect(routes.QuestionnaireController.firstPageView())
       })
   }
 
