@@ -239,7 +239,7 @@ trait ApplicationClient {
     http.GET(s"$hostBase/scheme-locations/$applicationId").map { response =>
       response.json.as[List[LocationSchemes]]
     } recover {
-      case ex: Throwable => throw new ErrorRetrievingLocationSchemes(ex)
+      case _: NotFoundException => throw new LocationsNotFound()
     }
   }
 
@@ -247,7 +247,7 @@ trait ApplicationClient {
     http.GET(s"$hostBase/schemes/$applicationId").map { response =>
       response.json.as[List[SchemeInfo]]
     } recover {
-      case ex: Throwable => throw new ErrorRetrievingSchemes(ex)
+      case _: NotFoundException => throw new SchemesNotFound()
     }
   }
 
@@ -269,6 +269,10 @@ object ApplicationClient extends ApplicationClient {
   sealed class CannotSubmit extends Exception
 
   sealed class PersonalDetailsNotFound extends Exception
+
+  sealed class SchemesNotFound extends Exception
+
+  sealed class LocationsNotFound extends Exception
 
   sealed class AssistanceDetailsNotFound extends Exception
 

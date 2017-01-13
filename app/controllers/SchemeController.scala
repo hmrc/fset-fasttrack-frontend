@@ -19,6 +19,7 @@ package controllers
 import _root_.forms.{ SchemeLocationPreferenceForm, SchemePreferenceForm }
 import config.{ AppConfig, CSRHttp, FrontendAppConfig }
 import connectors.ApplicationClient
+import connectors.ApplicationClient.{ LocationsNotFound, SchemesNotFound }
 import models.CachedDataWithApp
 import play.api.data.Form
 import play.api.mvc.Request
@@ -42,18 +43,20 @@ trait SchemeController extends BaseController {
   def schemeLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
       applicationClient.getSchemeLocationChoices(cachedData.application.applicationId).flatMap {
-        case Nil => displaySchemeLocations(schemeLocationForm)
-        case locations: List[_] => displaySchemeLocations(
+        locations => displaySchemeLocations(
           schemeLocationForm.fill(SchemeLocationPreferenceForm.Data(locations.map(_.id))))
+      }.recoverWith {
+        case _: LocationsNotFound => displaySchemeLocations(schemeLocationForm)
       }
   }
 
   def schemes = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
       applicationClient.getSchemeChoices(cachedData.application.applicationId).flatMap {
-        case Nil => displaySchemes(schemeForm)
-        case schemes: List[_] => displaySchemes(
+        schemes => displaySchemes(
           schemeForm.fill(SchemePreferenceForm.Data(schemes.map(_.id), orderAgreed = true)))
+      }.recoverWith {
+        case _: SchemesNotFound => displaySchemes(schemeForm)
       }
   }
 
@@ -91,7 +94,7 @@ trait SchemeController extends BaseController {
       val viewModel = SchemeLocationsViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup,
         personalDetails.aLevel, personalDetails.stemLevel)
 
-      Ok(views.html.application.scheme.wherecouldyouwork(form, viewModel, schemeLocations))
+      Ok(views.html.application.scheme.wherecouldyouwork(form, viewModel, personalDetails, schemeLocations))
     }
   }
 

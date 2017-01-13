@@ -88,18 +88,15 @@ $(function(){
                                     locations = response
                                     addDistance();
                                 }
-
-        if(currentPostcode == "" && locations.length === 0) {
-            loadLocationsJson(locationsCallback, hasALevels, hasStemALevels);
-        } else {
-            $.getJSON(addressLookupUrl, function(data) {
-                loadLocationsJson(locationsCallback, hasALevels, hasStemALevels, 51.5149017, -0.603681599999959);
-            }).fail(function(xhr, textStatus, error ) {
-                console.error( "Request Failed: " + textStatus + ", " + error);
-            }).always(function(){
-                $('#loadingLocations').addClass('toggle-content');
-            });
-        }
+        $.getJSON(addressLookupUrl, function(data) {
+            // TODO: Implement the logic to parse latitude and longitude
+            loadLocationsJson(locationsCallback, hasALevels, hasStemALevels, 51.5149017, -0.603681599999959);
+        }).fail(function(xhr, textStatus, error ) {
+            console.error( "Request Failed: " + textStatus + ", " + error);
+            if(locations.length === 0) loadLocationsJson(locationsCallback, hasALevels, hasStemALevels);
+        }).always(function(){
+            $('#loadingLocations').addClass('toggle-content');
+        });
     }
 
     function addDistance() {
