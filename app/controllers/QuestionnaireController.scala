@@ -73,13 +73,14 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
       Future.successful((p.diversityQuestionnaire, p.educationQuestionnaire, p.occupationQuestionnaire) match {
         case (_, _, true) => Redirect(routes.SubmitApplicationController.present())
         case (_, true, _) => Redirect(routes.QuestionnaireController.thirdPageView())
-        case (true, _, _) => Redirect(routes.QuestionnaireController.secondPageView())
+//        case (true, _, _) => Redirect(routes.QuestionnaireController.secondPageView())
 //        case (_, _, _) => Redirect(routes.QuestionnaireController.firstPageView())
       })
   }
 
   def firstPageSubmit = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
     implicit user =>
+/*
       QuestionnaireDiversityInfoForm.form.bindFromRequest.fold(
         errorForm => {
           Future.successful(Ok(views.html.questionnaire.firstpage(errorForm)))
@@ -88,6 +89,8 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
           submitQuestionnaire(data.toQuestionnaire, "diversity_questionnaire")(Redirect(routes.QuestionnaireController.secondPageView()))
         }
       )
+*/
+    ???
   }
 
   def secondPageSubmit = CSRSecureAppAction(EducationQuestionnaireRole) { implicit request =>
@@ -118,9 +121,12 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
     implicit
     user: CachedDataWithApp, hc: HeaderCarrier, request: Request[_]
   ) = {
+/*
     updateQuestionnaire(user.application.applicationId, sectionId, data).flatMap { _ =>
       updateProgress()(_ => onSuccess)
     }
+*/
+    ???
   }
 
 }

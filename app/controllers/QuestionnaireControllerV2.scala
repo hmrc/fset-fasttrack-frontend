@@ -20,7 +20,11 @@ import config.CSRHttp
 import connectors.ApplicationClient
 import _root_.forms.DiversityQuestionnaireForm
 import _root_.forms.ParentalOccupationQuestionnaireForm
+import connectors.exchange.Questionnaire
+import models.CachedDataWithApp
+import play.api.mvc.{ Result, Request }
 import security.Roles.{ DiversityQuestionnaireRole, EducationQuestionnaireRole, OccupationQuestionnaireRole, StartQuestionnaireRole }
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 import scala.language.reflectiveCalls
@@ -67,11 +71,16 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
           Future.successful(Ok(views.html.questionnaire.firstpageV2(errorForm)))
         },
         data => {
-//          submitQuestionnaire(data.toQuestionnaire, "diversity_questionnaire")(Redirect(routes.QuestionnaireController.secondPageView()))
-          //Future.successful(Ok("data successfully passed validation"))
-          Future.successful(Redirect(routes.QuestionnaireControllerV2.presentThirdPage()))
+          submitQuestionnaire(data.exchange, "diversity_questionnaire")(
+            Redirect(routes.QuestionnaireControllerV2.presentThirdPage())) //todo kandi
         }
       )
+  }
+
+  def presentSecondPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
+    implicit user =>
+      //      Future.successful(Ok(views.html.questionnaire.secondpageV2(DiversityQuestionnaireForm.form)))
+      Future.successful(Ok("Data saved - presenting page 2 stub"))
   }
 
   def presentThirdPage = CSRSecureAppAction(OccupationQuestionnaireRole) { implicit request =>
@@ -92,6 +101,12 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
       )
   }
 
+  private def submitQuestionnaire(data: Questionnaire, sectionId: String)(onSuccess: Result)
+                                 (implicit user: CachedDataWithApp, hc: HeaderCarrier, request: Request[_]) = {
+    updateQuestionnaire(user.application.applicationId, sectionId, data).flatMap { _ =>
+      updateProgress()(_ => onSuccess)
+    }
+  }
 
   /*
   // This is the FAST STREAM version of the controller pulled across for reference as we implement the FS functionality in FT

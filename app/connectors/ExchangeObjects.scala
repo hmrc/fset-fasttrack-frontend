@@ -95,6 +95,7 @@ object ExchangeObjects {
   case class SendPasswordCodeRequest(email: String, service: String)
   case class ResetPasswordRequest(email: String, token: String, newPassword: String, service: String)
 
+  // TODO:: I&K remove these
   //  questionnaire
   case class Answer(answer: Option[String], otherDetails: Option[String], unknown: Option[Boolean])
   case class Question(question: String, answer: Answer)
@@ -193,9 +194,9 @@ object ExchangeObjects {
     implicit val sendPasswordCodeRequestFormats = Json.format[SendPasswordCodeRequest]
     implicit val resetPasswordRequestFormats = Json.format[ResetPasswordRequest]
 
-    implicit val answerFormats = Json.format[Answer]
-    implicit val questionFormats = Json.format[Question]
-    implicit val questionnaireFormats = Json.format[Questionnaire]
+//    implicit val answerFormats = Json.format[Answer]
+//    implicit val questionFormats = Json.format[Question]
+//    implicit val questionnaireFormats = Json.format[Questionnaire]
 
     implicit val reviewFormats = Json.format[ReviewRequest]
 

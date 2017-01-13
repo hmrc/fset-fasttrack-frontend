@@ -19,13 +19,12 @@ package connectors
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
 import connectors.ExchangeObjects._
-import connectors.exchange.{ LocationSchemes, ProgressResponse, SchemeInfo }
+import connectors.exchange.{ LocationSchemes, ProgressResponse, Questionnaire, SchemeInfo }
 import forms.{ AssistanceForm, GeneralDetailsForm }
 import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
 import org.joda.time.LocalDate
-import play.api.Logger
 import play.api.Play.current
 import play.api.http.Status._
 import play.api.libs.iteratee.Iteratee

@@ -118,7 +118,7 @@ object Roles {
   object SubmitApplicationRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) &&
-        hasDiversity(user) && hasEducation(user) && hasOccupation(user)
+        hasDiversity(user) /*&& hasEducation(user)*/ && hasOccupation(user) // todo kandi
   }
 
   object InProgressRole extends CsrAuthorization {
@@ -191,11 +191,13 @@ object Roles {
     SchemesRole -> routes.SchemeController.schemeLocations,
     AssistanceRole -> routes.AssistanceController.present,
     ReviewRole -> routes.ReviewApplicationController.present,
+    // TODO: I&K fix me
 //    StartQuestionnaireRole -> routes.QuestionnaireController.start,
     StartQuestionnaireRole -> routes.QuestionnaireControllerV2.start,
 //    DiversityQuestionnaireRole -> routes.QuestionnaireController.firstPageView,
     DiversityQuestionnaireRole -> routes.QuestionnaireControllerV2.presentFirstPage,
-    EducationQuestionnaireRole -> routes.QuestionnaireController.secondPageView,
+//    EducationQuestionnaireRole -> routes.QuestionnaireController.secondPageView,
+    EducationQuestionnaireRole -> routes.QuestionnaireControllerV2.presentSecondPage,
     OccupationQuestionnaireRole -> routes.QuestionnaireController.thirdPageView,
     SubmitApplicationRole -> routes.SubmitApplicationController.present,
     DisplayOnlineTestSectionRole -> routes.HomeController.present,
