@@ -32,7 +32,6 @@
                 <div class="inner-block-padr">
                     <h2 class="heading-medium">Available locations</h2>
 
-                    @if(viewModel.postCodeLookupEnabled) {
                     <div class="form-group form-group-compound">
                         <label for="yourPostcode" class="form-label" id="yourPostcodeLabel">Enter postcode or town/city</label>
                         <input type="text" id="yourPostcode" class="form-control form-control-3-4" value="@personalDetails.postCode"
@@ -41,8 +40,6 @@
                             <a id="updateLocation" href="#" class="button-link no-btm-margin">Update list</a>
                         </div>
                     </div>
-                    }
-
                     <section>
                         <div id="scheme-input-container" class="scheme-input-container" data-hasALevels="@viewModel.hasALevels" data-hasStemALevels="@viewModel.hasStemALevels">
                             <div id="scrollingList" class="scrolling-panel max-height-25">

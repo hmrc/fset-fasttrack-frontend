@@ -17,7 +17,7 @@
 package controllers
 
 import _root_.forms.{ SchemeLocationPreferenceForm, SchemePreferenceForm }
-import config.{ AppConfig, CSRHttp, FrontendAppConfig }
+import config.CSRHttp
 import connectors.ApplicationClient
 import connectors.ApplicationClient.{ LocationsNotFound, SchemesNotFound }
 import models.CachedDataWithApp
@@ -28,13 +28,11 @@ import viewmodels.application.scheme.{ SchemeLocationsViewModel, SchemePreferenc
 
 object SchemeController extends SchemeController {
   val http = CSRHttp
-  val config = FrontendAppConfig
   val applicationClient = ApplicationClient
 }
 
 trait SchemeController extends BaseController {
 
-  val config: AppConfig
   val applicationClient: ApplicationClient
 
   val schemeLocationForm = SchemeLocationPreferenceForm.form
@@ -91,9 +89,7 @@ trait SchemeController extends BaseController {
       schemeLocations <- applicationClient.getSchemesAndLocationsByEligibility(personalDetails.aLevel,
         personalDetails.stemLevel, None, None)
     } yield {
-      val viewModel = SchemeLocationsViewModel(config.applicationSchemesFeatureConfig.preferredLocationPostCodeLookup,
-        personalDetails.aLevel, personalDetails.stemLevel)
-
+      val viewModel = SchemeLocationsViewModel(personalDetails.aLevel, personalDetails.stemLevel)
       Ok(views.html.application.scheme.wherecouldyouwork(form, viewModel, personalDetails, schemeLocations))
     }
   }
