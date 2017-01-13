@@ -16,15 +16,16 @@
 
 package controllers
 
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient._
 import connectors.ApplicationClient
 import helpers.NotificationType._
 import play.api.Logger
-import security.Roles.{ QuestionnaireInProgressRole, ReviewRole, StartQuestionnaireRole }
+import security.Roles.{QuestionnaireInProgressRole, ReviewRole, StartQuestionnaireRole}
 
 object ReviewApplicationController extends ReviewApplicationController {
   val http = CSRHttp
+  val cacheClient = CSRCache
   val applicationClient = ApplicationClient
 }
 
@@ -35,7 +36,7 @@ trait ReviewApplicationController extends BaseController {
   def present = CSRSecureAppAction(ReviewRole) { implicit request =>
     implicit user =>
       val personalDetailsFut = findPersonalDetails(user.user.userID, user.application.applicationId)
-      val assistanceDetailsFut = findAssistanceDetails(user.user.userID, user.application.applicationId)
+      val assistanceDetailsFut = getAssistanceDetails(user.user.userID, user.application.applicationId)
       val locationChoicesFut = applicationClient.getSchemeLocationChoices(user.application.applicationId)
       val schemeChoicesFut = applicationClient.getSchemeChoices(user.application.applicationId)
 

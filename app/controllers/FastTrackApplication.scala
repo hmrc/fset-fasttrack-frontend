@@ -17,11 +17,11 @@
 package controllers
 
 import _root_.forms.GeneralDetailsForm
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient.PersonalDetailsNotFound
-import connectors.{ ApplicationClient, UserManagementClient }
+import connectors.{ApplicationClient, UserManagementClient}
 import helpers.NotificationType._
-import mappings.{ Address, DayMonthYear }
+import mappings.{Address, DayMonthYear}
 import models.ApplicationData.ApplicationStatus._
 import org.joda.time.LocalDate
 import security.Roles.PersonalDetailsRole
@@ -30,6 +30,7 @@ import scala.concurrent.Future
 
 object FastTrackApplication extends FastTrackApplication {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait FastTrackApplication extends BaseController with ApplicationClient with UserManagementClient {

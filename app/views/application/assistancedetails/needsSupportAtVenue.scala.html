@@ -1,0 +1,33 @@
+@(form: Form[_root_.forms.AssistanceDetailsForm.Data])(implicit lang: play.api.i18n.Lang)
+
+@import helpers.CSRFieldConstructor._
+@import views.html.widgets.radioBoxHorizontal
+
+<section>
+    <fieldset class="form-group">
+        <h2 class="form-label">When you visit any of our venues will you need any extra support?</h2>
+        <legend class="visuallyhidden">When you visit any of our venues will you need any extra support?</legend>
+        <p class="form-hint">This includes the assessment centre and any other additional face to face interviews</p>
+        @radioBoxHorizontal(form("needsSupportAtVenue"), options = List(("yes", "Yes", true), ("no", "No", false)),
+            optionTrigger = "needsSupportAtVenue-describe")
+        <div id="needsSupportAtVenue-describe" class="toggle-content" aria-hidden="true">
+            <div class="form-group">
+                @helper.textarea(form("needsSupportAtVenueDescription"),
+                    '_label -> "What adjustments will you need?",
+                    'class -> "form-control",
+                    'rows -> 4,
+                    'dataValLengthMax -> "2048",
+                    '_showConstraints -> false)
+                <span class="visuallyhidden aria-limit" aria-live="polite"></span>
+            </div>
+            <div class="panel-indent text">
+                <p>If you want to talk about your adjustment needs in more detail,
+                    <a id="contactUsForVenueAssessment" href="@routes.ApplicationController.helpdesk()" class="">please contact us</a>.</p>
+                <p>It's important you let us know this information now, as there won't
+                    be another opportunity to do this unless your situation changes.</p>
+            </div>
+        </div>
+    </fieldset>
+</section>
+
+

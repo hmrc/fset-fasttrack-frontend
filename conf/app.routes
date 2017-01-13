@@ -1,10 +1,10 @@
 # microservice specific routes
 
 # Generic links
-GET         /                                                       controllers.Application.index
-GET         /terms                                                  controllers.Application.terms
-GET         /helpdesk                                               controllers.Application.helpdesk
-GET         /privacy                                                controllers.Application.privacy
+GET         /                                                       controllers.ApplicationController.index
+GET         /terms                                                  controllers.ApplicationController.terms
+GET         /helpdesk                                               controllers.ApplicationController.helpdesk
+GET         /privacy                                                controllers.ApplicationController.privacy
 
 # Account lock
 GET         /locked                                                 controllers.LockAccountController.present
@@ -45,8 +45,8 @@ POST        /application/schemes                                    controllers.
 
 GET         /application/schemes/by-eligibility                     controllers.LocationSchemeController.getSchemesAndLocationsByEligibility(hasALevels: Boolean, hasStemALevels: Boolean, latitudeOpt: Option[Double] ?= None, longitudeOpt: Option[Double] ?= None)
 
-GET         /application/assistance                                 controllers.AssistanceController.present
-POST        /application/assistance                                 controllers.AssistanceController.submit
+GET         /application/assistance-details                         controllers.AssistanceDetailsController.present
+POST        /application/assistance-details                         controllers.AssistanceDetailsController.submit
 
 GET         /application/review                                     controllers.ReviewApplicationController.present
 POST        /application/review                                     controllers.ReviewApplicationController.submit
