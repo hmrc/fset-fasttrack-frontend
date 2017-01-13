@@ -19,7 +19,7 @@ package controllers
 import _root_.forms.{ SchemeLocationPreferenceForm, SchemePreferenceForm }
 import config.CSRHttp
 import connectors.ApplicationClient
-import connectors.ApplicationClient.{ LocationsNotFound, SchemesNotFound }
+import connectors.ApplicationClient.{ LocationPreferencesNotFound, SchemePreferencesNotFound }
 import models.CachedDataWithApp
 import play.api.data.Form
 import play.api.mvc.Request
@@ -44,7 +44,7 @@ trait SchemeController extends BaseController {
         locations => displaySchemeLocations(
           schemeLocationForm.fill(SchemeLocationPreferenceForm.Data(locations.map(_.id))))
       }.recoverWith {
-        case _: LocationsNotFound => displaySchemeLocations(schemeLocationForm)
+        case _: LocationPreferencesNotFound => displaySchemeLocations(schemeLocationForm)
       }
   }
 
@@ -54,7 +54,7 @@ trait SchemeController extends BaseController {
         schemes => displaySchemes(
           schemeForm.fill(SchemePreferenceForm.Data(schemes.map(_.id), orderAgreed = true)))
       }.recoverWith {
-        case _: SchemesNotFound => displaySchemes(schemeForm)
+        case _: SchemePreferencesNotFound => displaySchemes(schemeForm)
       }
   }
 

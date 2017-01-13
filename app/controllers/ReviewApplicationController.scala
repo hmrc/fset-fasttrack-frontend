@@ -47,7 +47,7 @@ trait ReviewApplicationController extends BaseController {
       } yield {
         Ok(views.html.application.review(gd, ad, slc, sc, user.application))
       }).recover {
-        case ex @ (_: PersonalDetailsNotFound | _: AssistanceDetailsNotFound | _: SchemesNotFound | _: LocationsNotFound) =>
+        case ex @ (_: PersonalDetailsNotFound | _: AssistanceDetailsNotFound | _: SchemePreferencesNotFound | _: LocationPreferencesNotFound) =>
           Logger.warn("Preview section reached prematurely with exception", ex)
           Redirect(routes.HomeController.present()).flashing(warning("info.cannot.review.yet"))
       }
