@@ -19,7 +19,6 @@ package security
 import controllers.routes
 import models.ApplicationData.ApplicationStatus._
 import models.{ CachedData, CachedDataWithApp, Progress }
-import play.api.Logger
 import play.api.i18n.Lang
 import play.api.mvc.{ Call, RequestHeader }
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -97,33 +96,18 @@ object Roles {
   }
 
   object DiversityQuestionnaireRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
-      val res = activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuestionnaire(user) && !hasDiversity(user)
-      // todo: kandi remove this
-      //scalastyle:off
-      println(s"****** DiversityQuestionnaireRole.isAuthorized = $res")
-      res
-    }
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuestionnaire(user) && !hasDiversity(user)
   }
 
   object EducationQuestionnaireRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
-      val res = activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasDiversity(user) && !hasEducation(user)
-      // todo: kandi remove this
-      //scalastyle:off
-      println(s"****** EducationQuestionnaireRole.isAuthorized = $res")
-      res
-    }
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasDiversity(user) && !hasEducation(user)
   }
 
   object OccupationQuestionnaireRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
-      val res = activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasEducation(user) && !hasOccupation(user)
-      // todo: kandi remove this
-      //scalastyle:off
-      println(s"****** OccupationQuestionnaireRole.isAuthorized = $res")
-      res
-    }
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasEducation(user) && !hasOccupation(user)
   }
 
   object SubmitApplicationRole extends CsrAuthorization {
@@ -202,7 +186,7 @@ object Roles {
     SchemesRole -> routes.SchemeController.schemeLocations,
     AssistanceRole -> routes.AssistanceController.present,
     ReviewRole -> routes.ReviewApplicationController.present,
-    // TODO: I&K fix me
+    // TODO: kandi fix me
 //    StartQuestionnaireRole -> routes.QuestionnaireController.start,
     StartQuestionnaireRole -> routes.QuestionnaireControllerV2.start,
 //    DiversityQuestionnaireRole -> routes.QuestionnaireController.firstPageView,

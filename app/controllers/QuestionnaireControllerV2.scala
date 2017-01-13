@@ -64,7 +64,7 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
       val p = user.application.progress
       Future.successful((p.diversityQuestionnaire, p.educationQuestionnaire, p.occupationQuestionnaire) match {
         case (_, _, true) => Redirect(routes.SubmitApplicationController.present())
-//        case (_, true, _) => Redirect(routes.QuestionnaireControllerV2.presentThirdPage())
+        case (_, true, _) => Redirect(routes.QuestionnaireControllerV2.presentThirdPage())
         case (true, _, _) => Redirect(routes.QuestionnaireControllerV2.presentSecondPage())
         case (_, _, _) => Redirect(routes.QuestionnaireControllerV2.presentFirstPage())
       })
