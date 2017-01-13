@@ -19,6 +19,7 @@ package connectors
 import config.CSRHttp
 import connectors.ExchangeObjects._
 import connectors.UserManagementClient._
+import connectors.exchange.FindByUserIdRequest
 import models.UniqueIdentifier
 import uk.gov.hmrc.play.http.{ HeaderCarrier, _ }
 
@@ -101,13 +102,23 @@ trait UserManagementClient {
     }.recover {
       case e: NotFoundException => throw new InvalidCredentialsException()
     }
+
+
+  def findByUserId(userId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[UserResponse] =
+    http.POST(s"${url.host}/findUserById", FindByUserIdRequest(userId)).map { (resp: HttpResponse) =>
+      resp.json.as[UserResponse]
+    }.recover {
+      case e: NotFoundException => throw new InvalidCredentialsException(s"UserId = $userId")
+    }
 }
 
-object UserManagementClient {
+object UserManagementClient extends UserManagementClient {
+  val http: CSRHttp = CSRHttp
+
   sealed class InvalidRoleException extends Exception
   sealed class InvalidEmailException extends Exception
   sealed class EmailTakenException extends Exception
-  sealed class InvalidCredentialsException extends Exception
+  sealed class InvalidCredentialsException(message: String = "") extends Exception(message)
   sealed class AccountLockedOutException extends Exception
   sealed class TokenEmailPairInvalidException extends Exception
   sealed class TokenExpiredException extends Exception

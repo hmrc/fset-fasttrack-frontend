@@ -18,8 +18,9 @@ package config
 
 import com.mohiva.play.silhouette.api.EventBus
 import com.mohiva.play.silhouette.api.util.Clock
-import com.mohiva.play.silhouette.impl.authenticators.{ SessionAuthenticatorService, SessionAuthenticatorSettings }
+import com.mohiva.play.silhouette.impl.authenticators.{SessionAuthenticatorService, SessionAuthenticatorSettings}
 import com.mohiva.play.silhouette.impl.util.DefaultFingerprintGenerator
+import connectors.{ApplicationClient, UserManagementClient}
 import models.services.UserCacheService
 import play.api.Play
 import play.api.Play.current
@@ -28,7 +29,7 @@ import security.CsrCredentialsProvider
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.config.{ AppName, ServicesConfig }
+import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 import uk.gov.hmrc.play.http.ws._
 
 object FrontendAuditConnector extends AuditConnector {
@@ -42,17 +43,9 @@ class CSRHttp extends WSHttp {
   val wS = WS
 }
 
-trait CSRCache extends SessionCache with AppName with ServicesConfig {
-  override lazy val http = CSRHttp
-  override lazy val defaultSource = appName
-  override lazy val baseUri = baseUrl("cachable.session-cache")
-  override lazy val domain = getConfString(
-    "cachable.session-cache.domain",
-    throw new Exception(s"Could not find config 'cachable.session-cache.domain'")
-  )
-}
+trait CSRCache extends SessionCache with AppName with ServicesConfig
 
-object CSRCache extends SessionCache with AppName with ServicesConfig {
+object CSRCache extends CSRCache {
   override lazy val http = CSRHttp
   override lazy val defaultSource = appName
   override lazy val baseUri = baseUrl("cachable.session-cache")
@@ -66,7 +59,7 @@ object SecurityEnvironmentImpl extends security.SecurityEnvironment {
 
   override lazy val eventBus: EventBus = EventBus()
 
-  override val userService = new UserCacheService()
+  override val userService = new UserCacheService(ApplicationClient, UserManagementClient)
   override val identityService = userService
 
   override lazy val authenticatorService = new SessionAuthenticatorService(SessionAuthenticatorSettings(

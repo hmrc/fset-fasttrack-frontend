@@ -24,7 +24,7 @@ case class ProgressResponse(
                              personalDetails: Boolean,
                              hasLocations: Boolean,
                              hasSchemes: Boolean,
-                             assistance: Boolean,
+                             assistanceDetails: Boolean,
                              review: Boolean,
                              questionnaire: List[String],
                              submitted: Boolean,

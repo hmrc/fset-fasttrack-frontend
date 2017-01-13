@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.forms
+package testkit
 
-import controllers.BaseSpec
-import forms.ResetPasswordForm
+import controllers.UnitSpec
+import org.scalatestplus.play.OneAppPerSuite
+import play.api.test.FakeApplication
 
-class resetPasswordFormSpec extends BaseSpec {
+abstract class UnitWithAppSpec extends UnitSpec with OneAppPerSuite {
 
-  "the validate method" should {
-    "validate an email" in {
-      ResetPasswordForm.validateEmail("test@test.com") must be(true)
-    }
+  // Suppress logging during tests
+  val additionalConfig = Map("logger.application" -> "ERROR")
 
-    "return false on invalid email" in {
-      ResetPasswordForm.validateEmail("not_an_email") must be(false)
-    }
-  }
+  override implicit lazy val app: FakeApplication = new FakeApplication(additionalConfiguration = additionalConfig)
 
 }

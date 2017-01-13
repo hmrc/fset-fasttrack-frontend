@@ -17,14 +17,14 @@
 package controllers
 
 import _root_.forms.WithdrawApplicationForm
-import config.CSRHttp
-import connectors.ApplicationClient.{ CannotWithdraw, OnlineTestNotFound }
+import config.{CSRCache, CSRHttp}
+import connectors.ApplicationClient.{CannotWithdraw, OnlineTestNotFound}
 import connectors.ExchangeObjects.WithdrawApplicationRequest
-import connectors.{ ApplicationClient, ExchangeObjects }
+import connectors.{ApplicationClient, ExchangeObjects}
 import helpers.NotificationType._
 import models.ApplicationData.ApplicationStatus
 import models.page.DashboardPage
-import models.{ CachedData, CachedDataWithApp }
+import models.{CachedData, CachedDataWithApp}
 import security.Roles
 import security.Roles._
 
@@ -32,6 +32,7 @@ import scala.concurrent.Future
 
 object HomeController extends HomeController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait HomeController extends BaseController with ApplicationClient {

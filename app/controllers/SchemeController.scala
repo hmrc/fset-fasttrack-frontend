@@ -16,18 +16,20 @@
 
 package controllers
 
-import _root_.forms.{ SchemeLocationPreferenceForm, SchemePreferenceForm }
-import config.{ AppConfig, CSRHttp, FrontendAppConfig }
+import _root_.forms.SchemeLocationPreferenceForm.{form => preferenceForm}
+import _root_.forms.{SchemeLocationPreferenceForm, SchemePreferenceForm}
+import config.{AppConfig, CSRCache, CSRHttp, FrontendAppConfig}
 import connectors.ApplicationClient
 import play.api.libs.json.Json
 import security.Roles.SchemesRole
-import viewmodels.application.scheme.{ SchemeLocationsViewModel, SchemePreferenceViewModel }
+import viewmodels.application.scheme.{SchemeLocationsViewModel, SchemePreferenceViewModel}
 
 import scala.concurrent.Future
 
 object SchemeController extends SchemeController {
   val http = CSRHttp
   val config = FrontendAppConfig
+  val cacheClient = CSRCache
   val applicationClient = ApplicationClient
 }
 
@@ -57,6 +59,7 @@ trait SchemeController extends BaseController {
       }
   }
 
+
   def submitLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
       // TODO: Process form
@@ -83,7 +86,7 @@ trait SchemeController extends BaseController {
         schemeForm => {
           // TODO: Validate schemes chosen should be able to be chosen by this user (alevels/stem etc.)
           applicationClient.saveSchemeChoices(cachedData.application.applicationId, schemeForm.schemeNames).flatMap { _ =>
-            updateProgress()(_ => Redirect(routes.AssistanceController.present))
+            updateProgress()(_ => Redirect(routes.AssistanceDetailsController.present))
           }
         }
       )

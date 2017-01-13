@@ -16,14 +16,15 @@
 
 package controllers
 
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient
 import models.ApplicationData.ApplicationStatus
 import models.UniqueIdentifier
-import security.Roles.{ DisplayOnlineTestSectionRole, OnlineTestInvitedRole }
+import security.Roles.{DisplayOnlineTestSectionRole, OnlineTestInvitedRole}
 
 object OnlineTestController extends OnlineTestController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait OnlineTestController extends BaseController with ApplicationClient {

@@ -1,0 +1,53 @@
+@(assistanceDetails: connectors.exchange.AssistanceDetails)(edit: Html)(implicit user: Option[CachedData])
+
+@import security.RoleUtils._
+
+<section class="section-border">
+    <h2 class="heading-large">
+        <span class="sectionTitle">Disability and health conditions</span>
+        @edit
+    </h2>
+    <section>
+        <h3 class="heading-small">Do you consider yourself to have a disability?</h3>
+        <p id="hasDisability">@assistanceDetails.hasDisability</p>
+        @if(assistanceDetails.hasDisability)  {
+            <p id="hasDisabilityDescription">@assistanceDetails.hasDisabilityDescription</p>
+            @assistanceDetails.guaranteedInterview.map { gis =>
+                <h3 class="heading-small">Would you like to apply under the guaranteed interview scheme?</h3>
+                <p id="guaranteedInterview">
+                @{
+                    if(gis) {
+                        "Yes"
+                    } else {
+                        "No"
+                    }
+                }
+                </p>
+            }
+        }
+    </section>
+    <section>
+        <h3 class="heading-small">Will you need extra support for your online tests?</h3>
+        @assistanceDetails.needsSupportForOnlineAssessment match {
+            case true => {
+                <p id="needsSupportForOnlineAssessment">Yes</p>
+                <p id="needsSupportForOnlineAssessmentDescription">@assistanceDetails.needsSupportForOnlineAssessmentDescription</p>
+            }
+            case false => {
+                <p>No</p>
+            }
+        }
+    </section>
+    <section>
+        <h3 class="heading-small">When you visit any of our venues will you need any extra support?</h3>
+        @assistanceDetails.needsSupportAtVenue match {
+        case true => {
+            <p id="needsSupportAtVenue">Yes</p>
+            <p id="needsSupportAtVenueDescription">@assistanceDetails.needsSupportAtVenueDescription</p>
+        }
+        case false => {
+            <p>No</p>
+        }
+        }
+    </section>
+</section>

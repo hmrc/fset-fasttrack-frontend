@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package controllers.forms
+package forms
 
 import controllers.BaseSpec
-import forms.QuestionnaireOccupationInfoForm.{ Data, form }
+import forms.QuestionnaireOccupationInfoForm.{Data, form}
 
 class QuestionnaireOccupationFormSpec extends BaseSpec {
 

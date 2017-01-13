@@ -17,12 +17,13 @@
 package controllers
 
 import _root_.forms.LockAccountForm
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 
 import scala.concurrent.Future
 
 object LockAccountController extends LockAccountController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait LockAccountController extends BaseController {

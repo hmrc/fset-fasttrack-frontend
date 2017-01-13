@@ -1,12 +1,12 @@
 @(generalDetails: connectors.ExchangeObjects.GeneralDetailsExchange,
-        assistanceDetails: connectors.ExchangeObjects.AssistanceDetailsExchange,
+        assistanceDetails: connectors.exchange.AssistanceDetails,
         schemeLocations: List[String],
         schemes: List[String],
         applicationData: models.ApplicationData)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import models.ApplicationData.ApplicationStatus._
 @import security.Roles._
-@import views.html.widgets.{assistanceViewSection, generalDetailsViewSection, schemeSummaryView}
+@import views.html.widgets.{assistanceDetailsViewSection, generalDetailsViewSection, schemeSummaryView}
 
 @appNotReadOnly(body: Html)= {
     @if(!WithdrawApplicationRole.isAuthorized(user.get) && !WithdrawnApplicationRole.isAuthorized(user.get)) {@body}
@@ -40,7 +40,7 @@
 
     @schemeSummaryView(schemeLocations, schemes)(edit_link(routes.SchemeController.schemeLocations()))
 
-    @assistanceViewSection(assistanceDetails)(edit_link(routes.AssistanceController.present()))
+    @assistanceDetailsViewSection(assistanceDetails)(edit_link(routes.AssistanceDetailsController.present()))
 
     @appNotReadOnly {
         @helper.form(action = routes.ReviewApplicationController.submit(), 'novalidate -> "novalidate") {

@@ -17,9 +17,9 @@
 package controllers
 
 import _root_.forms.ActivateAccountForm
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient
-import connectors.UserManagementClient.{ TokenEmailPairInvalidException, TokenExpiredException }
+import connectors.UserManagementClient.{TokenEmailPairInvalidException, TokenExpiredException}
 import helpers.NotificationType._
 import security.Roles._
 import security.SignInUtils
@@ -28,18 +28,19 @@ import scala.concurrent.Future
 
 object ActivationController extends ActivationController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait ActivationController extends BaseController with SignInUtils with ApplicationClient {
 
-  val present = CSRSecureAction(NoRole) { implicit request =>
+  def present = CSRSecureAction(NoRole) { implicit request =>
     implicit user => user.user.isActive match {
       case true => Future.successful(Redirect(routes.HomeController.present()).flashing(warning("activation.already")))
       case false => Future.successful(Ok(views.html.registration.activation(user.user.email, ActivateAccountForm.form)))
     }
   }
 
-  val activateForm = CSRSecureAction(ActivationRole) { implicit request =>
+  def activateForm = CSRSecureAction(ActivationRole) { implicit request =>
     implicit user =>
       ActivateAccountForm.form.bindFromRequest.fold(
         invalidForm =>
@@ -65,7 +66,7 @@ trait ActivationController extends BaseController with SignInUtils with Applicat
       )
   }
 
-  val resendCode = CSRSecureAction(ActivationRole) { implicit request =>
+  def resendCode = CSRSecureAction(ActivationRole) { implicit request =>
     implicit user =>
       env.resendActivationCode(user.user.email).map { _ =>
         Redirect(routes.ActivationController.present()).flashing(success("activation.code-resent"))

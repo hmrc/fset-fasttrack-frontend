@@ -18,16 +18,18 @@ package security
 
 import java.util.UUID
 
-import com.mohiva.play.silhouette.api.{ Authorization, Silhouette }
+import com.mohiva.play.silhouette.api.{Authorization, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import config.SecurityEnvironmentImpl
+import config.{CSRCache, SecurityEnvironmentImpl}
 import controllers.routes
 import helpers.NotificationType._
-import models.{ CachedData, CachedDataWithApp, SecurityUser }
+import models.{CachedData, CachedDataWithApp, SecurityUser, UniqueIdentifier}
+import play.api.Logger
 import play.api.i18n.Lang
 import play.api.mvc._
 import security.Roles.CsrAuthorization
-import uk.gov.hmrc.play.http.{ HeaderCarrier, SessionKeys }
+import uk.gov.hmrc.http.cache.client.KeyStoreEntryValidationException
+import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -47,6 +49,21 @@ import scala.concurrent.Future
 // scalastyle:off method.name
 
 trait SecureActions extends Silhouette[SecurityUser, SessionAuthenticator] {
+
+  val cacheClient: CSRCache
+
+  protected[security] def getCachedData(securityUser: SecurityUser)(implicit hc: HeaderCarrier,
+                                                                    request: Request[_]): Future[Option[CachedData]] = {
+    cacheClient.fetchAndGetEntry[CachedData](securityUser.userID).recoverWith {
+      case ex: KeyStoreEntryValidationException =>
+        Logger.warn(s"Retrieved invalid cache entry for userId '${securityUser.userID}' (structure changed?). " +
+          s"Attempting cache refresh from database...")
+        env.userService.refreshCachedUser(UniqueIdentifier(securityUser.userID)).map(Some(_))
+      case ex: Throwable =>
+        Logger.warn(s"Retrieved invalid cache entry for userID '${securityUser.userID}. Could not recover!")
+        throw ex
+    }
+  }
 
   /**
    * Wraps the csrAction helper on a secure action.
@@ -105,7 +122,7 @@ trait SecureActions extends Silhouette[SecurityUser, SessionAuthenticator] {
     } apply originalRequest
   }
 
-  override protected def env = SecurityEnvironmentImpl
+  override protected def env: SecurityEnvironment = SecurityEnvironmentImpl
 
   implicit def hc(implicit request: Request[_]): HeaderCarrier
 

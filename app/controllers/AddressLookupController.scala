@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.addresslookup.AddressLookupClient
 import play.api.mvc.{ Action, AnyContent }
 import security.Roles.SchemesRole
@@ -34,4 +34,5 @@ trait AddressLookupController extends BaseController {
 object AddressLookupController extends AddressLookupController {
   val addressLookupClient = AddressLookupClient
   val http = CSRHttp
+  val cacheClient = CSRCache
 }

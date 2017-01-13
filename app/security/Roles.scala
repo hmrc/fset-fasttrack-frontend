@@ -73,7 +73,7 @@ object Roles {
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasPersonalDetails(user)
   }
 
-  object AssistanceRole extends CsrAuthorization {
+  object AssistanceDetailsRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasSchemesAndLocations(user)
   }
@@ -81,7 +81,7 @@ object Roles {
   object ReviewRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       activeUserWithApp(user) && !statusIn(user)(CREATED) &&
-        hasPersonalDetails(user) && hasAssistance(user) && hasSchemesAndLocations(user)
+        hasPersonalDetails(user) && hasAssistanceDetails(user) && hasSchemesAndLocations(user)
   }
 
   object StartQuestionnaireRole extends CsrAuthorization {
@@ -185,7 +185,7 @@ object Roles {
     ApplicationStartRole -> routes.HomeController.present,
     PersonalDetailsRole -> routes.FastTrackApplication.generalDetails(None),
     SchemesRole -> routes.SchemeController.schemeLocations,
-    AssistanceRole -> routes.AssistanceController.present,
+    AssistanceDetailsRole -> routes.AssistanceDetailsController.present,
     ReviewRole -> routes.ReviewApplicationController.present,
     StartQuestionnaireRole -> routes.QuestionnaireController.start,
     DiversityQuestionnaireRole -> routes.QuestionnaireController.firstPageView,
@@ -215,7 +215,7 @@ object RoleUtils {
 
   def hasSchemesAndLocations(implicit user: CachedData) = progress.hasLocations && progress.hasSchemes
 
-  def hasAssistance(implicit user: CachedData) = progress.assistance
+  def hasAssistanceDetails(implicit user: CachedData) = progress.assistanceDetails
 
   def hasReview(implicit user: CachedData) = progress.review
 

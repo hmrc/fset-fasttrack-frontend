@@ -19,8 +19,10 @@ package connectors
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
 import connectors.ExchangeObjects._
-import connectors.exchange.{ LocationSchemes, ProgressResponse, SchemeInfo }
-import forms.{ AssistanceForm, GeneralDetailsForm }
+import connectors.exchange.AssistanceDetails
+import forms.GeneralDetailsForm
+import connectors.exchange.{LocationSchemes, ProgressResponse, SchemeInfo}
+import forms.{AssistanceDetailsForm, GeneralDetailsForm}
 import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
@@ -126,22 +128,20 @@ trait ApplicationClient {
     }
   }
 
-  def updateAssistanceDetails(applicationId: UniqueIdentifier, userId: UniqueIdentifier, data: AssistanceForm.Data)
-    (implicit hc: HeaderCarrier): Future[Unit] = {
-    http.PUT(
-      s"${url.host}${url.base}/assistance-details/$userId/$applicationId",
-      data.exchange
-    ).map {
+  def updateAssistanceDetails(applicationId: UniqueIdentifier, userId: UniqueIdentifier, assistanceDetails: AssistanceDetails)(
+    implicit
+    hc: HeaderCarrier
+  ) = {
+    http.PUT(s"${url.host}${url.base}/assistance-details/$userId/$applicationId",assistanceDetails).map {
         case x: HttpResponse if x.status == CREATED => ()
       } recover {
         case _: BadRequestException => throw new CannotUpdateRecord()
       }
   }
 
-  def findAssistanceDetails(userId: UniqueIdentifier, applicationId: UniqueIdentifier)
-    (implicit hc: HeaderCarrier): Future[AssistanceDetailsExchange] = {
+  def getAssistanceDetails(userId: UniqueIdentifier, applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier) = {
     http.GET(s"${url.host}${url.base}/assistance-details/$userId/$applicationId").map { response =>
-      response.json.as[AssistanceDetailsExchange]
+      response.json.as[AssistanceDetails]
     } recover {
       case _: NotFoundException => throw new AssistanceDetailsNotFound()
     }
