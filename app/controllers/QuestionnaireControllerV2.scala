@@ -107,8 +107,8 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
           Future.successful(Ok(views.html.questionnaire.thirdpageV2(errorForm)))
         },
         data => {
-          //submitQuestionnaire(data.toQuestionnaire, "occupation_questionnaire")(Redirect(routes.SubmitApplicationController.present()))
-          Future.successful(Redirect(routes.SubmitApplicationController.present()))
+          submitQuestionnaire(data.exchange, "occupation_questionnaire")(Redirect(routes.SubmitApplicationController.present()))
+          //Future.successful(Redirect(routes.SubmitApplicationController.present()))
         }
       )
   }
