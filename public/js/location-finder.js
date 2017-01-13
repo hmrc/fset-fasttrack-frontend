@@ -82,7 +82,7 @@ $(function(){
         $('#loadingLocations').removeClass('toggle-content');
         $('#noLocationsFound').addClass('toggle-content');
 
-        var currentPostcode = $('#yourPostcode').val().toUpperCase();
+        var currentPostcode = $('#yourPostcode').val().toUpperCase().replace(/ /g,'');
         var addressLookupUrl = "/fset-fast-track/address-search/"+currentPostcode;
         var locationsCallback = function(response) {
                                     locations = response
@@ -90,9 +90,10 @@ $(function(){
                                 }
         $.getJSON(addressLookupUrl, function(data) {
             // TODO: Implement the logic to parse latitude and longitude
-            loadLocationsJson(locationsCallback, hasALevels, hasStemALevels, 51.5149017, -0.603681599999959);
+            console.log(data)
+            loadLocationsJson(locationsCallback, hasALevels, hasStemALevels);
         }).fail(function(xhr, textStatus, error ) {
-            console.error( "Request Failed: " + textStatus + ", " + error);
+            console.log( "Request Failed: " +  textStatus + ", " + error);
             if(locations.length === 0) loadLocationsJson(locationsCallback, hasALevels, hasStemALevels);
         }).always(function(){
             $('#loadingLocations').addClass('toggle-content');

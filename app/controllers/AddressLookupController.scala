@@ -18,6 +18,7 @@ package controllers
 
 import config.CSRHttp
 import connectors.addresslookup.AddressLookupClient
+import play.api.libs.json.Json
 import play.api.mvc.{ Action, AnyContent }
 import security.Roles.SchemesRole
 
@@ -27,7 +28,7 @@ trait AddressLookupController extends BaseController {
   def addressLookup(postcode: String): Action[AnyContent] = CSRSecureAction(SchemesRole) {
     implicit request => implicit cachedData =>
     val decoded = java.net.URLDecoder.decode(postcode, "UTF8")
-    addressLookupClient.findByPostcode(decoded, None).map(r => Ok(r.toString))
+    addressLookupClient.findByPostcode(decoded, None).map(r => Ok(Json.toJson(r)))
   }
 }
 
