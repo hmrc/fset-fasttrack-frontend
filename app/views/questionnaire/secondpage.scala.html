@@ -28,6 +28,7 @@
         <h2 class="heading-large">
             More about you
         </h2>
+@*
         @helper.form(action = routes.QuestionnaireController.secondPageSubmit(), 'novalidate -> "novalidate") {
             @helper.CSRF.formField
 
@@ -80,5 +81,6 @@
                 <button id="submit" type="submit" value="submit" class="button">Save and continue</button>
             </div>
         }
+*@
     </section>
 }

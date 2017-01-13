@@ -98,24 +98,38 @@ object Roles {
 
   object DiversityQuestionnaireRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuestionnaire(user) && !hasDiversity(user)
+      val res = activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuestionnaire(user) && !hasDiversity(user)
+      // todo: kandi remove this
+      //scalastyle:off
+      println(s"****** DiversityQuestionnaireRole.isAuthorized = $res")
+      res
     }
   }
 
   object EducationQuestionnaireRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasDiversity(user) && !hasEducation(user)
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
+      val res = activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasDiversity(user) && !hasEducation(user)
+      // todo: kandi remove this
+      //scalastyle:off
+      println(s"****** EducationQuestionnaireRole.isAuthorized = $res")
+      res
+    }
   }
 
   object OccupationQuestionnaireRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && /*hasEducation(user) &&*/ !hasOccupation(user) // todo kandi
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
+      val res = activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasEducation(user) && !hasOccupation(user)
+      // todo: kandi remove this
+      //scalastyle:off
+      println(s"****** OccupationQuestionnaireRole.isAuthorized = $res")
+      res
+    }
   }
 
   object SubmitApplicationRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) &&
-        hasDiversity(user) /*&& hasEducation(user)*/ && hasOccupation(user) // todo kandi
+        hasDiversity(user) && hasEducation(user) && hasOccupation(user)
   }
 
   object InProgressRole extends CsrAuthorization {

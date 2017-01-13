@@ -18,8 +18,7 @@ package controllers
 
 import config.CSRHttp
 import connectors.ApplicationClient
-import _root_.forms.DiversityQuestionnaireForm
-import _root_.forms.ParentalOccupationQuestionnaireForm
+import _root_.forms._
 import connectors.exchange.Questionnaire
 import models.CachedDataWithApp
 import play.api.mvc.{ Result, Request }
@@ -84,15 +83,28 @@ trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {
         },
         data => {
           submitQuestionnaire(data.exchange, "diversity_questionnaire")(
-            Redirect(routes.QuestionnaireControllerV2.presentThirdPage())) //todo kandi
+            Redirect(routes.QuestionnaireControllerV2.presentSecondPage()))
         }
       )
   }
 
-  def presentSecondPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
+  def presentSecondPage = CSRSecureAppAction(EducationQuestionnaireRole) { implicit request =>
     implicit user =>
-      //      Future.successful(Ok(views.html.questionnaire.secondpageV2(DiversityQuestionnaireForm.form)))
-      Future.successful(Ok("Presenting page 2 stub"))
+      Future.successful(Ok(views.html.questionnaire.secondpageV2(EducationQuestionnaireForm.form,
+        "No"))) // todo: kandi this is a question to do with civil service experience
+  }
+
+  def submitSecondPage = CSRSecureAppAction(EducationQuestionnaireRole) { implicit request =>
+    implicit user =>
+      val isCivilServantString = "No" // todo kandi fix this
+      EducationQuestionnaireForm.form.bindFromRequest.fold(
+        errorForm => {
+          Future.successful(Ok(views.html.questionnaire.secondpageV2(errorForm, isCivilServantString)))
+        },
+        data => {
+          submitQuestionnaire(data.exchange, "education_questionnaire")(Redirect(routes.QuestionnaireControllerV2.presentThirdPage()))
+        }
+      )
   }
 
   def presentThirdPage = CSRSecureAppAction(OccupationQuestionnaireRole) { implicit request =>

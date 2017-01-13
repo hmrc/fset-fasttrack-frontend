@@ -109,6 +109,9 @@ error.required.acceptance = Confirm you understand that the information you give
 error.required.gender = What is your gender identity?
 error.required.sexOrientation = What is your sexual orientation?
 error.required.ethnicity = What is your ethnic group?
+
+liveInUKBetween14and18.question = Did you live in the UK between the ages of 14 and 18?
+
 error.required.schoolName = What was your school between ages 11 to 16?
 error.required.sixthForm = What was your school between ages 16  to 18?
 error.required.postcodeQ = What was your postcode when you were 14?
