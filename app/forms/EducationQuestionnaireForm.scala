@@ -28,11 +28,10 @@ object EducationQuestionnaireForm {
 //  def form(universityQuestionKey: String) = Form( //todo: kandi i assume university is not needed here
   def form = Form(
     mapping(
-      "liveInUKBetween14and18" -> Mappings.nonEmptyTrimmedText("error.liveInUKBetween14and18.required", 31)//,
-/*
+      "liveInUKBetween14and18" -> Mappings.nonEmptyTrimmedText("error.liveInUKBetween14and18.required", 31),
       "postcodeQ" -> of(requiredFormatterWithValidationCheckAndSeparatePreferNotToSay("liveInUKBetween14and18",
         "postcodeQ", "preferNotSay_postcodeQ", Some(256))
-      (postCode => !postcodePattern.pattern.matcher(postCode).matches(), "error.postcodeQ.invalid")),
+      ((postCode : String) => !postcodePattern.pattern.matcher(postCode).matches(), "error.postcodeQ.invalid")),
       "preferNotSay_postcodeQ" -> optional(checked(Messages("error.required.postcodeQ"))),
       "schoolName14to16" -> of(requiredFormatterWithValidationCheckAndSeparatePreferNotToSay("liveInUKBetween14and18",
         "schoolName14to16", "preferNotSay_schoolName14to16", Some(256))),
@@ -42,16 +41,7 @@ object EducationQuestionnaireForm {
         "schoolName16to18", "preferNotSay_schoolName16to18", Some(256))),
       "schoolId16to18" -> of(schoolIdFormatter("schoolName16to18")),
       "preferNotSay_schoolName16to18" -> optional(checked(Messages("error.required.schoolName16to18"))),
-      "freeSchoolMeals" -> of(requiredFormatterWithMaxLengthCheck("liveInUKBetween14and18", "freeSchoolMeals", Some(256))),
-      "isCandidateCivilServant" -> Mappings.nonEmptyTrimmedText("error.isCandidateCivilServant.required", 31),
-      "haveDegree" -> of(requiredFormatterWithMaxLengthCheck("isCandidateCivilServant", "haveDegree", Some(31))),
-      "university" -> of(requiredFormatterWithValidationCheckAndSeparatePreferNotToSay("haveDegree",
-        "universityQuestionKey", "preferNotSay_university", Some(256), Some(Messages(s"error.$universityQuestionKey.required")))),
-      "preferNotSay_university" -> optional(checked(Messages(s"error.$universityQuestionKey.required"))),
-      "universityDegreeCategory" -> of(requiredFormatterWithValidationCheckAndSeparatePreferNotToSay("haveDegree",
-        "universityDegreeCategory", "preferNotSay_universityDegreeCategory", Some(256))),
-      "preferNotSay_universityDegreeCategory" -> optional(checked(Messages("error.universityDegreeCategory.required")))
-*/
+      "freeSchoolMeals" -> of(requiredFormatterWithMaxLengthCheck("liveInUKBetween14and18", "freeSchoolMeals", Some(256)))
     )(Data.apply)(Data.unapply)
   )
 
@@ -69,7 +59,7 @@ object EducationQuestionnaireForm {
   }
 
   case class Data(
-                   liveInUKBetween14and18: String/*,
+                   liveInUKBetween14and18: String,
                    postcode: Option[String],
                    preferNotSayPostcode: Option[Boolean],
                    schoolName14to16: Option[String],
@@ -78,24 +68,18 @@ object EducationQuestionnaireForm {
                    schoolName16to18: Option[String],
                    schoolId16to18: Option[String],
                    preferNotSaySchoolName16to18: Option[Boolean],
-                   freeSchoolMeals: Option[String],
-                   isCandidateCivilServant: String,
-                   haveDegree: Option[String],
-                   university: Option[String],
-                   preferNotSayUniversity: Option[Boolean],
-                   universityDegreeCategory: Option[String],
-                   preferNotSayUniversityDegreeCategory: Option[Boolean]*/
+                   freeSchoolMeals: Option[String]
                  ) {
 
 
-    def exchange(): Questionnaire = {
+    def exchange: Questionnaire = {
       def getAnswer(field: Option[String], preferNotToSayField: Option[Boolean], otherDetails: Option[String] = None) = {
         preferNotToSayField match {
           case Some(true) => Answer(None, otherDetails, Some(true))
           case _ => Answer(field, otherDetails, None)
         }
       }
-/*
+
       val freeSchoolMealAnswer = freeSchoolMeals match {
         case None | Some("I don't know/prefer not to say") => Answer(None, None, Some(true))
         case _ => Answer(freeSchoolMeals, None, None)
@@ -112,22 +96,9 @@ object EducationQuestionnaireForm {
         }
       }
 
-      def getOptionalUniversityList: List[Question] = {
-        haveDegree match {
-          case Some("Yes") => List(
-            Question(Messages("university.question"), getAnswer(university, preferNotSayUniversity)),
-            Question(Messages("universityDegreeCategory.question"), getAnswer(universityDegreeCategory,
-              preferNotSayUniversityDegreeCategory))
-          )
-          case _ => List.empty
-        }
-      }
-*/
       Questionnaire(
-        List(Question(Messages("liveInUKBetween14and18.question"), Answer(Some(liveInUKBetween14and18), None, None))) /*++
-          getOptionalSchoolList ++
-          List(Question(Messages("haveDegree.question"), getAnswer(haveDegree, None))) ++
-          getOptionalUniversityList*/
+        List(Question(Messages("liveInUKBetween14and18.question"), Answer(Some(liveInUKBetween14and18), None, None))) ++
+          getOptionalSchoolList
       )
     }
 
@@ -136,12 +107,12 @@ object EducationQuestionnaireForm {
       *
       * This is a kind of backend partial clearing form functionality.
       */
-/*
+
     def sanitizeData = {
-      sanitizeLiveInUK.sanitizeUniversity
+      sanitizeLiveInUK
     }
-*/
-/*
+
+
     private def sanitizeLiveInUK = {
       if (liveInUKBetween14and18 == "Yes") {
         this.copy(
@@ -161,21 +132,6 @@ object EducationQuestionnaireForm {
       }
     }
 
-    private def sanitizeUniversity = {
-      if (haveDegree.contains("Yes")) {
-        this.copy(
-          university = sanitizeValueWithPreferNotToSay(university, preferNotSayUniversity),
-          universityDegreeCategory = sanitizeValueWithPreferNotToSay(universityDegreeCategory, preferNotSayUniversityDegreeCategory)
-        )
-      } else {
-        this.copy(
-          university = None,
-          preferNotSayUniversity = None,
-          universityDegreeCategory = None,
-          preferNotSayUniversityDegreeCategory = None)
-      }
-    }
-*/
     private def sanitizeValueWithPreferNotToSay(value: Option[String], preferNotToSayValue: Option[Boolean]): Option[String] = {
       preferNotToSayValue match {
         case Some(true) => None

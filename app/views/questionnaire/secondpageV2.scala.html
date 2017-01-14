@@ -1,6 +1,6 @@
 @(questionnaireForm: Form[_root_.forms.EducationQuestionnaireForm.Data], isCandidateCivilServant: String)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
-@*import views.html.questionnaire.components.{ postcode, school, universitySection }*@
+@import views.html.questionnaire.components.{ postcode, school }
 @import views.html.widgets.{ pageProgress, radioBoxHorizontal }
 
 @main_template(title = "Your education", pageForms = Seq(questionnaireForm)) {
@@ -26,10 +26,10 @@
             <legend class="visuallyhidden">@Messages("liveInUKBetween14and18.question")</legend>
             @radioBoxHorizontal(questionnaireForm("liveInUKBetween14and18"), options = List(("yes", "Yes", true), ("no", "No", false)),
                 optionTrigger = "liveInUKBetween14and18-panel")
-            @*<div id="liveInUKBetween14and18-panel" class="toggle-content" aria-hidden="true">
+            <div id="liveInUKBetween14and18-panel" class="toggle-content" aria-hidden="true">
                 @postcode(questionnaireForm)
                 @school(questionnaireForm)
-            </div>*@
+            </div>
         </fieldset>
 @*
         <input type="hidden" id="isCandidateCivilServant" name="isCandidateCivilServant" value="@isCandidateCivilServant">
