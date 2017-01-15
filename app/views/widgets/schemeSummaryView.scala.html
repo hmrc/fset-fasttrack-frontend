@@ -1,4 +1,7 @@
-@(schemeLocations: List[String], schemes: List[String])(edit: Html)
+@import connectors.exchange.LocationSchemes
+@import connectors.exchange.SchemeInfo
+
+@(schemeLocations: List[LocationSchemes], schemes: List[SchemeInfo])(edit: Html)
 
 @renderBoolean(value: Boolean) = {
     @(value match {
@@ -16,14 +19,14 @@
     <section>
         <h2>Scheme Locations</h2>
     @for(schemeLocation <- schemeLocations) {
-        <p>@schemeLocation</p>
+        <p>@schemeLocation.locationName</p>
     }
     </section>
 
     <section>
         <h2>Schemes</h2>
     @for(scheme <- schemes) {
-        <p>@scheme</p>
+        <p>@scheme.name</p>
     }
     </section>
 </section>

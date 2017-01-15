@@ -1,4 +1,6 @@
 @import viewmodels.application.scheme.SchemePreferenceViewModel
+@import views.html.widgets.yesNoQuestion
+@import _root_.forms.SchemePreferenceForm
 
 @import connectors.exchange.SchemeInfo
 @(
@@ -8,6 +10,13 @@
 
 @import helpers.CSRFieldConstructor._
 @import views.html.widgets.{guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
+
+@selectedSchemes = @{
+    schemesForm.value match {
+        case Some(schForm) => schForm.schemes.lift(_)
+        case _ => SchemePreferenceForm.getSchemesByPriority("schemes", schemesForm.data).lift(_)
+    }
+}
 
 @schemeRequirements(scheme: SchemeInfo) = {
     @if(scheme.requiresALevelInStem) {
@@ -25,7 +34,7 @@
 
     @helper.form(action = routes.SchemeController.submitSchemes(), 'novalidate -> "novalidate") {
         @helper.CSRF.formField
-        <h1 class="heading-xlarge">Choose your preferred schemes</h1>
+<h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/html">Choose your preferred schemes</h1>
 
         <div class="panel-indent">
             <p>In preference order, select only the schemes you'd like to work in.</p>
@@ -37,11 +46,14 @@
                         @for(scheme <- viewModel.schemeOptions) {
                             <li class="scheme-container">
                                 <span class="selected-preference invisible">N/A</span>
-                                <label for="scheme-@scheme.name" class="block-label block-label-slim">
-                                    <input type="checkbox" id="scheme-@scheme.name" data-schemename>@scheme.name
+                                <label for="scheme-@scheme.id" class="block-label block-label-slim">
+                                    <input type="checkbox" id="scheme-@scheme.id" data-schemename value="@scheme.id">@scheme.name</input>
                                 </label>
                                 <span class="alwayshidden" data-scheme-req>@schemeRequirements(scheme)</span>
                             </li>
+                        }
+                        @for(i <- 0 until viewModel.schemeOptions.size) {
+                            <input type="hidden" id="schemes_@i" name="schemes_@i" value='@selectedSchemes(i).getOrElse("")' />
                         }
                     </ul>
                 </div>
@@ -64,24 +76,8 @@
             <p>You will not be able to reorder them after submitting your application.</p>
         </section>
         <section class="text clearfix">
-            <fieldset>
-                <legend class="form-label">Are you happy with the order of your schemes?</legend>
-                <div class="form-group no-btm-margin">
-                    <label for="happyWithOrder-yes" class="block-label">
-                        <input name="happyWithOrder" type="radio" id="happyWithOrder-yes">Yes
-                    </label>
-                    <label data-target="order-panel" for="reorder-no" class="block-label">
-                        <input name="happyWithOrder" type="radio" id="happyWithOrder-no" aria-controls="order-panel"
-                        aria-expanded="false">No
-                    </label>
-                </div>
-                <div id="order-panel" class="toggle-content">
-                    <div class="panel-danger">
-                        <p>Review your preferences and confirm your happy with the order to
-                            continue</p>
-                    </div>
-                </div>
-            </fieldset>
+            @yesNoQuestion(schemesForm("orderAgreed"), question = "Are you happy with the order of your schemes?",
+            noMessage = Some("Review your preferences and confirm you're happy with the order to continue"))
         </section>
         <button type="submit" id="schemeSaveBtn" class="button">Save and continue</button>
     }

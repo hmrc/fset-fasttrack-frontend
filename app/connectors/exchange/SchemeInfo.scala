@@ -18,7 +18,7 @@ package connectors.exchange
 
 import play.api.libs.json.Json
 
-case class SchemeInfo(name: String, requiresALevel: Boolean, requiresALevelInStem: Boolean)
+case class SchemeInfo(id: String, name: String, requiresALevel: Boolean, requiresALevelInStem: Boolean)
 
 object SchemeInfo {
   implicit val schemeInfoFormat = Json.format[SchemeInfo]

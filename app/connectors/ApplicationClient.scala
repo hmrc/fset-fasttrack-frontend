@@ -19,15 +19,12 @@ package connectors
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
 import connectors.ExchangeObjects._
-import connectors.exchange.AssistanceDetails
+import connectors.exchange._
 import forms.GeneralDetailsForm
-import connectors.exchange.{LocationSchemes, ProgressResponse, SchemeInfo}
-import forms.{AssistanceDetailsForm, GeneralDetailsForm}
 import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
 import org.joda.time.LocalDate
-import play.api.Logger
 import play.api.Play.current
 import play.api.http.Status._
 import play.api.libs.iteratee.Iteratee
@@ -211,7 +208,7 @@ trait ApplicationClient {
 
   def getSchemesAndLocationsByEligibility(hasALevels: Boolean, hasStemALevels: Boolean,
                                           latitudeOpt: Option[Double], longitudeOpt: Option[Double])
-                                         (implicit hc: HeaderCarrier): Future[List[LocationSchemes]] = {
+                                         (implicit hc: HeaderCarrier): Future[List[GeoLocationSchemeResult]] = {
 
     val optionalLocation = (for {
       latitude <- latitudeOpt
@@ -222,7 +219,7 @@ trait ApplicationClient {
 
     http.GET(s"$hostBase/scheme-locations/available/by-eligibility" +
       s"?hasALevels=$hasALevels&hasStemALevels=$hasStemALevels$optionalLocation").map { response =>
-      response.json.as[List[LocationSchemes]]
+      response.json.as[List[GeoLocationSchemeResult]]
     } recover {
       case ex: Throwable => throw new ErrorRetrievingEligibleLocationSchemes(ex)
     }
@@ -236,19 +233,19 @@ trait ApplicationClient {
     http.PUT(s"$hostBase/schemes/$applicationId", schemeNames).map(_ => ())
   }
 
-  def getSchemeLocationChoices(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[String]] = {
+  def getSchemeLocationChoices(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[LocationSchemes]] = {
     http.GET(s"$hostBase/scheme-locations/$applicationId").map { response =>
-      response.json.as[List[String]]
+      response.json.as[List[LocationSchemes]]
     } recover {
-      case ex: Throwable => throw new ErrorRetrievingLocationSchemes(ex)
+      case _: NotFoundException => throw new LocationPreferencesNotFound()
     }
   }
 
-  def getSchemeChoices(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[String]] = {
+  def getSchemeChoices(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
     http.GET(s"$hostBase/schemes/$applicationId").map { response =>
-      response.json.as[List[String]]
+      response.json.as[List[SchemeInfo]]
     } recover {
-      case ex: Throwable => throw new ErrorRetrievingSchemes(ex)
+      case _: NotFoundException => throw new SchemePreferencesNotFound()
     }
   }
 
@@ -270,6 +267,10 @@ object ApplicationClient extends ApplicationClient {
   sealed class CannotSubmit extends Exception
 
   sealed class PersonalDetailsNotFound extends Exception
+
+  sealed class SchemePreferencesNotFound extends Exception
+
+  sealed class LocationPreferencesNotFound extends Exception
 
   sealed class AssistanceDetailsNotFound extends Exception
 
