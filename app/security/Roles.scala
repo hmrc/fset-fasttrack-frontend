@@ -186,22 +186,16 @@ object Roles {
     SchemesRole -> routes.SchemeController.schemeLocations,
     AssistanceDetailsRole -> routes.AssistanceDetailsController.present,
     ReviewRole -> routes.ReviewApplicationController.present,
-    // TODO: kandi fix me
-//    StartQuestionnaireRole -> routes.QuestionnaireController.start,
-    StartQuestionnaireRole -> routes.QuestionnaireControllerV2.start,
-//    DiversityQuestionnaireRole -> routes.QuestionnaireController.firstPageView,
-    DiversityQuestionnaireRole -> routes.QuestionnaireControllerV2.presentFirstPage,
-//    EducationQuestionnaireRole -> routes.QuestionnaireController.secondPageView,
-    EducationQuestionnaireRole -> routes.QuestionnaireControllerV2.presentSecondPage,
-//    OccupationQuestionnaireRole -> routes.QuestionnaireController.thirdPageView,
-    OccupationQuestionnaireRole -> routes.QuestionnaireControllerV2.presentThirdPage,
+    StartQuestionnaireRole -> routes.QuestionnaireController.start,
+    DiversityQuestionnaireRole -> routes.QuestionnaireController.presentFirstPage,
+    EducationQuestionnaireRole -> routes.QuestionnaireController.presentSecondPage,
+    OccupationQuestionnaireRole -> routes.QuestionnaireController.presentThirdPage,
     SubmitApplicationRole -> routes.SubmitApplicationController.present,
     DisplayOnlineTestSectionRole -> routes.HomeController.present,
     ConfirmedAllocatedCandidateRole -> routes.HomeController.present,
     UnconfirmedAllocatedCandidateRole -> routes.HomeController.present,
     WithdrawApplicationRole -> routes.HomeController.present
   ).reverse
-
 }
 
 object RoleUtils {
@@ -230,5 +224,4 @@ object RoleUtils {
   def hasEducation(implicit user: CachedData) = progress.educationQuestionnaire
 
   def hasOccupation(implicit user: CachedData) = progress.occupationQuestionnaire
-
 }

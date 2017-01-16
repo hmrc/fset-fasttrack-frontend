@@ -60,7 +60,7 @@ trait ReviewApplicationController extends BaseController {
         updateProgress() { u =>
           if (StartQuestionnaireRole.isAuthorized(u) || QuestionnaireInProgressRole.isAuthorized(u)) {
 //            Redirect(routes.QuestionnaireController.start())
-            Redirect(routes.QuestionnaireControllerV2.start())
+            Redirect(routes.QuestionnaireController.start())
           } else {
             Redirect(routes.SubmitApplicationController.present())
           }

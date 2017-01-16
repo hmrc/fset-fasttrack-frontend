@@ -25,7 +25,6 @@ import play.api.i18n.Messages
 
 object EducationQuestionnaireForm {
 
-//  def form(universityQuestionKey: String) = Form( //todo: kandi i assume university is not needed here
   def form = Form(
     mapping(
       "liveInUKBetween14and18" -> Mappings.nonEmptyTrimmedText("error.liveInUKBetween14and18.required", 31),
@@ -111,7 +110,6 @@ object EducationQuestionnaireForm {
     def sanitizeData = {
       sanitizeLiveInUK
     }
-
 
     private def sanitizeLiveInUK = {
       if (liveInUKBetween14and18 == "Yes") {

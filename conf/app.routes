@@ -55,15 +55,15 @@ POST        /application/submit                                     controllers.
 GET         /application/success                                    controllers.SubmitApplicationController.success
 
 # Questionnaire
-GET         /questionnaire/start                                    controllers.QuestionnaireControllerV2.start
-POST        /questionnaire/start                                    controllers.QuestionnaireControllerV2.submitStart
-POST        /questionnaire/continue                                 controllers.QuestionnaireControllerV2.submitContinue
-GET         /questionnaire/page/1                                   controllers.QuestionnaireControllerV2.presentFirstPage
-POST        /questionnaire/page/1                                   controllers.QuestionnaireControllerV2.submitFirstPage
-GET         /questionnaire/page/2                                   controllers.QuestionnaireControllerV2.presentSecondPage
-POST        /questionnaire/page/2                                   controllers.QuestionnaireControllerV2.submitSecondPage
-GET         /questionnaire/page/3                                   controllers.QuestionnaireControllerV2.presentThirdPage
-POST        /questionnaire/page/3                                   controllers.QuestionnaireControllerV2.submitThirdPage
+GET         /questionnaire/start                                    controllers.QuestionnaireController.start
+POST        /questionnaire/start                                    controllers.QuestionnaireController.submitStart
+POST        /questionnaire/continue                                 controllers.QuestionnaireController.submitContinue
+GET         /questionnaire/page/1                                   controllers.QuestionnaireController.presentFirstPage
+POST        /questionnaire/page/1                                   controllers.QuestionnaireController.submitFirstPage
+GET         /questionnaire/page/2                                   controllers.QuestionnaireController.presentSecondPage
+POST        /questionnaire/page/2                                   controllers.QuestionnaireController.submitSecondPage
+GET         /questionnaire/page/3                                   controllers.QuestionnaireController.presentThirdPage
+POST        /questionnaire/page/3                                   controllers.QuestionnaireController.submitThirdPage
 
 # Online Test
 POST        /online-tests/start                                     controllers.OnlineTestController.startTests
