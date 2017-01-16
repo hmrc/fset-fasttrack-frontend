@@ -32,7 +32,7 @@ trait UserManagementClient {
 
   val http: CSRHttp
 
-  private val ServiceName = "fasttrack"
+  private val ServiceName = "fasttrack17"
 
   import Implicits._
   import config.FrontendAppConfig.userManagementConfig._
