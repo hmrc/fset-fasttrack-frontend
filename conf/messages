@@ -84,7 +84,8 @@ error.needsSupportAtVenueDescription.maxLength = You have exceeded the maximum n
 #locations & schemes
 location.required = Select your preferred location(s)
 scheme.required = Select your preferred scheme(s)
-orderAgreed.required = Please confirm whether you are happy with your scheme preferences
+orderAgreed.required = Review your preferences and confirm you''re happy with the order to continue
+eligible.required = You can only select preferences you''re eligible for
 
 error.alternativeLocation= Choose whether you would consider an alternative location
 error.alternativeScheme= Choose whether you would consider an alternative scheme

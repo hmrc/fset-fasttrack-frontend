@@ -38,12 +38,12 @@ POST        /application/confirm-allocation                         controllers.
 GET         /application/details                                    controllers.FastTrackApplication.generalDetails(start: Option[String])
 POST        /application/details                                    controllers.FastTrackApplication.submitGeneralDetails
 
-GET         /application/schemeLocations                            controllers.SchemeController.schemeLocations
-POST        /application/schemeLocations                            controllers.SchemeController.submitLocations
+GET         /application/scheme-locations                           controllers.SchemeController.schemeLocations
+POST        /application/scheme-locations                           controllers.SchemeController.submitLocations
 GET         /application/schemes                                    controllers.SchemeController.schemes
 POST        /application/schemes                                    controllers.SchemeController.submitSchemes
 
-GET         /application/schemes/by-eligibility                     controllers.LocationSchemeController.getSchemesAndLocationsByEligibility(hasALevels: Boolean, hasStemALevels: Boolean, latitudeOpt: Option[Double] ?= None, longitudeOpt: Option[Double] ?= None)
+GET         /application/scheme-locations/eligible                  controllers.LocationSchemeController.getEligibleSchemeLocations(latitudeOpt: Option[Double] ?= None, longitudeOpt: Option[Double] ?= None)
 
 GET         /application/assistance-details                         controllers.AssistanceDetailsController.present
 POST        /application/assistance-details                         controllers.AssistanceDetailsController.submit
