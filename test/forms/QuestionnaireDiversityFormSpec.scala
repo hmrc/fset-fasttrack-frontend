@@ -29,35 +29,30 @@ class QuestionnaireDiversityFormSpec extends BaseSpec {
       actualData mustBe expectedData
     }
 
-    "fail when no gener" in new Fixture {
+    "fail when no gender is specified" in new Fixture {
       assertFieldRequired("gender", "gender")
     }
 
-    "fail when no orientation" in new Fixture {
+    "fail when no sexual orientation is specified" in new Fixture {
       assertFieldRequired("sexOrientation", "sexOrientation")
     }
 
-    "fail when no ethnicity" in new Fixture {
+    "fail when no ethnicity is specified" in new Fixture {
       assertFieldRequired("ethnicity", "other_sexOrientation", "preferNotSay_ethnicity")
     }
 
     "transform properly to a question list" in new Fixture {
       val questionList = validFormData.toQuestionnaire.questions
-      questionList.size must be(3)
-      questionList(0).answer.answer must be(Some("Male"))
-      questionList(1).answer.otherDetails must be(Some("details"))
-      questionList(2).answer.unknown must be(Some(true))
+      questionList.size mustBe 3
+      questionList(0).answer.answer mustBe Some("Male")
+      questionList(1).answer.otherDetails mustBe Some("details")
+      questionList(2).answer.unknown mustBe Some(true)
     }
-
   }
 
   trait Fixture {
 
-    val validFormData = Data(
-      Some("Male"), None, None,
-      Some("Other"), Some("details"), None,
-      None, None, Some(true)
-    )
+    val validFormData = Data(Some("Male"), None, None, Some("Other"), Some("details"), None, None, None, Some(true))
 
     val validFormValues = Map(
       "gender" -> "Male",
@@ -82,5 +77,4 @@ class QuestionnaireDiversityFormSpec extends BaseSpec {
       invalidForm.errors.map(_.key) mustBe Seq(expectedKey)
     }
   }
-
 }

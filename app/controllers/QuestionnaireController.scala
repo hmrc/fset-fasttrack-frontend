@@ -19,7 +19,6 @@ package controllers
 import _root_.forms.{QuestionnaireDiversityInfoForm, QuestionnaireEducationInfoForm, QuestionnaireOccupationInfoForm}
 import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient
-import connectors.ExchangeObjects.Questionnaire
 import models.CachedDataWithApp
 import play.api.mvc.{Request, Result}
 import security.Roles.{DiversityQuestionnaireRole, EducationQuestionnaireRole, OccupationQuestionnaireRole, StartQuestionnaireRole}
@@ -73,7 +72,7 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
       val p = user.application.progress
       Future.successful((p.diversityQuestionnaire, p.educationQuestionnaire, p.occupationQuestionnaire) match {
         case (_, _, true) => Redirect(routes.SubmitApplicationController.present())
-        case (_, true, _) => Redirect(routes.QuestionnaireController.thirdPageView())
+//        case (_, true, _) => Redirect(routes.QuestionnaireController.thirdPageView())
 //        case (true, _, _) => Redirect(routes.QuestionnaireController.secondPageView())
 //        case (_, _, _) => Redirect(routes.QuestionnaireController.firstPageView())
       })
@@ -101,11 +100,12 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
           Future.successful(Ok(views.html.questionnaire.secondpage(errorForm)))
         },
         data => {
-          submitQuestionnaire(data.toQuestionnaire, "education_questionnaire")(Redirect(routes.QuestionnaireController.thirdPageView()))
+//          submitQuestionnaire(data.toQuestionnaire, "education_questionnaire")(Redirect(routes.QuestionnaireController.thirdPageView()))
+          ???
         }
       )
   }
-
+/*
   def thirdPageSubmit = CSRSecureAppAction(OccupationQuestionnaireRole) { implicit request =>
     implicit user =>
       QuestionnaireOccupationInfoForm.form.bindFromRequest.fold(
@@ -117,17 +117,15 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
         }
       )
   }
-
+*/
+/*
   def submitQuestionnaire(data: Questionnaire, sectionId: String)(onSuccess: Result)(
     implicit
     user: CachedDataWithApp, hc: HeaderCarrier, request: Request[_]
   ) = {
-/*
     updateQuestionnaire(user.application.applicationId, sectionId, data).flatMap { _ =>
       updateProgress()(_ => onSuccess)
     }
-*/
-    ???
   }
-
+*/
 }

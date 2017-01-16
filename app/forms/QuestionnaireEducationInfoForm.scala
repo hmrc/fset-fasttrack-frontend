@@ -16,7 +16,7 @@
 
 package forms
 
-import connectors.ExchangeObjects.{ Answer, Question, Questionnaire }
+import connectors.exchange.{ Questionnaire, Question, Answer }
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
@@ -31,8 +31,7 @@ object QuestionnaireEducationInfoForm {
       "preferNotSay_sixthForm" -> optional(checked(Messages("error.required.sixthForm"))),
       "postcodeQ" -> of(Mappings.fieldWithCheckBox(256)),
       "preferNotSay_postcodeQ" -> optional(checked(Messages("error.required.postcodeQ"))),
-      "freeSchoolMeals" -> Mappings.nonEmptyTrimmedText("error.required.freeSchoolMeals", 256),
-      "university" -> Mappings.nonEmptyTrimmedText("error.required.university", 256)
+      "freeSchoolMeals" -> Mappings.nonEmptyTrimmedText("error.required.freeSchoolMeals", 256)
     )(Data.apply)(Data.unapply)
   )
 
@@ -43,8 +42,7 @@ object QuestionnaireEducationInfoForm {
     preferNotSaySixthForm: Option[Boolean],
     postcode: Option[String],
     preferNotSayPostcode: Option[Boolean],
-    freeSchoolMeals: String,
-    university: String
+    freeSchoolMeals: String
   ) {
     def toQuestionnaire: Questionnaire = {
       val freeSchoolMealAnswer = freeSchoolMeals match {
@@ -52,18 +50,12 @@ object QuestionnaireEducationInfoForm {
         case _ => Answer(Some(freeSchoolMeals).sanitize, None, None)
       }
 
-      val universityAnswer = university match {
-        case "Unknown/prefer not to say" => Answer(None, None, Some(true))
-        case _ => Answer(Some(university).sanitize, None, None)
-      }
       Questionnaire(List(
         Question(Messages("schoolName.question"), Answer(schoolName, None, preferNotSaySchoolName)),
         Question(Messages("sixthForm.question"), Answer(sixthForm, None, preferNotSaySixthForm)),
         Question(Messages("postcode.question"), Answer(postcode, None, preferNotSayPostcode)),
-        Question(Messages("freeSchoolMeals.question"), freeSchoolMealAnswer),
-        Question(Messages("university.question"), universityAnswer)
+        Question(Messages("freeSchoolMeals.question"), freeSchoolMealAnswer)
       ))
     }
   }
-
 }

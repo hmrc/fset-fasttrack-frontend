@@ -45,31 +45,19 @@ class QuestionnaireEducationFormSpec extends BaseSpec {
       assertFieldRequired("freeSchoolMeals", "freeSchoolMeals")
     }
 
-    "fail when no university" in new Fixture {
-      assertFieldRequired("university", "university")
-    }
-
     "transform properly to a question list" in new Fixture {
       val questionList = validFormData.toQuestionnaire.questions
-      questionList.size must be(5)
-      questionList(0).answer.answer must be(Some("Some School"))
-      questionList(1).answer.answer must be(Some("sixth form"))
-      questionList(2).answer.unknown must be(Some(true))
-      questionList(3).answer.answer must be(Some("yes"))
-      questionList(4).answer.answer must be(Some("Some uni"))
+      questionList.size mustBe 4
+      questionList(0).answer.answer mustBe Some("Some School")
+      questionList(1).answer.answer mustBe Some("sixth form")
+      questionList(2).answer.unknown mustBe Some(true)
+      questionList(3).answer.answer mustBe Some("yes")
     }
-
   }
 
   trait Fixture {
 
-    val validFormData = Data(
-      Some("Some School"), None,
-      Some("sixth form"), None,
-      None, Some(true),
-      "yes",
-      "Some uni"
-    )
+    val validFormData = Data(Some("Some School"), None, Some("sixth form"), None, None, Some(true), "yes")
 
     val validFormValues = Map(
       "schoolName" -> "Some School",
@@ -78,8 +66,7 @@ class QuestionnaireEducationFormSpec extends BaseSpec {
       "preferNotSay_sixthForm" -> "",
       "postcodeQ" -> "",
       "preferNotSay_postcodeQ" -> "true",
-      "freeSchoolMeals" -> "yes",
-      "university" -> "Some uni"
+      "freeSchoolMeals" -> "yes"
     )
 
     def assertFieldRequired(expectedError: String, fieldKey: String*) =
@@ -91,5 +78,4 @@ class QuestionnaireEducationFormSpec extends BaseSpec {
       invalidForm.errors.map(_.key) mustBe Seq(expectedKey)
     }
   }
-
 }

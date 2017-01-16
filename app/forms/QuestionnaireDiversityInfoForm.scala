@@ -16,7 +16,7 @@
 
 package forms
 
-import connectors.ExchangeObjects.{ Answer, Question, Questionnaire }
+import connectors.exchange.{ Questionnaire, Question, Answer }
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
@@ -56,5 +56,4 @@ object QuestionnaireDiversityInfoForm {
       Question(Messages("ethnicity.question"), Answer(ethnicity, otherEthnicity, preferNotSayEthnicity))
     ))
   }
-
 }
