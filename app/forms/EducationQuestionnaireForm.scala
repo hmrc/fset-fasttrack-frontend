@@ -70,7 +70,6 @@ object EducationQuestionnaireForm {
                    freeSchoolMeals: Option[String]
                  ) {
 
-
     def exchange: Questionnaire = {
       def getAnswer(field: Option[String], preferNotToSayField: Option[Boolean], otherDetails: Option[String] = None) = {
         preferNotToSayField match {

@@ -16,12 +16,12 @@
 
 package forms
 
-import controllers.BaseSpec
-import forms.QuestionnaireEducationInfoForm.{Data, form}
+import controllers.UnitSpec
+import forms.DiversityQuestionnaireForm.{ Data, form }
 
-class QuestionnaireEducationFormSpec extends BaseSpec {
+class DiversityQuestionnaireFormSpec extends UnitSpec {
 
-  "the education form" should {
+  "The diversity questionnaire form" should {
     "be valid when all values are correct" in new Fixture {
       val validForm = form.bind(validFormValues)
       val expectedData = validFormData
@@ -29,44 +29,41 @@ class QuestionnaireEducationFormSpec extends BaseSpec {
       actualData mustBe expectedData
     }
 
-    "fail when no schoolName" in new Fixture {
-      assertFieldRequired("schoolName", "schoolName")
+    "fail when no gender" in new Fixture {
+      assertFieldRequired(expectedError = "gender", "gender")
     }
 
-    "fail when no sixthForm" in new Fixture {
-      assertFieldRequired("sixthForm", "sixthForm")
+    "fail when no orientation" in new Fixture {
+      assertFieldRequired(expectedError = "sexOrientation", "sexOrientation")
     }
 
-    "fail when no postcode" in new Fixture {
-      assertFieldRequired("postcodeQ", "postcodeQ", "preferNotSay_postcodeQ")
-    }
-
-    "fail when no freeSchoolMeals" in new Fixture {
-      assertFieldRequired("freeSchoolMeals", "freeSchoolMeals")
+    "fail when no ethnicity" in new Fixture {
+      assertFieldRequired(expectedError = "ethnicity", "other_ethnicity", "preferNotSay_ethnicity")
     }
 
     "transform properly to a question list" in new Fixture {
-      val questionList = validFormData.toQuestionnaire.questions
-      questionList.size mustBe 4
-      questionList(0).answer.answer mustBe Some("Some School")
-      questionList(1).answer.answer mustBe Some("sixth form")
+      val questionList = validFormData.exchange.questions
+      questionList.size mustBe 3
+      questionList(0).answer.answer mustBe Some("Male")
+      questionList(1).answer.otherDetails mustBe Some("details")
       questionList(2).answer.unknown mustBe Some(true)
-      questionList(3).answer.answer mustBe Some("yes")
     }
   }
 
   trait Fixture {
 
-    val validFormData = Data(Some("Some School"), None, Some("sixth form"), None, None, Some(true), "yes")
+    val validFormData = Data("Male", None, "Other", Some("details"), None, None, Some(true))
 
     val validFormValues = Map(
-      "schoolName" -> "Some School",
-      "preferNotSay_schoolName" -> "",
-      "sixthForm" -> "sixth form",
-      "preferNotSay_sixthForm" -> "",
-      "postcodeQ" -> "",
-      "preferNotSay_postcodeQ" -> "true",
-      "freeSchoolMeals" -> "yes"
+      "gender" -> "Male",
+      "other_gender" -> "",
+
+      "sexOrientation" -> "Other",
+      "other_sexOrientation" -> "details",
+
+      "ethnicity" -> "",
+      "other_ethnicity" -> "",
+      "preferNotSay_ethnicity" -> "true"
     )
 
     def assertFieldRequired(expectedError: String, fieldKey: String*) =
