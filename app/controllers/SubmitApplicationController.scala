@@ -16,18 +16,19 @@
 
 package controllers
 
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient
 import connectors.ApplicationClient.CannotSubmit
 import helpers.NotificationType._
 import models.ApplicationData.ApplicationStatus.SUBMITTED
 import models.CachedData
-import security.Roles.{ SubmitApplicationRole, WithdrawApplicationRole }
+import security.Roles.{SubmitApplicationRole, WithdrawApplicationRole}
 
 import scala.concurrent.Future
 
 object SubmitApplicationController extends SubmitApplicationController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait SubmitApplicationController extends BaseController with ApplicationClient {

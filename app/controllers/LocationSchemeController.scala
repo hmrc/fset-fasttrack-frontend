@@ -16,10 +16,10 @@
 
 package controllers
 
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient
 import play.api.libs.json.Json
-import play.api.mvc.{ Action, AnyContent }
+import play.api.mvc.{Action, AnyContent}
 import security.Roles.SchemesRole
 
 trait LocationSchemeController extends BaseController {
@@ -39,4 +39,5 @@ trait LocationSchemeController extends BaseController {
 object LocationSchemeController extends LocationSchemeController {
   val http = CSRHttp
   val applicationClient = ApplicationClient
+  override val cacheClient: CSRCache = CSRCache
 }

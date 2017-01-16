@@ -63,16 +63,15 @@ package object forms {
   }
 
   // scalastyle:off cyclomatic.complexity
-  def requiredFormatterWithValidationCheckAndSeparatePreferNotToSay(
-         requiredKey: String,
-         key: String,
-         keyPreferNotToSay: String,
-         maxLength: Option[Int],
-         msgRequiredError: Option[String] = None
-       )(
-         implicit invalidFn: (String => Boolean) = inputValue => maxLength.exists(_ < inputValue.trim.length),
-         validationErrorKey:String = s"error.$key.maxLength"
-       ) = new Formatter[Option[String]] {
+  def requiredFormatterWithValidationCheckAndSeparatePreferNotToSay(requiredKey: String,
+                                                                    key: String,
+                                                                    keyPreferNotToSay: String,
+                                                                    maxLength: Option[Int],
+                                                                    msgRequiredError: Option[String] = None
+                                                                   )(implicit invalidFn: (String => Boolean) =
+                                                                     inputValue => maxLength.exists(_ < inputValue.trim.length),
+                                                                     validationErrorKey:String = s"error.$key.maxLength"
+                                                                   ) = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val requiredField: Option[String] = if (data.isEmpty) None else data.get(requiredKey)
       val keyField: Option[String] = if (data.isEmpty) None else data.get(key).map(_.trim)

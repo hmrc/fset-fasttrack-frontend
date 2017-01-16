@@ -94,58 +94,83 @@ $(function() {
   });
 
   $(".block-label").each(function(){
-    var $target = $(this).attr('data-target');
+      var $target = $(this).attr('data-target');
 
-    // Add focus
-    $(".block-label input").focus(function() {
-      $("label[for='" + this.id + "']").addClass("add-focus");
-      }).blur(function() {
-      $("label").removeClass("add-focus");
+      // Add focus
+      $(".block-label input").focus(function() {
+        $("label[for='" + this.id + "']").addClass("add-focus");
+        }).blur(function() {
+        $("label").removeClass("add-focus");
+      });
+      // Add selected class
+      $('input:checked').parent().addClass('selected');
+
+      if($(this).hasClass('selected')) {
+        $('#' + $target).show();
+      }
     });
-    // Add selected class
-    $('input:checked').parent().addClass('selected');
 
-    if($(this).hasClass('selected')) {
-      $('#' + $target).show();
+    // Add/remove selected class
+    function blockLabelClick() {
+      $('html').on('click', '.block-label input[type=radio], .block-label input[type=checkbox]', function() {
+        var $this   = $(this),
+            $target = $this.parent().attr('data-target'),
+            $siblingArray = [],
+            $siblingTarget = '',
+            $disTarget = $.trim($this.parent().attr('data-distarget')).split(" "),
+            $theTargetControl = '';
+
+        $this.closest('.form-group').find('.block-label').not($this.parent()).each(function() {
+          $siblingArray.push('#' + $(this).attr('data-target'));
+          $siblingTarget = $siblingArray.join(", ");
+        });
+
+        if($disTarget.length > 1) {
+          var multipleTargets = $($disTarget.join(", "));
+          $theTargetControl = multipleTargets;
+        } else {
+          $theTargetControl = $('#' + $disTarget);
+        }
+
+        $('input:not(:checked)').parent().removeClass('selected');
+        $('input:checked').parent().addClass('selected');
+
+        if($this.is('input[type=checkbox]')) {
+          if($this.is(':checked')) {
+            $('#' + $target).show();
+          } else {
+            $('#' + $target).hide();
+          }
+        } else {
+          if($target == undefined) {
+            $this.closest('.form-group').siblings('.toggle-content').hide().attr('aria-hidden', true);
+            $this.closest('.form-group').find('[aria-expanded]').attr('aria-expanded', false);
+          } else {
+            $('#' + $target).show();
+            $($siblingTarget).hide().attr('aria-hidden', true);
+
+            if($this.closest('.form-group').hasClass('blocklabel-single')) {
+
+              $this.closest('.blocklabel-single-container').find('.blocklabel-content').not('#' + $target).hide();
+            }
+          }
+        }
+
+        if($disTarget && !$theTargetControl.attr('disabled')) {
+          $theTargetControl.attr('disabled', true);
+          if($theTargetControl.attr('type') == 'text') {
+            $theTargetControl.val('');
+          } else if($theTargetControl.is('select')) {
+            $theTargetControl.find('> option:first-of-type').attr('selected', true);
+          }
+        } else if($disTarget && $theTargetControl.attr('disabled')) {
+          $theTargetControl.attr('disabled', false);
+        }
+
+      });
     }
-  });
 
-  // Add/remove selected class
-  $('.block-label').on('click', 'input[type=radio], input[type=checkbox]', function() {
-    var $this   = $(this),
-        $target = $this.parent().attr('data-target'),
-        $disTarget = $this.parent().attr('data-distarget'),
-        $theTargetControl = $('#' + $disTarget);
-
-    $('input:not(:checked)').parent().removeClass('selected');
-    $('input:checked').parent().addClass('selected');
-
-    if($target == undefined) {
-      $this.closest('.form-group').next('.toggle-content').hide().attr('aria-hidden', true);
-      $this.closest('.form-group').find('[aria-expanded]').attr('aria-expanded', false);
-      $this.closest('.form-group').next('.toggle-content').find('[data-requiredifshown] input').attr('required', false);
-    } else {
-      $('#' + $target).show();
-      $('#' + $target).find('[data-requiredifshown] input').attr('required', true);
-
-      if($this.closest('.form-group').hasClass('blocklabel-single')) {
-
-        $this.closest('.blocklabel-single-container').find('.blocklabel-content').not('#' + $target).hide();
-      }
-    }
-
-    if($disTarget && !$theTargetControl.attr('disabled')) {
-      $theTargetControl.attr('disabled', true);
-      if($theTargetControl.attr('type') == 'text') {
-        $theTargetControl.val('');
-      } else if($theTargetControl.is('select')) {
-        $theTargetControl.find('> option:first-of-type').attr('selected', true).trigger("change");
-      }
-    } else if($disTarget && $theTargetControl.attr('disabled')) {
-      $theTargetControl.attr('disabled', false);
-    }
-
-  });
+    blockLabelClick();
 
   $('.selectWithOptionTrigger').on('change', function() {
     var optionTrigger = $(this).find('.optionTrigger'),

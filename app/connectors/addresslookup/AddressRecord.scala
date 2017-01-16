@@ -31,7 +31,8 @@ import play.api.libs.json.Json
 case class LocalCustodian(code: Int, name: String)
 
 object LocalCustodian {
-  implicit val reads = Json.reads[LocalCustodian]
+  implicit val localCustodianReads = Json.reads[LocalCustodian]
+  implicit val localCustodianWrites = Json.writes[LocalCustodian]
 }
 
 /** Represents a country as per ISO3166. */
@@ -46,6 +47,7 @@ case class Country(
 
 object Country {
   implicit val countryReads = Json.reads[Country]
+  implicit val countryWrites = Json.writes[Country]
 }
 
 case class Outcode(area: String, district: String) {
@@ -109,7 +111,8 @@ case class Address(lines: List[String],
 }
 
 object Address {
-  implicit val addressFormat = Json.reads[Address]
+  implicit val addressReadFormat = Json.reads[Address]
+  implicit val addressWriteFormat = Json.writes[Address]
 }
 
 case class LatLong(lat: Double, long: Double) {
@@ -136,5 +139,6 @@ case class AddressRecord(
 }
 
 object AddressRecord {
-  implicit val addressRecordFormat = Json.reads[AddressRecord]
+  implicit val addressRecordReadFormat = Json.reads[AddressRecord]
+  implicit val addressRecordWriteFormat = Json.writes[AddressRecord]
 }

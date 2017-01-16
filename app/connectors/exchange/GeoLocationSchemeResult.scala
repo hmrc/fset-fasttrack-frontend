@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.forms
+package connectors.exchange
 
-import controllers.BaseSpec
-import forms.ResetPasswordForm
+import play.api.libs.json.Json
 
-class resetPasswordFormSpec extends BaseSpec {
+case class GeoLocationSchemeResult(locationId: String, locationName: String, distanceKm: Option[Double], schemes: List[SchemeInfo])
 
-  "the validate method" should {
-    "validate an email" in {
-      ResetPasswordForm.validateEmail("test@test.com") must be(true)
-    }
-
-    "return false on invalid email" in {
-      ResetPasswordForm.validateEmail("not_an_email") must be(false)
-    }
-  }
-
+object GeoLocationSchemeResult {
+  implicit val geoLocationSchemesFormat = Json.format[GeoLocationSchemeResult]
 }

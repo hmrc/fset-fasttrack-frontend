@@ -9,27 +9,27 @@
 
     @helper.form(action = routes.SignUpController.signUp(), 'novalidate -> "novalidate") {
         @helper.CSRF.formField
-        
+
         <!-- The following will stop browsers from trying to autofill the username and password fields in the create account page -->
         <input type="text" title="Hidden username" class="alwayshidden">
         <input type="password" name="Hidden password" class="alwayshidden">
         <!-- End -->
-        
+
         <section class="section-border">
             <h2 class="heading-large">Name and email</h2>
-            @helper.inputText(signUpForm("firstName"), 
-                '_label -> "First name", 
-                'class -> "form-control", 
+            @helper.inputText(signUpForm("firstName"),
+                '_label -> "First name",
+                'class -> "form-control",
                 '_class -> "form-group-compound",
                 '_showConstraints -> false)
             @helper.inputText(signUpForm("lastName"),
-                '_label -> "Last name", 
-                'class -> "form-control", 
+                '_label -> "Last name",
+                'class -> "form-control",
                 '_showConstraints -> false)
-            @helper.inputText(signUpForm("email"), 
+            @helper.inputText(signUpForm("email"),
                 '_label -> "Email",
-                '_help -> "You'll need this to sign in to your account", 
-                'class -> "form-control", 
+                '_help -> "You'll need this to sign in to your account",
+                'class -> "form-control",
                 '_class -> "form-group-compound",
                 'type -> "email",
                 '_showConstraints -> false,
@@ -43,12 +43,12 @@
         </section>
         <section class="section-border">
             <h2 class="heading-large">Set your password</h2>
-            @helper.inputPassword(signUpForm("password"), 
+            @helper.inputPassword(signUpForm("password"),
                 'class -> "form-control new-password",
                 '_label -> "Create password",
                 '_help -> "Requires upper and lowercase letters, a number and at least 9 characters")
-            @helper.inputPassword(signUpForm("confirmpwd"), 
-                '_label -> "Confirm password", 
+            @helper.inputPassword(signUpForm("confirmpwd"),
+                '_label -> "Confirm password",
                 'class -> "form-control",
                 '_showConstraints -> false)
         </section>
@@ -96,7 +96,7 @@
         <section>
             <h2 class="heading-large">Terms and conditions</h2>
             @checkbox(signUpForm("agree")) {
-                I accept the <a href="@routes.Application.terms()" target="_blank">terms and conditions</a>
+                I accept the <a href="@routes.ApplicationController.terms()" target="_blank">terms and conditions</a>
             }
         </section>
 

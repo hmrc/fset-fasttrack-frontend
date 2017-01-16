@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.forms
+package forms
 
 import controllers.BaseSpec
-import forms.GeneralDetailsForm
 import forms.GeneralDetailsForm.Data
-import mappings.{ Address, DayMonthYear }
+import mappings.{Address, DayMonthYear}
 import org.joda.time.LocalDate
 
 class GeneralDetailsFormSpec extends BaseSpec {

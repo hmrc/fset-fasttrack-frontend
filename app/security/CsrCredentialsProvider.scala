@@ -61,3 +61,7 @@ trait CsrCredentialsProvider extends Provider with UserManagementClient {
   }
 
 }
+
+object CredentialsProvider {
+  val ID = "credentials"
+}

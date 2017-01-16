@@ -51,12 +51,13 @@
 }
 
 
-@renderProgressElement(showLink: Boolean, checked: Boolean)(link: Call)(body: Html) = {
-    <li><i class='fa @if(checked) { fa-check } else {fa-minus} the-icon'></i> @if(showLink) {
-        <a href="@link">@body</a>
+@renderProgressElement(showLink: Boolean, checked: Boolean, id: String)(link: Call)(body: Html) = {
+    <li id="@id"><i id="@id-icon" class='fa @if(checked) { fa-check } else {fa-minus} the-icon'></i> @if(showLink) {
+    <a id="@id-link" href="@link">@body</a>
     } else {
-        @body
-    } </li>
+    @body
+    }
+    </li>
 }
 
 @setVisibility(visibility: ProgressStepVisibility) = @{
@@ -79,21 +80,21 @@
                 <div class="grid-wrapper">
                     <div class="grid grid-2-3">
                         <div class="inner-block-padr">
-                            <h2 class='@inProgress() {heading-large} @inProgress(false) {heading-medium} '>
+                            <h2 class='@inProgress() {heading-large} @inProgress(flag = false) {heading-medium} '>
                                 1. Fill in your application form</h2>
-                            @withdrawn(false) {
+                            @withdrawn(flag = false) {
                                 <ul class="list-text list-withicons">
                                     @withdraw() {
                                         <li><i class='fa fa-check the-icon'></i>Your application has been submitted</li>
                                     }
-                                    @withdraw(false) {
-                                        @renderProgressElement(showLink = PersonalDetailsRole.isAuthorized(usr), checked = SchemesRole.isAuthorized(usr))(routes.FastTrackApplication.generalDetails(None)) {Add personal details }
-                                        @renderProgressElement(showLink = SchemesRole.isAuthorized(usr), checked = AssistanceRole.isAuthorized(usr))(routes.SchemeController.schemeLocations()) { Choose locations and schemes }
-                                        @renderProgressElement(showLink = AssistanceRole.isAuthorized(usr), checked = ReviewRole.isAuthorized(usr))(routes.AssistanceController.present()) { Tell us about any assistance needs you may have }
-                                        @renderProgressElement(showLink = ReviewRole.isAuthorized(usr), checked = (SubmitApplicationRole.isAuthorized(usr) || StartQuestionnaireRole.isAuthorized(usr)))(routes.ReviewApplicationController.present()) { Check your application }
-                                        @*renderProgressElement(showLink = QuestionnaireInProgressRole.isAuthorized(usr), checked = SubmitApplicationRole.isAuthorized(usr))(routes.QuestionnaireController.start()) { Fill in the diversity questions }*@
-                                        @renderProgressElement(showLink = QuestionnaireInProgressRole.isAuthorized(usr), checked = SubmitApplicationRole.isAuthorized(usr))(routes.QuestionnaireControllerV2.start()) { Fill in the diversity questions }
-                                        @renderProgressElement(showLink = SubmitApplicationRole.isAuthorized(usr), checked = WithdrawApplicationRole.isAuthorized(usr))(routes.SubmitApplicationController.present()) { Submit }
+                                    @withdraw(flag = false) {
+                                        @renderProgressElement(showLink = PersonalDetailsRole.isAuthorized(usr), checked = SchemesRole.isAuthorized(usr), "personalDetailsStep")(routes.FastTrackApplication.generalDetails(None)) {Add personal details }
+                                        @renderProgressElement(showLink = SchemesRole.isAuthorized(usr), checked = AssistanceDetailsRole.isAuthorized(usr), "schemesStep")(routes.SchemeController.schemeLocations()) { Choose locations and schemes }
+                                        @renderProgressElement(showLink = AssistanceDetailsRole.isAuthorized(usr), checked = ReviewRole.isAuthorized(usr), "assistanceDetailsStep")(routes.AssistanceDetailsController.present()) { Tell us about any assistance needs you may have }
+                                        @renderProgressElement(showLink = ReviewRole.isAuthorized(usr), checked = (SubmitApplicationRole.isAuthorized(usr) || StartQuestionnaireRole.isAuthorized(usr)), "reviewStep")(routes.ReviewApplicationController.present()) { Check your application }
+                                        @*renderProgressElement(showLink = QuestionnaireInProgressRole.isAuthorized(usr), checked = SubmitApplicationRole.isAuthorized(usr), "questionnaireStep")(routes.QuestionnaireController.start()) { Fill in the diversity questions }*@
+                                        @renderProgressElement(showLink = QuestionnaireInProgressRole.isAuthorized(usr), checked = SubmitApplicationRole.isAuthorized(usr), "questionnaireStep")(routes.QuestionnaireControllerV2.start()) { Fill in the diversity questions }
+                                        @renderProgressElement(showLink = SubmitApplicationRole.isAuthorized(usr), checked = WithdrawApplicationRole.isAuthorized(usr), "submitStep")(routes.SubmitApplicationController.present()) { Submit }
                                     }
                                 </ul>
                             }
@@ -158,7 +159,7 @@
                                             <br><a href="https://www.gov.uk/government/publications/fast-track-assessment-centre-locations" class="font-small" rel="external" target="_blank">See the locations</a>
                                         </p>
                                         <p>
-                                            If you're unable to attend, <a href="@routes.Application.helpdesk()" class="">let us know</a>.
+                                            If you're unable to attend, <a href="@routes.ApplicationController.helpdesk()" class="">let us know</a>.
                                         </p>
                                         <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#assessment-day" rel="external" target="_blank">
                                             Find out more about the assessment day</a></p>
@@ -170,7 +171,7 @@
                                                 <p>
                                                     <i class="fa fa-exclamation-triangle"></i>You failed to confirm your assessment centre in time.</p>
                                                 <p>
-                                                    <a href="@routes.Application.helpdesk()">Contact us</a> to discuss your options if you're still interested in attending an assessment centre.
+                                                    <a href="@routes.ApplicationController.helpdesk()">Contact us</a> to discuss your options if you're still interested in attending an assessment centre.
                                                 </p>
                                             } else {
                                                 <p>Your assessment is booked for </p>
@@ -194,7 +195,7 @@
                                                         </span>
                                                     }
 
-                                                    If you're unable to attend, <a href="@routes.Application.helpdesk()" class="">let us know</a>.
+                                                    If you're unable to attend, <a href="@routes.ApplicationController.helpdesk()" class="">let us know</a>.
                                                 </p>
                                                 <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#assessment-day" rel="external" target="_blank">
                                                     Find out more about the assessment day</a></p>
@@ -216,7 +217,7 @@
                                                 <p>We recommend you don't resign from any employment until you've received a formal offer of appointment. If you withdraw your application, it won't be possible to re-instate your application at a later date.</p>
                                             } else {
                                                 @if(AssessmentCentreFailedToAttendRole.isAuthorized(usr)) {
-                                                    <p>You did not attend your assessment. <a href="@routes.Application.helpdesk()">Contact us</a> to discuss your options if you're still interested in applying.</p>
+                                                    <p>You did not attend your assessment. <a href="@routes.ApplicationController.helpdesk()">Contact us</a> to discuss your options if you're still interested in applying.</p>
                                                 } else {
                                                     <p>If you pass the online tests, you'll be invited to attend an assessment centre.</p>
                                                     <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#assessment-day" rel="external" target="_blank">

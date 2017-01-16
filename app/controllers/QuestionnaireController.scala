@@ -16,13 +16,13 @@
 
 package controllers
 
-import _root_.forms.{ QuestionnaireDiversityInfoForm, QuestionnaireEducationInfoForm, QuestionnaireOccupationInfoForm }
-import config.CSRHttp
+import _root_.forms.{QuestionnaireDiversityInfoForm, QuestionnaireEducationInfoForm, QuestionnaireOccupationInfoForm}
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient
 import connectors.ExchangeObjects.Questionnaire
 import models.CachedDataWithApp
-import play.api.mvc.{ Request, Result }
-import security.Roles.{ DiversityQuestionnaireRole, EducationQuestionnaireRole, OccupationQuestionnaireRole, StartQuestionnaireRole }
+import play.api.mvc.{Request, Result}
+import security.Roles.{DiversityQuestionnaireRole, EducationQuestionnaireRole, OccupationQuestionnaireRole, StartQuestionnaireRole}
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -30,6 +30,7 @@ import scala.language.reflectiveCalls
 
 object QuestionnaireController extends QuestionnaireController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait QuestionnaireController extends BaseController with ApplicationClient {

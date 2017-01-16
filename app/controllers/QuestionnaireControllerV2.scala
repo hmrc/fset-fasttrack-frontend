@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.CSRHttp
+import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import _root_.forms._
 import connectors.exchange.Questionnaire
@@ -30,6 +30,7 @@ import scala.language.reflectiveCalls
 
 object QuestionnaireControllerV2 extends QuestionnaireControllerV2 {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait QuestionnaireControllerV2 extends BaseController with ApplicationClient {

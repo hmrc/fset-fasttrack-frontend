@@ -16,19 +16,20 @@
 
 package controllers
 
-import _root_.forms.{ RequestResetPasswordForm, ResetPasswordForm, SignInForm }
+import _root_.forms.{RequestResetPasswordForm, ResetPasswordForm, SignInForm}
 import com.mohiva.play.silhouette.api.util.Credentials
-import config.CSRHttp
+import config.{CSRCache, CSRHttp}
 import connectors.ApplicationClient
-import connectors.UserManagementClient.{ InvalidEmailException, TokenEmailPairInvalidException, TokenExpiredException }
+import connectors.UserManagementClient.{InvalidEmailException, TokenEmailPairInvalidException, TokenExpiredException}
 import helpers.NotificationType._
 import models.CachedData
-import security.{ InvalidRole, SignInUtils }
+import security.{InvalidRole, SignInUtils}
 
 import scala.concurrent.Future
 
 object PasswordResetController extends PasswordResetController {
   val http = CSRHttp
+  val cacheClient = CSRCache
 }
 
 trait PasswordResetController extends BaseController with ApplicationClient with SignInUtils {
