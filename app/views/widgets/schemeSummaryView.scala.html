@@ -12,21 +12,21 @@
 
 <section class="section-border" id="choiceInfo">
     <h2 class="heading-large">
-        <span class="sectionTitle">Locations and scheme</span>
+        <span class="sectionTitle">Schemes and locations</span>
         @edit
     </h2>
-
-    <section>
-        <h2>Scheme Locations</h2>
-    @for(schemeLocation <- schemeLocations) {
-        <p>@schemeLocation.locationName</p>
-    }
-    </section>
 
     <section>
         <h2>Schemes</h2>
     @for(scheme <- schemes) {
         <p>@scheme.name</p>
     }
+    </section>
+
+    <section>
+        <h2>Scheme Locations</h2>
+        @for(schemeLocation <- schemeLocations) {
+        <p>@schemeLocation.locationName</p>
+        }
     </section>
 </section>

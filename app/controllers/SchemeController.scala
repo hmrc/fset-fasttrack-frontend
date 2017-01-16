@@ -40,6 +40,16 @@ trait SchemeController extends BaseController {
   val schemeLocationForm = SchemeLocationPreferenceForm.form
   val schemeForm = SchemePreferenceForm.form
 
+  def schemes = CSRSecureAppAction(SchemesRole) { implicit request =>
+    implicit cachedData =>
+      applicationClient.getSchemeChoices(cachedData.application.applicationId).flatMap {
+        schemes => displaySchemes(
+          schemeForm.fill(SchemePreferenceForm.Data(schemes.map(_.id), orderAgreed = true, eligible = true)))
+      }.recoverWith {
+        case _: SchemePreferencesNotFound => displaySchemes(schemeForm)
+      }
+  }
+
   def schemeLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
       applicationClient.getSchemeLocationChoices(cachedData.application.applicationId).flatMap {
@@ -50,14 +60,16 @@ trait SchemeController extends BaseController {
       }
   }
 
-  def schemes = CSRSecureAppAction(SchemesRole) { implicit request =>
+  def submitSchemes = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
-      applicationClient.getSchemeChoices(cachedData.application.applicationId).flatMap {
-        schemes => displaySchemes(
-          schemeForm.fill(SchemePreferenceForm.Data(schemes.map(_.id), orderAgreed = true)))
-      }.recoverWith {
-        case _: SchemePreferencesNotFound => displaySchemes(schemeForm)
-      }
+      schemeForm.bindFromRequest.fold(
+        displaySchemes,
+        schemeForm => {
+          applicationClient.saveSchemeChoices(cachedData.application.applicationId, schemeForm.schemes).flatMap { _ =>
+            updateProgress()(_ => Redirect(routes.SchemeController.schemeLocations()))
+          }
+        }
+      )
   }
 
   def submitLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
@@ -66,18 +78,6 @@ trait SchemeController extends BaseController {
         displaySchemeLocations,
         locationsForm => {
           applicationClient.saveLocationChoices(cachedData.application.applicationId, locationsForm.locationIds).flatMap { _ =>
-            updateProgress()(_ => Redirect(routes.SchemeController.schemes()))
-          }
-        }
-      )
-  }
-
-  def submitSchemes = CSRSecureAppAction(SchemesRole) { implicit request =>
-    implicit cachedData =>
-      schemeForm.bindFromRequest.fold(
-        displaySchemes,
-        schemeForm => {
-          applicationClient.saveSchemeChoices(cachedData.application.applicationId, schemeForm.schemes).flatMap { _ =>
             updateProgress()(_ => Redirect(routes.AssistanceDetailsController.present()))
           }
         }
@@ -88,17 +88,16 @@ trait SchemeController extends BaseController {
                                     (implicit request: Request[_], cachedData: CachedDataWithApp) = {
     for {
       personalDetails <- applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId)
-      schemeLocations <- applicationClient.getSchemesAndLocationsByEligibility(personalDetails.aLevel,
-        personalDetails.stemLevel, None, None)
+      schemeLocations <- applicationClient.getEligibleSchemeLocations(cachedData.application.applicationId, None, None)
     } yield {
       val viewModel = SchemeLocationsViewModel(personalDetails.aLevel, personalDetails.stemLevel)
-      Ok(views.html.application.scheme.wherecouldyouwork(form, viewModel, personalDetails, schemeLocations))
+      Ok(views.html.application.scheme.chooseyourlocations(form, viewModel, personalDetails, schemeLocations))
     }
   }
 
   private def displaySchemes(form: Form[SchemePreferenceForm.Data])
                                     (implicit request: Request[_], cachedData: CachedDataWithApp) = {
-    applicationClient.getSchemesAvailable(cachedData.application.applicationId).map { availableSchemes =>
+    applicationClient.getEligibleSchemes(cachedData.application.applicationId).map { availableSchemes =>
       val viewModel = SchemePreferenceViewModel(availableSchemes.distinct)
       Ok(views.html.application.scheme.chooseyourschemes(form, viewModel))
     }

@@ -20,13 +20,28 @@
     }
 }
 
-@main_template(title = "Where could you work from?", pageForms = Seq(locationForm), None, List("location-finder.js")) {
+@main_template(title = "Choose your preferred locations?", pageForms = Seq(locationForm), None, List("location-finder.js")) {
 
     @helper.form(action = routes.SchemeController.submitLocations(), 'novalidate -> "novalidate") {
         @helper.CSRF.formField
-        <h1 class="heading-xlarge">Where could you work from?</h1>
-
         <input type="text" id="hiddenInput" class="visuallyhidden">
+        <div class="grid-wrapper">
+            <div class="grid grid-2-3">
+                <h1 class="heading-xlarge">Choose your preferred locations</h1>
+            </div>
+            <div class="grid grid-1-3">
+            </div>
+        </div>
+        <div class="panel-info standard-panel">
+            <div class="text">
+                <p>We'll try and place you in your preferred schemes in the locations
+                    you select, in preference order.</p>
+                <p>However, scheme availability can vary and we can't guarantee that the
+                    schemes you've selected will be available in your preferred locations.</p>
+                <p>It's important to select each location that you could realistically
+                    work from, either by commuting or relocating.</p>
+            </div>
+        </div>
         <div class="grid-wrapper">
             <section class="grid grid-1-2">
                 <div class="inner-block-padr">

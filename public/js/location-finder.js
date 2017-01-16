@@ -7,14 +7,13 @@ $(function(){
         return this;
     };
 
-    function loadLocationsJson(callback, hasALevels, hasStemALevels, latitude, longitude) {
-        var locationsUrl = "/fset-fast-track/application/schemes/by-eligibility";
+    function loadLocationsJson(callback, latitude, longitude) {
+        var locationsUrl = "/fset-fast-track/application/scheme-locations/eligible";
         var latLongParams = "";
         if (typeof latitude !== "undefined" && typeof longitude !== "undefined") {
-            latLongParams = "&latitudeOpt=" + latitude + "&longitudeOpt=" + longitude;
+            latLongParams = "?latitudeOpt=" + latitude + "&longitudeOpt=" + longitude;
         }
-        var urlParams = "hasALevels=" + hasALevels + "&hasStemALevels=" + hasStemALevels + latLongParams;
-        $.getJSON(locationsUrl + "?" + urlParams, function(data) {
+        $.getJSON(locationsUrl + latLongParams, function(data) {
             callback(data);
         });
     }
@@ -69,16 +68,7 @@ $(function(){
         }
     };
 
-    var sic = $('#scheme-input-container');
-
-    if (sic.length) {
-        loadLocationsFromPostCode(
-         sic.attr('data-hasALevels'),
-         sic.attr('data-hasStemALevels')
-        )
-    }
-
-    function loadLocationsFromPostCode(hasALevels, hasStemALevels) {
+    function loadLocationsFromPostCode() {
         $('#loadingLocations').removeClass('toggle-content');
         $('#noLocationsFound').addClass('toggle-content');
 
@@ -91,10 +81,10 @@ $(function(){
         $.getJSON(addressLookupUrl, function(data) {
             // TODO: Implement the logic to parse latitude and longitude
             console.log(data)
-            loadLocationsJson(locationsCallback, hasALevels, hasStemALevels);
+            loadLocationsJson(locationsCallback);
         }).fail(function(xhr, textStatus, error ) {
             console.log( "Request Failed: " +  textStatus + ", " + error);
-            if(locations.length === 0) loadLocationsJson(locationsCallback, hasALevels, hasStemALevels);
+            if(locations.length === 0) loadLocationsJson(locationsCallback);
         }).always(function(){
             $('#loadingLocations').addClass('toggle-content');
         });
@@ -135,7 +125,7 @@ $(function(){
 
     $('#updateLocation').on('click', function(e) {
         $('#updateLocationWrapper').slideUp(300);
-        setTimeout(loadLocationsFromPostCode(sic.attr('data-hasALevels'), sic.attr('data-hasStemALevels')), 300);
+        setTimeout(loadLocationsFromPostCode(), 300);
         e.preventDefault();
     });
 
@@ -146,7 +136,7 @@ $(function(){
         }
         if(e.which == 13 && searchByPostcode) {
             $('#updateLocationWrapper').slideUp(300);
-            setTimeout(loadLocationsFromPostCode(sic.attr('data-hasALevels'), sic.attr('data-hasStemALevels')), 300);
+            setTimeout(loadLocationsFromPostCode(), 300);
         }
     });
 
@@ -157,6 +147,7 @@ $(function(){
           return false;
         }
       });
+      loadLocationsFromPostCode();
     });
 
     var schemePrefArray = ['Empty'],

@@ -25,12 +25,10 @@ import security.Roles.SchemesRole
 trait LocationSchemeController extends BaseController {
   val applicationClient: ApplicationClient
 
-  def getSchemesAndLocationsByEligibility(hasALevels: Boolean,
-                                          hasStemALevels: Boolean,
-                                          latitudeOpt: Option[Double],
-                                          longitudeOpt: Option[Double]): Action[AnyContent] = CSRSecureAppAction(SchemesRole) {
+  def getEligibleSchemeLocations(latitudeOpt: Option[Double],
+                                 longitudeOpt: Option[Double]): Action[AnyContent] = CSRSecureAppAction(SchemesRole) {
     implicit request => implicit cachedData =>
-    applicationClient.getSchemesAndLocationsByEligibility(hasALevels, hasStemALevels, latitudeOpt, longitudeOpt).map { resp =>
+    applicationClient.getEligibleSchemeLocations(cachedData.application.applicationId, latitudeOpt, longitudeOpt).map { resp =>
       Ok(Json.toJson(resp))
     }
   }
