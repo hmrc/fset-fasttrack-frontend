@@ -90,7 +90,7 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
                 ),
                 application = data.application.map(_.copy(applicationStatus = IN_PROGRESS))
               ))(_ =>
-              Redirect(routes.SchemeController.schemeLocations()))
+              Redirect(routes.SchemeController.schemes()))
           } yield {
             redirect
           }) recover {

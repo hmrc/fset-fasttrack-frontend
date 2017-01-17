@@ -28,7 +28,8 @@ object SchemePreferenceForm {
   val form = Form(
     mapping(
       "schemes" -> of(schemesFormatter("schemes")),
-      "orderAgreed" -> checked(Messages("orderAgreed.required"))
+      "orderAgreed" -> checked(Messages("orderAgreed.required")),
+      "eligible" -> checked(Messages("eligible.required"))
     )(Data.apply)(Data.unapply)
   )
 
@@ -64,6 +65,7 @@ object SchemePreferenceForm {
 
   case class Data(
     schemes: List[String],
-    orderAgreed: Boolean
+    orderAgreed: Boolean,
+    eligible: Boolean
   )
 }

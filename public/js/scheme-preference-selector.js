@@ -17,13 +17,15 @@ $(function(){
                 thisSchemeValue = $this.attr('value'),
                 schemeReq = $this.closest('.scheme-container').find(
                     '[data-scheme-req]').html(),
+                specialSchemeReq = $this.closest('.scheme-container').find(
+                    '[data-spec-scheme]').html(),
                 isSpecial = $this.closest('.scheme-container').find(
                     '[data-spec-scheme]').length,
                 specialEligibility = isSpecial == 0 ?
                     '<p class="font-xsmall no-btm-margin">Requires at least ' +
                     schemeReq + '</p>' :
                     '<div class="scheme-warning"><p class="font-xsmall">Requires at least ' +
-                    schemeReq + '</p></div>',
+                    specialSchemeReq + '</p></div>',
                 arrayPosition = $.inArray(thisSchemeID, schemePrefArray),
                 emptyPosition = $.inArray('Empty', schemePrefArray);
             if (arrayPosition < 0 && $this.is(':checked'))

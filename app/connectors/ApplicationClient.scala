@@ -206,10 +206,8 @@ trait ApplicationClient {
     http.POST(s"${url.host}${url.base}/online-test/complete/$token", "").map(_ => ())
   }
 
-  def getSchemesAndLocationsByEligibility(hasALevels: Boolean, hasStemALevels: Boolean,
-                                          latitudeOpt: Option[Double], longitudeOpt: Option[Double])
+  def getEligibleSchemeLocations(applicationId: UniqueIdentifier, latitudeOpt: Option[Double], longitudeOpt: Option[Double])
                                          (implicit hc: HeaderCarrier): Future[List[GeoLocationSchemeResult]] = {
-
     val optionalLocation = (for {
       latitude <- latitudeOpt
       longitude <- longitudeOpt
@@ -217,8 +215,7 @@ trait ApplicationClient {
       s"&latitude=$latitude&longitude=$longitude"
     }).getOrElse("")
 
-    http.GET(s"$hostBase/scheme-locations/available/by-eligibility" +
-      s"?hasALevels=$hasALevels&hasStemALevels=$hasStemALevels$optionalLocation").map { response =>
+    http.GET(s"$hostBase/scheme-locations/eligible?applicationId=$applicationId$optionalLocation").map { response =>
       response.json.as[List[GeoLocationSchemeResult]]
     } recover {
       case ex: Throwable => throw new ErrorRetrievingEligibleLocationSchemes(ex)
@@ -249,8 +246,8 @@ trait ApplicationClient {
     }
   }
 
-  def getSchemesAvailable(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
-    http.GET(s"$hostBase/schemes/available/$applicationId").map { response =>
+  def getEligibleSchemes(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
+    http.GET(s"$hostBase/schemes/eligible/$applicationId").map { response =>
       response.json.as[List[SchemeInfo]]
     } recover {
       case ex: Throwable => throw new ErrorRetrievingAvailableSchemes(ex)

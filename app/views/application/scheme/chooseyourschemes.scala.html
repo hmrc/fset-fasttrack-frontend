@@ -23,21 +23,27 @@
         2 A levels A* to C in STEM subjects and 5 GCSEs A* to C including English language and maths
     } else {
         @if(scheme.requiresALevel) {
-            5 GCSEs A* to C including English language and maths
-        } else {
             2 A levels A* to D in any subject and 5 GCSEs A* to C including English language and maths
+        } else {
+            5 GCSEs A* to C including English language and maths
         }
     }
+}
+
+@isSpecialScheme(scheme: SchemeInfo) = @{
+    scheme.requiresALevelInStem || scheme.requiresALevel
 }
 
 @main_template(title = "Choose your preferred schemes", pageForms = Seq(schemesForm), None, List("scheme-preference-selector.js")) {
 
     @helper.form(action = routes.SchemeController.submitSchemes(), 'novalidate -> "novalidate") {
         @helper.CSRF.formField
-<h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/html">Choose your preferred schemes</h1>
-
-        <div class="panel-indent">
-            <p>In preference order, select only the schemes you'd like to work in.</p>
+        <div class="hgroup text">
+            <h1 class="heading-xlarge">Choose your preferred schemes</h1>
+        </div>
+        <div class="panel-indent text">
+            <p>In preference order, select only the schemes you'd like to work in. You'll
+                select your location preferences afterwards.</p>
         </div>
         <section class="grid-wrapper scheme-wrapper">
             <div class="scheme-input-container">
@@ -49,7 +55,7 @@
                                 <label for="scheme-@scheme.id" class="block-label block-label-slim">
                                     <input type="checkbox" id="scheme-@scheme.id" data-schemename value="@scheme.id">@scheme.name</input>
                                 </label>
-                                <span class="alwayshidden" data-scheme-req>@schemeRequirements(scheme)</span>
+                                <span class="alwayshidden" @if(isSpecialScheme(scheme)){data-spec-scheme} else {data-scheme-req}>@schemeRequirements(scheme)</span>
                             </li>
                         }
                         @for(i <- 0 until viewModel.schemeOptions.size) {
@@ -72,12 +78,23 @@
                 &nbsp;
         </section>
         <section class="text panel-indent">
-            <p>Your schemes will be offered to you in order of preference.</p>
-            <p>You will not be able to reorder them after submitting your application.</p>
+            <p>It's important to note that:</p>
+            <ul>
+                <li>your schemes will be offered to you in order of preference</li>
+                <li>we'll try and place you in your preferred schemes in the locations
+                    you select, in preference order</li>
+                <li>you won't be able to reorder your preferences after submitting your
+                    application</li>
+            </ul>
         </section>
         <section class="text clearfix">
             @yesNoQuestion(schemesForm("orderAgreed"), question = "Are you happy with the order of your schemes?",
             noMessage = Some("Review your preferences and confirm you're happy with the order to continue"))
+        </section>
+        <section class="text clearfix">
+            @yesNoQuestion(schemesForm("eligible"), question = "Are you eligible for your chosen schemes?",
+            noMessage = Some("You can only select preferences you're eligible for"),
+            description = Some("""Make sure you're <a href="http://faststream.gov.uk" target="_blank" rel="external">eligible</a> for your chosen schemes."""))
         </section>
         <button type="submit" id="schemeSaveBtn" class="button">Save and continue</button>
     }
