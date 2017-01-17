@@ -183,7 +183,7 @@ object Roles {
   val userJourneySequence: List[(CsrAuthorization, Call)] = List(
     ApplicationStartRole -> routes.HomeController.present,
     PersonalDetailsRole -> routes.FastTrackApplication.generalDetails(None),
-    SchemesRole -> routes.SchemeController.schemeLocations,
+    SchemesRole -> routes.SchemeController.schemes(),
     AssistanceDetailsRole -> routes.AssistanceDetailsController.present,
     ReviewRole -> routes.ReviewApplicationController.present,
     StartQuestionnaireRole -> routes.QuestionnaireController.start,
