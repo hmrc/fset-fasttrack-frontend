@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import connectors.exchange.Answer
 import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.i18n.Messages
@@ -90,4 +91,11 @@ package object forms {
     override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
   }
   // scalastyle:on
+
+  def getFormattedAnswer(answerField: Option[String], otherField: Option[String] = None) = {
+    answerField match {
+      case None | Some("I don't know/prefer not to say") => Answer(None, otherField, Some(true))
+      case _ => Answer(answerField, otherField, None)
+    }
+  }
 }

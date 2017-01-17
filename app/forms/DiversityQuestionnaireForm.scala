@@ -53,8 +53,8 @@ object DiversityQuestionnaireForm {
                    preferNotSayEthnicity: Option[Boolean]
                  ) {
     def exchange: Questionnaire = Questionnaire(List(
-      Question(Messages("gender.question"), Answer(Some(gender), otherGender, None)),
-      Question(Messages("sexOrientation.question"), Answer(Some(sexOrientation), otherSexOrientation, None)),
+      Question(Messages("gender.question"), getFormattedAnswer(Some(gender), otherGender)),
+      Question(Messages("sexOrientation.question"), getFormattedAnswer(Some(sexOrientation), otherSexOrientation)),
       Question(Messages("ethnicity.question"), Answer(ethnicity, otherEthnicity, preferNotSayEthnicity))
     ))
   }

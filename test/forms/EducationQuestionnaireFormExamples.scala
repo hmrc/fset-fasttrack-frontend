@@ -25,6 +25,7 @@ object EducationQuestionnaireFormExamples {
     schoolName14to16 = Some("my school at 15"),
     schoolId14to16 = None,
     preferNotSaySchoolName14to16 = None,
+    schoolType14to16 = Some("A state-run or state-funded school - Selective on academic, faith or other grounds"),
     schoolName16to18 = Some("my school at 17"),
     schoolId16to18 = None,
     preferNotSaySchoolName16to18 = None,
@@ -38,6 +39,7 @@ object EducationQuestionnaireFormExamples {
     schoolName14to16 = None,
     schoolId14to16 = None,
     preferNotSaySchoolName14to16 = Some(true),
+    schoolType14to16 = Some("I don't know/prefer not to say"),
     schoolName16to18 = None,
     schoolId16to18 = None,
     preferNotSaySchoolName16to18 = Some(true),
@@ -48,6 +50,7 @@ object EducationQuestionnaireFormExamples {
     "liveInUKBetween14and18" -> "Yes",
     "postcodeQ" -> "SL1 3GQ",
     "schoolName14to16" -> "my school at 15",
+    "schoolType14to16" -> "A state-run or state-funded school - Selective on academic, faith or other grounds",
     "schoolName16to18" -> "my school at 17",
     "freeSchoolMeals" -> "No",
     "isCandidateCivilServant" -> "No"
@@ -57,6 +60,7 @@ object EducationQuestionnaireFormExamples {
     "liveInUKBetween14and18" -> "Yes",
     "preferNotSayPostcode" -> "Yes",
     "preferNotSaySchoolName14to16" -> "true",
+    "schoolType14to16" -> "I don't know/prefer not to say",
     "preferNotSaySchoolName16to18" -> "true",
     "freeSchoolMeals" -> "I don't know/prefer not to say",
     "isCandidateCivilServant" -> "No"

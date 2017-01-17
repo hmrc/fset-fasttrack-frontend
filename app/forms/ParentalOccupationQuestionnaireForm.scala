@@ -62,11 +62,11 @@ object ParentalOccupationQuestionnaireForm {
       val occupation = if (employedParent == "Employed") parentsOccupation else Some(employedParent)
 
       Questionnaire(List(
-        Question(Messages("parentsDegree.question"), Answer(Some(parentsDegree), None, None)),
-        Question(Messages("parentsOccupation.question"), Answer(occupation.sanitize, None, None)),
-        Question(Messages("employee.question"), Answer(employee, None, None)),
-        Question(Messages("organizationSize.question"), Answer(organizationSize, None, None)),
-        Question(Messages("supervise.question"), Answer(supervise, None, None))
+          Question(Messages("parentsDegree.question"), getFormattedAnswer(Some(parentsDegree))),
+          Question(Messages("parentsOccupation.question"), getFormattedAnswer(occupation.sanitize)),
+          Question(Messages("employee.question"), getFormattedAnswer(employee)),
+          Question(Messages("organizationSize.question"), getFormattedAnswer(organizationSize)),
+          Question(Messages("supervise.question"), getFormattedAnswer(supervise))
       ))
     }
   }

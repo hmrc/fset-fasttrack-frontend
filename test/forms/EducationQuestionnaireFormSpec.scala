@@ -55,22 +55,24 @@ class EducationQuestionnaireFormSpec extends UnitSpec {
 
     "transform form when form is full valid (has degree and lived in uk) to a question list" in new Fixture {
       val questionList = FullValidForm.exchange.questions
-      questionList.size mustBe 5
+      questionList.size mustBe 6
       questionList(0).answer.answer mustBe Some("Yes")
       questionList(0).answer.unknown mustBe None
       questionList(1).answer.answer mustBe Some("AAA 111")
       questionList(1).answer.unknown mustBe None
       questionList(2).answer.answer mustBe Some("my school at 15")
       questionList(2).answer.unknown mustBe None
-      questionList(3).answer.answer mustBe Some("my school at 17")
+      questionList(3).answer.answer mustBe Some("A state-run or state-funded school - Selective on academic, faith or other grounds")
       questionList(3).answer.unknown mustBe None
-      questionList(4).answer.answer mustBe Some("No")
+      questionList(4).answer.answer mustBe Some("my school at 17")
       questionList(4).answer.unknown mustBe None
+      questionList(5).answer.answer mustBe Some("No")
+      questionList(5).answer.unknown mustBe None
     }
 
     "transform form when has degree with all possible fields with prefer not to say" in new Fixture {
       val questionList = AllPreferNotToSayValidForm.exchange.questions
-      questionList.size mustBe 5
+      questionList.size mustBe 6
       questionList(0).answer.answer mustBe Some("Yes")
       questionList(0).answer.unknown mustBe None
       questionList(1).answer.answer mustBe None
@@ -81,6 +83,8 @@ class EducationQuestionnaireFormSpec extends UnitSpec {
       questionList(3).answer.unknown mustBe Some(true)
       questionList(4).answer.answer mustBe None
       questionList(4).answer.unknown mustBe Some(true)
+      questionList(5).answer.answer mustBe None
+      questionList(5).answer.unknown mustBe Some(true)
     }
 
     "sanitize data should respect values when liveInUKBetween14and18 is Yes and haveDegree is Yes" in new Fixture {

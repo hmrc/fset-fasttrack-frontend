@@ -133,6 +133,7 @@ error.required.parentsOccupation = You must tell us what type of work your highe
 error.required.employee = You must tell us if your parent/guardian was either employed or self-employed, or choose ''prefer not to say''
 error.required.organizationSize = You must tell us the size of your parent/guardian''s workplace, or choose ''prefer not to say''
 error.required.supervise = You must tell us if your parent/guardian supervised employees, or choose ''prefer not to say''
+error.required.schoolType14to16 = You must tell us your school type, or choose ''prefer not to say''
 
 #Questions section for questionnaire
 gender.question = What is your gender identity?
@@ -143,6 +144,7 @@ university.question = Did any of your parent(s) or guardian(s) complete a univer
 
 postcode.question = What was your home postcode when you were 14?
 schoolName14to16.question = Aged 14 to 16 what was the name of your school?
+schoolType14to16.question = Which type of school was this?
 schoolName16to18.question = Aged 16 to 18 what was the name of your school or college?
 freeSchoolMeals.question = Were you at any time eligible for free school meals?
 
