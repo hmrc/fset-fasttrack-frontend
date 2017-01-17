@@ -11,8 +11,9 @@
             ("preferNotToSay", "I don't know/prefer not to say", false)), optionTrigger = "hasDisability-describe")
         <div class="toggle-content form-group form-group-compound" id="hasDisability-describe">
             @helper.textarea(form("hasDisabilityDescription"),
-            '_label -> "Provide more information (optional)",
-            '_labelClass -> "form-hint",
+            '_label -> "",
+            '_labelClass -> "",
+            '_help -> "Provide more information (optional)",
             'class -> "form-control",
             'rows -> 4,
             'dataValLengthMax -> "2048",
@@ -21,7 +22,7 @@
                 <fieldset>
                     <h2 class="form-label">Would you like to apply under the guaranteed interview scheme?</h2>
                     <legend class="visuallyhidden">Would you like to apply under the guaranteed interview scheme?</legend>
-                    <p class="form-hint">Find out <a href="https://www.gov.uk/government/publications/civil-service-fast-stream-promoting-diversity-and-inclusion/civil-service-fast-stream-promoting-diversity-and-inclusion"
+                    <p class="form-hint">Find out <a href="https://www.gov.uk/government/publications/civil-service-fast-track-apprenticeship-promoting-diversity-and-inclusion/civil-service-fast-track-apprenticeship-promoting-diversity-and-inclusion#disabled"
                     rel="external" target="_blank">more about this scheme</a></p>
                     @radioBox(form("guaranteedInterview"), options = Seq("Yes" -> "Yes", "No" -> "No"))
                 </fieldset>
