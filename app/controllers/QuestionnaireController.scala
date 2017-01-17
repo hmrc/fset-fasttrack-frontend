@@ -91,16 +91,14 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
 
   def presentSecondPage = CSRSecureAppAction(EducationQuestionnaireRole) { implicit request =>
     implicit user =>
-      Future.successful(Ok(views.html.questionnaire.secondpage(EducationQuestionnaireForm.form,
-        "No"))) // todo: kandi this is a question to do with civil service experience
+      Future.successful(Ok(views.html.questionnaire.secondpage(EducationQuestionnaireForm.form)))
   }
 
   def submitSecondPage = CSRSecureAppAction(EducationQuestionnaireRole) { implicit request =>
     implicit user =>
-      val isCivilServantString = "No" // todo kandi fix this
       EducationQuestionnaireForm.form.bindFromRequest.fold(
         errorForm => {
-          Future.successful(Ok(views.html.questionnaire.secondpage(errorForm, isCivilServantString)))
+          Future.successful(Ok(views.html.questionnaire.secondpage(errorForm)))
         },
         data => {
           submitQuestionnaire(data.exchange, "education_questionnaire")(Redirect(routes.QuestionnaireController.presentThirdPage()))
@@ -121,7 +119,6 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
         },
         data => {
           submitQuestionnaire(data.exchange, "occupation_questionnaire")(Redirect(routes.SubmitApplicationController.present()))
-          //Future.successful(Redirect(routes.SubmitApplicationController.present()))
         }
       )
   }

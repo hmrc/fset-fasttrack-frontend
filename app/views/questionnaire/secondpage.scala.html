@@ -1,4 +1,4 @@
-@(questionnaireForm: Form[_root_.forms.EducationQuestionnaireForm.Data], isCandidateCivilServant: String)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+@(questionnaireForm: Form[_root_.forms.EducationQuestionnaireForm.Data])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import views.html.questionnaire.components.{ postcode, school }
 @import views.html.widgets.{ pageProgress, radioBoxHorizontal }
@@ -31,24 +31,7 @@
                 @school(questionnaireForm)
             </div>
         </fieldset>
-@*
-        <input type="hidden" id="isCandidateCivilServant" name="isCandidateCivilServant" value="@isCandidateCivilServant">
 
-        @if(isCandidateCivilServant=="Yes") {
-            <fieldset>
-                <h2 class="form-label text">@Messages("haveDegree.question")</h2>
-                <legend class="visuallyhidden">@Messages("haveDegree.question")</legend>
-                @radioBoxHorizontal(questionnaireForm("haveDegree"), options = List(("yes", "Yes", true), ("no", "No", false)),
-                    optionTrigger = "haveDegree-panel")
-                <div id="haveDegree-panel" class="toggle-content" aria-hidden="true">
-                @universitySection(questionnaireForm)
-                </div>
-            </fieldset>
-        } else {
-            <input type="hidden" id="haveDegree" name="haveDegree" value="Yes">
-            @universitySection(questionnaireForm)
-        }
-*@
         <div>
             <button id="submit" type="submit" value="submit" class="button">Save and continue</button>
         </div>
