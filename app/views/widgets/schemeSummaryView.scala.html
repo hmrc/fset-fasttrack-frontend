@@ -18,15 +18,15 @@
 
     <section>
         <h2>Schemes</h2>
-    @for(scheme <- schemes) {
-        <p>@scheme.name</p>
-    }
+        @for(schemeData <- schemes.zipWithIndex) {
+            <p id="scheme@schemeData._2" schemeId="@schemeData._1.id">@schemeData._1.name</p>
+        }
     </section>
 
     <section>
         <h2>Scheme Locations</h2>
-        @for(schemeLocation <- schemeLocations) {
-        <p>@schemeLocation.locationName</p>
+        @for(schemeLocationData <- schemeLocations.zipWithIndex) {
+            <p id="location@schemeLocationData._2">@schemeLocationData._1.locationName</p>
         }
     </section>
 </section>
