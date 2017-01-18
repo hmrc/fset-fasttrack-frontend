@@ -94,9 +94,6 @@ package object forms {
 
   def getFormattedAnswer(answerField: Option[String], otherField: Option[String] = None) = {
     val unknown = Messages("answer.unknown")
-    // scalastyle:off
-    println("unknown is: " + unknown)
-    // scalastyle:on
     answerField match {
       case None | Some(`unknown`) => Answer(None, otherField, Some(true))
       case _ => Answer(answerField, otherField, None)
