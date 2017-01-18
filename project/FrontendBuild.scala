@@ -42,7 +42,7 @@ private object Versions {
   val hmrctest      = "1.4.0"
   val scalatestplus = "1.2.0"
   val silhouette    = "2.0.2"
-  val playWhitelist = "1.1.0"
+  val playWhitelist = "1.2.0"
 }
 
 private object AppDependencies {

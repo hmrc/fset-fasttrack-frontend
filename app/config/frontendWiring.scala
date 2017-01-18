@@ -27,7 +27,8 @@ import models.services.UserCacheService
 import play.api.Play
 import play.api.Play.current
 import play.api.libs.ws.WS
-import play.api.mvc.Call
+import play.api.mvc.Results.NotImplemented
+import play.api.mvc.{ Call, RequestHeader, Result }
 import security.CsrCredentialsProvider
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
@@ -35,6 +36,8 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.config.{ AppName, RunMode, ServicesConfig }
 import uk.gov.hmrc.play.http.ws._
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
+
+import scala.concurrent.Future
 
 object FrontendAuditConnector extends AuditConnector {
   override lazy val auditingConfig = LoadAuditingConfig("auditing")
@@ -99,4 +102,6 @@ object WhitelistFilter extends AkamaiWhitelistFilter with RunMode {
 
   override def destination: Call = Call("GET", "https://www.apply-civil-service-fast-stream.service.gov.uk/outage-fset-fasttrack/index.html")
 
+  override def noHeaderAction(f: (RequestHeader) => Future[Result],
+                     rh: RequestHeader): Future[Result] = Future.successful(NotImplemented("IP = " + rh.headers.get(trueClient)))
 }
