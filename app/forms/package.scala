@@ -83,7 +83,7 @@ package object forms {
         case (Some("Yes"), None, None) => Left(List(FormError(key, requiredErrorMsg)))
         case (Some("Yes"), Some(keyValue), None) if keyValue.trim.isEmpty => Left(List(FormError(key, requiredErrorMsg)))
         case (Some("Yes"), Some(keyValue), None) if invalidFn(keyValue) => Left(List(FormError(key, Messages(validationErrorKey))))
-        case (Some("Yes"), _, Some("Yes")) => Right(Some("I don't know/prefer not to say"))
+        case (Some("Yes"), _, Some("Yes")) => Right(Some(Messages("answer.unknown")))
         case _ => Right(keyField)
       }
     }
@@ -93,8 +93,12 @@ package object forms {
   // scalastyle:on
 
   def getFormattedAnswer(answerField: Option[String], otherField: Option[String] = None) = {
+    val unknown = Messages("answer.unknown")
+    // scalastyle:off
+    println("unknown is: " + unknown)
+    // scalastyle:on
     answerField match {
-      case None | Some("I don't know/prefer not to say") => Answer(None, otherField, Some(true))
+      case None | Some(`unknown`) => Answer(None, otherField, Some(true))
       case _ => Answer(answerField, otherField, None)
     }
   }

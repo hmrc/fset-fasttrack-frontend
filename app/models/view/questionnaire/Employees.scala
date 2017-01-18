@@ -16,11 +16,13 @@
 
 package models.view.questionnaire
 
+import play.api.i18n.Messages
+
 object Employees {
   val list = List(
     ("employee", "Employee", false),
     ("self-with-employees", "Self-employed with employees", false),
     ("self-without-employees", "Self-employed/freelancer without employees", false),
-    ("unknown", "I don't know/prefer not to say", false)
+    ("unknown", Messages("answer.unknown"), false)
   )
 }

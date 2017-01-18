@@ -155,6 +155,11 @@ employee.question = Did they work as an employee or were they self-employed?
 organizationSize.question = Which size would best describe their place of work?
 supervise.question = Did they supervise employees?
 
+#Question Answers standard text
+answer.unknown = I don''t know/prefer not to say
+answer.yes = Yes
+answer.no = No
+
 success.allocation.confirmed = You''ve successfully confirmed your assessment date.
 
 global.error.badRequest400.title=Bad request - 400

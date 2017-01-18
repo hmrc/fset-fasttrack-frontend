@@ -16,12 +16,14 @@
 
 package models.view.questionnaire
 
+import play.api.i18n.Messages
+
 object SexOrientations {
   val list = List(
     ("straight", "Heterosexual/straight", false),
     ("gay", "Gay/lesbian", false),
     ("bisexual", "Bisexual", false),
     ("other", "Other", true),
-    ("preferNotSay","I don't know/prefer not to say", false)
+    ("preferNotSay", Messages("answer.unknown"), false)
   )
 }

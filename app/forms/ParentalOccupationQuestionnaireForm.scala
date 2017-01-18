@@ -61,13 +61,21 @@ object ParentalOccupationQuestionnaireForm {
     def exchange: Questionnaire = {
       val occupation = if (employedParent == "Employed") parentsOccupation else Some(employedParent)
 
+      def getOptionalOccupationList = {
+        if (employedParent == "Employed"){
+          List(Question(Messages("employee.question"), getFormattedAnswer(employee)),
+            Question(Messages("organizationSize.question"), getFormattedAnswer(organizationSize)),
+            Question(Messages("supervise.question"), getFormattedAnswer(supervise)))
+        } else {
+          List.empty
+        }
+      }
+
       Questionnaire(List(
           Question(Messages("parentsDegree.question"), getFormattedAnswer(Some(parentsDegree))),
-          Question(Messages("parentsOccupation.question"), getFormattedAnswer(occupation.sanitize)),
-          Question(Messages("employee.question"), getFormattedAnswer(employee)),
-          Question(Messages("organizationSize.question"), getFormattedAnswer(organizationSize)),
-          Question(Messages("supervise.question"), getFormattedAnswer(supervise))
-      ))
+          Question(Messages("parentsOccupation.question"), getFormattedAnswer(occupation.sanitize))) ++
+          getOptionalOccupationList
+      )
     }
   }
 }

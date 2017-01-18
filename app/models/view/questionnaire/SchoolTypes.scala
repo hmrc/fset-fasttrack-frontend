@@ -16,6 +16,8 @@
 
 package models.view.questionnaire
 
+import play.api.i18n.Messages
+
 object SchoolTypes {
   val list = List(
     ("state-selective",
@@ -23,6 +25,6 @@ object SchoolTypes {
     ("state-non-selective ", "A state-run or state-funded school - Non-selective", false),
     ("independent-bursary", "Independent or fee-paying school - Bursary", false),
     ("independent-non-bursary", "Independent or fee-paying school - No bursary", false),
-    ("unknown", "I don't know/prefer not to say", false)
+    ("unknown", Messages("answer.unknown"), false)
   )
 }

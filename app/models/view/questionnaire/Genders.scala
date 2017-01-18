@@ -16,11 +16,13 @@
 
 package models.view.questionnaire
 
+import play.api.i18n.Messages
+
 object Genders {
   val list = List(
     ("male", "Male", false),
     ("female", "Female", false),
     ("other", "Other", true),
-    ("preferNotSay","I don't know/prefer not to say", false)
+    ("preferNotSay", Messages("answer.unknown"), false)
   )
 }

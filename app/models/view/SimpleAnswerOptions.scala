@@ -16,10 +16,12 @@
 
 package models.view
 
+import play.api.i18n.Messages
+
 object SimpleAnswerOptions {
   val list = List(
     ("yes", "Yes", false),
     ("no", "No", false),
-    ("unknown", "I don't know/prefer not to say", false)
+    ("unknown", Messages("answer.unknown"), false)
   )
 }

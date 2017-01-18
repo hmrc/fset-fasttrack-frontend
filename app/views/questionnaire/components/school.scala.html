@@ -27,7 +27,7 @@
         </div>
         <div class="form-group">
         @checkbox(questionnaireForm("preferNotSay_schoolName14to16"), Some("schoolName14to16")) {
-            I don't know/prefer not to say
+            @Messages("answer.unknown")
         }
         </div>
     </section>
@@ -60,7 +60,7 @@
         </div>
         <div class="form-group">
         @checkbox(questionnaireForm("preferNotSay_schoolName16to18"), Some("schoolName16to18")) {
-            I don't know/prefer not to say
+            @Messages("answer.unknown")
         }
         </div>
     </section>
@@ -70,6 +70,6 @@
             <legend class="visuallyhidden">@Messages("freeSchoolMeals.question")</legend>
             <span class="form-hint">We ask this as another key indicator of socio-economic background</span>
             @radioBox(questionnaireForm("freeSchoolMeals"), options = Seq("Yes" -> "Yes", "No" -> "No",
-                "I don't know/prefer not to say" -> "I don't know/prefer not to say"))
+                Messages("answer.unknown") -> Messages("answer.unknown")))
         </div>
     </section>
