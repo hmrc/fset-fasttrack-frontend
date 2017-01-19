@@ -101,7 +101,4 @@ object WhitelistFilter extends AkamaiWhitelistFilter with RunMode {
   }
 
   override def destination: Call = Call("GET", "https://www.apply-civil-service-fast-stream.service.gov.uk/outage-fset-fasttrack/index.html")
-
-  override def noHeaderAction(f: (RequestHeader) => Future[Result],
-                     rh: RequestHeader): Future[Result] = Future.successful(NotImplemented("IP = " + rh.headers.get(trueClient)))
 }
