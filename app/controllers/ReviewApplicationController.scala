@@ -23,32 +23,25 @@ import helpers.NotificationType._
 import play.api.Logger
 import security.Roles.{QuestionnaireInProgressRole, ReviewRole, StartQuestionnaireRole}
 
-object ReviewApplicationController extends ReviewApplicationController {
-  val http = CSRHttp
+object ReviewApplicationController extends ReviewApplicationController(ApplicationClient, CSRCache) {
+  override val http: CSRHttp = ApplicationClient.http
   val cacheClient = CSRCache
-  val applicationClient = ApplicationClient
 }
 
-trait ReviewApplicationController extends BaseController {
-
-  val applicationClient: ApplicationClient
+abstract class ReviewApplicationController(applicationClient: ApplicationClient, cacheClient: CSRCache)
+  extends BaseController {
 
   def present = CSRSecureAppAction(ReviewRole) { implicit request =>
     implicit user =>
-      val personalDetailsFut = findPersonalDetails(user.user.userID, user.application.applicationId)
-      val assistanceDetailsFut = getAssistanceDetails(user.user.userID, user.application.applicationId)
-      val locationChoicesFut = applicationClient.getSchemeLocationChoices(user.application.applicationId)
-      val schemeChoicesFut = applicationClient.getSchemeChoices(user.application.applicationId)
-
       (for {
-        gd <- personalDetailsFut
-        ad <- assistanceDetailsFut
-        slc <- locationChoicesFut
-        sc <- schemeChoicesFut
+        personalDetails <- applicationClient.getPersonalDetails(user.user.userID, user.application.applicationId)
+        assistanceDetails <- applicationClient.getAssistanceDetails(user.user.userID, user.application.applicationId)
+        schemeLocationChoices <- applicationClient.getSchemeLocationChoices(user.application.applicationId)
+        schemeChoices <- applicationClient.getSchemeChoices(user.application.applicationId)
       } yield {
-        Ok(views.html.application.review(gd, ad, slc, sc, user.application))
+        Ok(views.html.application.review(personalDetails, assistanceDetails, schemeLocationChoices, schemeChoices, user.application))
       }).recover {
-        case ex @ (_: PersonalDetailsNotFound | _: AssistanceDetailsNotFound | _: SchemePreferencesNotFound | _: LocationPreferencesNotFound) =>
+        case ex @ (_: PersonalDetailsNotFound | _: AssistanceDetailsNotFound | _: SchemeLocationChoicesNotFound | _: SchemeChoicesNotFound) =>
           Logger.warn("Preview section reached prematurely with exception", ex)
           Redirect(routes.HomeController.present()).flashing(warning("info.cannot.review.yet"))
       }
@@ -56,7 +49,7 @@ trait ReviewApplicationController extends BaseController {
 
   def submit = CSRSecureAppAction(ReviewRole) { implicit request =>
     implicit user =>
-      updateReview(user.application.applicationId).flatMap { _ =>
+      applicationClient.updateReview(user.application.applicationId).flatMap { _ =>
         updateProgress() { u =>
           if (StartQuestionnaireRole.isAuthorized(u) || QuestionnaireInProgressRole.isAuthorized(u)) {
             Redirect(routes.QuestionnaireController.start())
@@ -65,7 +58,5 @@ trait ReviewApplicationController extends BaseController {
           }
         }
       }
-
   }
-
 }

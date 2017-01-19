@@ -1,7 +1,7 @@
 @import connectors.exchange.LocationSchemes
 @import connectors.exchange.SchemeInfo
 
-@(generalDetails: connectors.ExchangeObjects.GeneralDetailsExchange,
+@(personalDetails: connectors.ExchangeObjects.PersonalDetails,
         assistanceDetails: connectors.exchange.AssistanceDetails,
         schemeLocations: List[LocationSchemes],
         schemes: List[SchemeInfo],
@@ -9,7 +9,7 @@
 
 @import models.ApplicationData.ApplicationStatus._
 @import security.Roles._
-@import views.html.widgets.{assistanceDetailsViewSection, generalDetailsViewSection, schemeSummaryView}
+@import views.html.application.reviewapplication.{assistanceDetailsViewSection, personalDetailsViewSection, schemeSummaryView}
 
 @appNotReadOnly(body: Html)= {
     @if(!WithdrawApplicationRole.isAuthorized(user.get) && !WithdrawnApplicationRole.isAuthorized(user.get)) {@body}
@@ -27,7 +27,7 @@
     }
 }
 
-@main_template(title = "View your application") {
+@main_template(title = "Check your application") {
 
     <div class="text">
         <h1 class="heading-xlarge" id="checkApplicationHeading">
@@ -39,7 +39,7 @@
         </h1>
     </div>
 
-    @generalDetailsViewSection(generalDetails)(edit_link(routes.FastTrackApplication.generalDetails(None)))
+    @personalDetailsViewSection(personalDetails)(edit_link(routes.FastTrackApplication.generalDetails(None)))
 
     @schemeSummaryView(schemeLocations, schemes)(edit_link(routes.SchemeController.schemes()))
 

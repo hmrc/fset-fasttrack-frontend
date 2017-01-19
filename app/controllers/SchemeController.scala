@@ -19,7 +19,7 @@ package controllers
 import _root_.forms.{ SchemeLocationPreferenceForm, SchemePreferenceForm }
 import config.{ CSRCache, CSRHttp, FrontendAppConfig }
 import connectors.ApplicationClient
-import connectors.ApplicationClient.{ LocationPreferencesNotFound, SchemePreferencesNotFound }
+import connectors.ApplicationClient.{ SchemeChoicesNotFound, SchemeLocationChoicesNotFound }
 import models.CachedDataWithApp
 import play.api.data.Form
 import play.api.mvc.Request
@@ -46,7 +46,7 @@ trait SchemeController extends BaseController {
         schemes => displaySchemes(
           schemeForm.fill(SchemePreferenceForm.Data(schemes.map(_.id), orderAgreed = true, eligible = true)))
       }.recoverWith {
-        case _: SchemePreferencesNotFound => displaySchemes(schemeForm)
+        case _: SchemeLocationChoicesNotFound => displaySchemes(schemeForm)
       }
   }
 
@@ -56,7 +56,7 @@ trait SchemeController extends BaseController {
         locations => displaySchemeLocations(
           schemeLocationForm.fill(SchemeLocationPreferenceForm.Data(locations.map(_.id))))
       }.recoverWith {
-        case _: LocationPreferencesNotFound => displaySchemeLocations(schemeLocationForm)
+        case _: SchemeChoicesNotFound => displaySchemeLocations(schemeLocationForm)
       }
   }
 
@@ -87,7 +87,7 @@ trait SchemeController extends BaseController {
   private def displaySchemeLocations(form: Form[SchemeLocationPreferenceForm.Data])
                                     (implicit request: Request[_], cachedData: CachedDataWithApp) = {
     for {
-      personalDetails <- applicationClient.findPersonalDetails(cachedData.user.userID, cachedData.application.applicationId)
+      personalDetails <- applicationClient.getPersonalDetails(cachedData.user.userID, cachedData.application.applicationId)
       schemeLocations <- applicationClient.getEligibleSchemeLocations(cachedData.application.applicationId, None, None)
     } yield {
       val viewModel = SchemeLocationsViewModel(personalDetails.aLevel, personalDetails.stemLevel)

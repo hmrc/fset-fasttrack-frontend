@@ -43,7 +43,7 @@ object ExchangeObjects {
 
   case class WithdrawApplicationRequest(reason: String, otherReason: Option[String], withdrawer: String)
 
-  case class GeneralDetailsExchange(
+  case class PersonalDetails(
     firstName: String,
     lastName: String,
     preferredName: String,
@@ -168,7 +168,7 @@ object ExchangeObjects {
     /** Requests serialization */
     implicit val createApplicationRequestFormats: Format[CreateApplicationRequest] = Json.format[CreateApplicationRequest]
     implicit val withdrawApplicationRequestFormats: Format[WithdrawApplicationRequest] = Json.format[WithdrawApplicationRequest]
-    implicit val updatePersonalDetailsRequestFormats: Format[GeneralDetailsExchange] = Json.format[GeneralDetailsExchange]
+    implicit val personalDetailsRequestFormats: Format[PersonalDetails] = Json.format[PersonalDetails]
 
     implicit val sendPasswordCodeRequestFormats = Json.format[SendPasswordCodeRequest]
     implicit val resetPasswordRequestFormats = Json.format[ResetPasswordRequest]

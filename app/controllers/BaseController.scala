@@ -71,7 +71,7 @@ trait BaseController extends FrontendController with SecureActions with Applicat
     }
 
   def refreshCachedUser()(implicit user: CachedDataWithApp, hc: HeaderCarrier, request: Request[_]): Future[CachedData] =
-    findApplication(user.user.userID, ExchangeObjects.frameworkId).flatMap { appData =>
+    getApplication(user.user.userID, ExchangeObjects.frameworkId).flatMap { appData =>
       val cd = CachedData(user.user, Some(appData))
       env.userService.save(cd)
     } recover {

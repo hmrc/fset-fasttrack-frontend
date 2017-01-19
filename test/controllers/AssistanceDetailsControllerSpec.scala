@@ -35,10 +35,8 @@ import scala.concurrent.Future
 class AssistanceDetailsControllerSpec extends BaseControllerSpec {
 
   // This is the implicit user
-  override def currentCandidateWithApp: CachedDataWithApp = {
-    CachedDataWithApp(ActiveCandidate.user,
+  override def currentCandidateWithApp: CachedDataWithApp = CachedDataWithApp(ActiveCandidate.user,
       CachedDataExample.InProgressInSchemePreferencesApplication.copy(userId = ActiveCandidate.user.userID))
-  }
 
   "present" should {
     "load assistance details page for the new user" in new TestFixture {

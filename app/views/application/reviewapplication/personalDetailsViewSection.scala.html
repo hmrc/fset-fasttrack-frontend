@@ -1,0 +1,50 @@
+@(personalDetails: connectors.ExchangeObjects.PersonalDetails)(edit: Html)
+
+
+<section class="section-border">
+    <h2 class="heading-large">
+        <span class="sectionTitle">Your details</span>
+        @edit
+    </h2>
+    <section>
+        <h3 class="heading-small">Full name</h3>
+        <p id="fullName">@personalDetails.firstName @personalDetails.lastName </p>
+    </section>
+    <section>
+        <h3 class="heading-small">What should we call you?</h3>
+        <p id="preferredName">@personalDetails.preferredName</p>
+    </section>
+    <section>
+        <h3 class="heading-small">Date of birth</h3>
+        <p id="dateOfBirth">@personalDetails.dateOfBirth.toString("dd MMMM yyyy")</p>
+    </section>
+    <section>
+        <h3 class="heading-small">Address</h3>
+        <ul class="list-text">
+            <li id="address1">@personalDetails.address.line1</li>
+            <li id="address2">@personalDetails.address.line2.getOrElse("")</li>
+            <li id="address3">@personalDetails.address.line3.getOrElse("")</li>
+            <li id="address4">@personalDetails.address.line4.getOrElse("")</li>
+            <li id="postCode">@personalDetails.postCode</li>
+        </ul>
+    </section>
+    <section>
+        <h3 class="heading-small">Telephone number</h3>
+        @if(personalDetails.phone.isDefined || personalDetails.phone.map(!_.isEmpty)) {
+            <p id="phone-input">@personalDetails.phone.getOrElse("No phone number provided")</p>
+        }
+        @if(personalDetails.phone.isEmpty) {
+            <p id="phone-input3">No number provided</p>
+        }
+    </section>
+    <section>
+        <h3 class="heading-small">Qualifications</h3>
+        <p id="educationLevel">
+        @if(personalDetails.stemLevel) {
+            At least 2 A levels in STEM subjects, grade C or above
+        } else {
+            @if(personalDetails.aLevel) {At least 2 A levels, grade D or above} else {At least 5 GCSEs A* to C or equivalent}
+        }
+        </p>
+    </section>
+</section>

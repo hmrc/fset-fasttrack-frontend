@@ -39,7 +39,7 @@ class UserCacheService(applicationClient: ApplicationClient, userManagementClien
 
   override def refreshCachedUser(userId: UniqueIdentifier)(implicit hc: HeaderCarrier, request: Request[_]): Future[CachedData] = {
     userManagementClient.findByUserId(userId).flatMap { userData =>
-      applicationClient.findApplication(userId, FrameworkId).flatMap { appData =>
+      applicationClient.getApplication(userId, FrameworkId).flatMap { appData =>
         val cd = CachedData(userData.toCached, Some(appData))
         save(cd)
       }.recover {

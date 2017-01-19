@@ -47,17 +47,17 @@ object AssistanceDetails {
     }
 
     AssistanceDetails(
-      hasDisability = formData.hasDisability,
-      hasDisabilityDescription = formData.hasDisabilityDescription,
-      guaranteedInterview = toOptBoolean(formData.guaranteedInterview),
-      needsSupportForOnlineAssessment = if (formData.needsSupportForOnlineAssessment == "Yes") true else false,
-      needsSupportForOnlineAssessmentDescription = formData.needsSupportForOnlineAssessmentDescription,
-      needsSupportAtVenue = if (formData.needsSupportAtVenue == "Yes") true else false,
-      needsSupportAtVenueDescription = formData.needsSupportAtVenueDescription,
-      typeOfAdjustments = None,
-      confirmedAdjustments = None,
-      numericalTimeAdjustmentPercentage = None,
-      verbalTimeAdjustmentPercentage = None
+        hasDisability = formData.hasDisability,
+        hasDisabilityDescription = formData.hasDisabilityDescription,
+        guaranteedInterview = toOptBoolean(formData.guaranteedInterview),
+        needsSupportForOnlineAssessment = if (formData.needsSupportForOnlineAssessment == "Yes") true else false,
+        needsSupportForOnlineAssessmentDescription = formData.needsSupportForOnlineAssessmentDescription,
+        needsSupportAtVenue = if (formData.needsSupportAtVenue == "Yes") true else false,
+        needsSupportAtVenueDescription = formData.needsSupportAtVenueDescription,
+        typeOfAdjustments = None,
+        confirmedAdjustments = None,
+        numericalTimeAdjustmentPercentage = None,
+        verbalTimeAdjustmentPercentage = None
     )
   }
 }
