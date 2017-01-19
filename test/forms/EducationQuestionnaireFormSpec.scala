@@ -93,16 +93,16 @@ class EducationQuestionnaireFormSpec extends UnitSpec {
   }
 
   trait Fixture {
-    val fastStreamForm = EducationQuestionnaireForm.form
+    val eduForm = EducationQuestionnaireForm.form
 
-    val FullValid = (EducationQuestionnaireFormExamples.FullValidForm, fastStreamForm.fill(
+    val FullValid = (EducationQuestionnaireFormExamples.FullValidForm, eduForm.fill(
       EducationQuestionnaireFormExamples.FullValidForm))
 
-    val AllPreferNotToSayValid = (EducationQuestionnaireFormExamples.AllPreferNotToSayValidForm, fastStreamForm.fill(
+    val AllPreferNotToSayValid = (EducationQuestionnaireFormExamples.AllPreferNotToSayValidForm, eduForm.fill(
       EducationQuestionnaireFormExamples.AllPreferNotToSayValidForm))
 
     def assertFieldRequired(formMap: Map[String, String], expectedKeyInError: String, fieldKey: String*) =
-      assertFormError(expectedKeyInError, formMap ++ fieldKey.map(k => k -> ""), fastStreamForm)
+      assertFormError(expectedKeyInError, formMap ++ fieldKey.map(k => k -> ""), eduForm)
 
     def assertFormError(expectedKey: String, invalidFormValues: Map[String, String], form: Form[EducationQuestionnaireForm.Data]) = {
       val invalidForm = form.bind(invalidFormValues)
