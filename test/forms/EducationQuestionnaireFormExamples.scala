@@ -18,7 +18,7 @@ package forms
 
 object EducationQuestionnaireFormExamples {
 
-  final val unknownText = "answer.unknown" // workaround for i18n messages not available
+  final val UnknownText = "answer.unknown" // workaround for i18n messages not available
 
   val FullValidForm = EducationQuestionnaireForm.Data(
     liveInUKBetween14and18 = "Yes",
@@ -41,11 +41,11 @@ object EducationQuestionnaireFormExamples {
     schoolName14to16 = None,
     schoolId14to16 = None,
     preferNotSaySchoolName14to16 = Some(true),
-    schoolType14to16 = Some(unknownText),
+    schoolType14to16 = Some(UnknownText),
     schoolName16to18 = None,
     schoolId16to18 = None,
     preferNotSaySchoolName16to18 = Some(true),
-    freeSchoolMeals = Some(unknownText)
+    freeSchoolMeals = Some(UnknownText)
   )
 
   val FullValidFormMap = Map(
@@ -62,9 +62,9 @@ object EducationQuestionnaireFormExamples {
     "liveInUKBetween14and18" -> "Yes",
     "preferNotSayPostcode" -> "Yes",
     "preferNotSaySchoolName14to16" -> "true",
-    "schoolType14to16" -> unknownText,
+    "schoolType14to16" -> UnknownText,
     "preferNotSaySchoolName16to18" -> "true",
-    "freeSchoolMeals" -> unknownText,
+    "freeSchoolMeals" -> UnknownText,
     "isCandidateCivilServant" -> "No"
   )
 }
