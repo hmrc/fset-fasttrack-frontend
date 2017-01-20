@@ -16,16 +16,15 @@
 
 package connectors
 
-import connectors.exchange.{AssistanceDetails, ProgressResponse}
-import forms.AssistanceDetailsForm
+import connectors.exchange.ProgressResponse
 import mappings.Address
 import mappings.PhoneNumberMapping._
 import mappings.PostCodeMapping._
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
-import org.joda.time.format.{DateTimeFormatterBuilder, PeriodFormatterBuilder}
-import org.joda.time.{DateTime, LocalDate, Period}
-import play.api.libs.json.{Format, Json}
+import org.joda.time.format.{ DateTimeFormatterBuilder, PeriodFormatterBuilder }
+import org.joda.time.{ DateTime, LocalDate, Period }
+import play.api.libs.json.{ Format, Json }
 
 /**
  * this is duplicated from the auth project
@@ -81,11 +80,6 @@ object ExchangeObjects {
 
   case class SendPasswordCodeRequest(email: String, service: String)
   case class ResetPasswordRequest(email: String, token: String, newPassword: String, service: String)
-
-  //  questionnaire
-  case class Answer(answer: Option[String], otherDetails: Option[String], unknown: Option[Boolean])
-  case class Question(question: String, answer: Answer)
-  case class Questionnaire(questions: List[Question])
 
   case class ReviewRequest(flag: Boolean)
 
@@ -172,10 +166,6 @@ object ExchangeObjects {
 
     implicit val sendPasswordCodeRequestFormats = Json.format[SendPasswordCodeRequest]
     implicit val resetPasswordRequestFormats = Json.format[ResetPasswordRequest]
-
-    implicit val answerFormats = Json.format[Answer]
-    implicit val questionFormats = Json.format[Question]
-    implicit val questionnaireFormats = Json.format[Questionnaire]
 
     implicit val reviewFormats = Json.format[ReviewRequest]
 

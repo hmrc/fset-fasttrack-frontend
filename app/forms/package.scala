@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import connectors.exchange.Answer
 import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.i18n.Messages
@@ -63,15 +64,13 @@ package object forms {
   }
 
   // scalastyle:off cyclomatic.complexity
-  def requiredFormatterWithValidationCheckAndSeparatePreferNotToSay(
-                                                                     requiredKey: String,
-                                                                     key: String,
-                                                                     keyPreferNotToSay: String,
-                                                                     maxLength: Option[Int],
-                                                                     msgRequiredError: Option[String] = None
-                                                                   )(
-
-    implicit invalidFn: (String => Boolean) = inputValue => maxLength.exists(_ < inputValue.trim.length),
+  def requiredFormatterWithValidationCheckAndSeparatePreferNotToSay(requiredKey: String,
+                                                                    key: String,
+                                                                    keyPreferNotToSay: String,
+                                                                    maxLength: Option[Int],
+                                                                    msgRequiredError: Option[String] = None
+                                                                   )(implicit invalidFn: (String => Boolean) =
+                                                                     inputValue => maxLength.exists(_ < inputValue.trim.length),
                                                                      validationErrorKey:String = s"error.$key.maxLength"
                                                                    ) = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
@@ -84,7 +83,7 @@ package object forms {
         case (Some("Yes"), None, None) => Left(List(FormError(key, requiredErrorMsg)))
         case (Some("Yes"), Some(keyValue), None) if keyValue.trim.isEmpty => Left(List(FormError(key, requiredErrorMsg)))
         case (Some("Yes"), Some(keyValue), None) if invalidFn(keyValue) => Left(List(FormError(key, Messages(validationErrorKey))))
-        case (Some("Yes"), _, Some("Yes")) => Right(Some("I don't know/prefer not to say"))
+        case (Some("Yes"), _, Some("Yes")) => Right(Some(Messages("answer.unknown")))
         case _ => Right(keyField)
       }
     }
@@ -92,4 +91,12 @@ package object forms {
     override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
   }
   // scalastyle:on
+
+  def getFormattedAnswer(answerField: Option[String], otherField: Option[String] = None) = {
+    val unknown = Messages("answer.unknown")
+    answerField match {
+      case None | Some(`unknown`) => Answer(None, otherField, Some(true))
+      case _ => Answer(answerField, otherField, None)
+    }
+  }
 }

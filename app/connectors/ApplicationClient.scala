@@ -19,7 +19,7 @@ package connectors
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
 import connectors.ExchangeObjects._
-import connectors.exchange._
+import connectors.exchange.{ LocationSchemes, ProgressResponse, Questionnaire, SchemeInfo, _ }
 import forms.GeneralDetailsForm
 import mappings.PostCodeMapping
 import models.ApplicationData.ApplicationStatus.ApplicationStatus

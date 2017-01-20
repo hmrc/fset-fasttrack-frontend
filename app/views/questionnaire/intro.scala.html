@@ -1,0 +1,42 @@
+@(acceptanceForm: Form[_root_.forms.DiversityQuestionnaireForm.AcceptanceTerms])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+
+@*import views.html.widgets.{pageProgress, checkbox}*@
+@import views.html.widgets.checkbox
+
+@main_template(title = "Before you continue", pageForms = Seq(acceptanceForm)) {
+    @*pageProgress(4, 8)*@
+    <div class="hgroup">
+        <h1 class="heading-xlarge">Before you continue</h1>
+        <p class="subtitle">Diversity questions</p>
+    </div>
+
+    <section>
+        <div class="text">
+            <p>We have a few more questions before you submit your application, relating to diversity. We are committed to promoting diversity and valuing everyone, irrespective of ethnicity or nationality, disability, gender identity, sexual orientation, age or socio-economic status.</p>
+          </div>
+
+          <div class="panel-info standard-panel">
+            <div class="text">
+              <p>The following questions are:</p>
+              <ul class="no-btm-margin">
+                <li>for information monitoring only, to understand the effectiveness of our processes in terms of diversity and how we could improve</li>
+                <li>not part of your application and will have no bearing on any selection decision</li>
+                <li>treated in strict confidence</li>
+              </ul>
+            </div>
+          </div>
+        <div class="text">
+            <p>For security reasons, once you save a page you won't be able to go
+                back and change your answers.</p>
+        </div>
+    </section>
+    @helper.form(action = routes.QuestionnaireController.submitStart(), 'novalidate -> "novalidate") {
+        <div class="form-group">
+            @helper.CSRF.formField
+            @checkbox(acceptanceForm("accept-terms")) {
+                I understand this won't affect my application
+            }
+        </div>
+        <button id="btnStart" type="submit" value="submit" class="button">Start questions</button>
+    }
+}
