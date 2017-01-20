@@ -57,7 +57,8 @@ object GeneralDetailsForm {
         "postCode" -> text.verifying(validPostcode),
         "phone" -> of(phoneNumberFormatter),
         "alevel-d" -> optional(boolean).verifying("aleveld.required", _.isDefined),
-        "alevel" -> optional(boolean).verifying("alevel.required", _.isDefined)
+        "alevel" -> optional(boolean).verifying("alevel.required", _.isDefined),
+        "civilServant" -> Mappings.nonEmptyTrimmedText("error.civilServant.required", 31)
       )(Data.apply)(Data.unapply)
     )
   }
@@ -76,7 +77,7 @@ object GeneralDetailsForm {
     phone: Option[PhoneNumber],
 
     aLevel: Option[Boolean],
-    stemLevel: Option[Boolean]
+    stemLevel: Option[Boolean],
+    civilServant: String
   )
-
 }
