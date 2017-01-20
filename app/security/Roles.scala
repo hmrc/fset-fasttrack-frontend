@@ -19,7 +19,6 @@ package security
 import controllers.routes
 import models.ApplicationData.ApplicationStatus._
 import models.{ CachedData, CachedDataWithApp, Progress }
-import play.api.Logger
 import play.api.i18n.Lang
 import play.api.mvc.{ Call, RequestHeader }
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -98,7 +97,7 @@ object Roles {
 
   object DiversityQuestionnaireRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuest(user) && !hasDiversity(user)
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuestionnaire(user) && !hasDiversity(user)
   }
 
   object EducationQuestionnaireRole extends CsrAuthorization {
@@ -188,16 +187,15 @@ object Roles {
     AssistanceDetailsRole -> routes.AssistanceDetailsController.present,
     ReviewRole -> routes.ReviewApplicationController.present,
     StartQuestionnaireRole -> routes.QuestionnaireController.start,
-    DiversityQuestionnaireRole -> routes.QuestionnaireController.firstPageView,
-    EducationQuestionnaireRole -> routes.QuestionnaireController.secondPageView,
-    OccupationQuestionnaireRole -> routes.QuestionnaireController.thirdPageView,
+    DiversityQuestionnaireRole -> routes.QuestionnaireController.presentFirstPage,
+    EducationQuestionnaireRole -> routes.QuestionnaireController.presentSecondPage,
+    OccupationQuestionnaireRole -> routes.QuestionnaireController.presentThirdPage,
     SubmitApplicationRole -> routes.SubmitApplicationController.present,
     DisplayOnlineTestSectionRole -> routes.HomeController.present,
     ConfirmedAllocatedCandidateRole -> routes.HomeController.present,
     UnconfirmedAllocatedCandidateRole -> routes.HomeController.present,
     WithdrawApplicationRole -> routes.HomeController.present
   ).reverse
-
 }
 
 object RoleUtils {
@@ -219,12 +217,11 @@ object RoleUtils {
 
   def hasReview(implicit user: CachedData) = progress.review
 
-  def hasStartedQuest(implicit user: CachedData) = progress.startedQuestionnaire
+  def hasStartedQuestionnaire(implicit user: CachedData) = progress.startedQuestionnaire
 
   def hasDiversity(implicit user: CachedData) = progress.diversityQuestionnaire
 
   def hasEducation(implicit user: CachedData) = progress.educationQuestionnaire
 
   def hasOccupation(implicit user: CachedData) = progress.occupationQuestionnaire
-
 }

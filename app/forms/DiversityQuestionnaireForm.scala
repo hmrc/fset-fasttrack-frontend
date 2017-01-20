@@ -16,22 +16,20 @@
 
 package forms
 
-import connectors.ExchangeObjects.{ Answer, Question, Questionnaire }
+import connectors.exchange.{ Answer, Question, Questionnaire }
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 
-object QuestionnaireDiversityInfoForm {
+object DiversityQuestionnaireForm {
 
   val form = Form(
     mapping(
-      "gender" -> of(Mappings.fieldWithCheckBox(256)),
+      "gender" -> Mappings.nonEmptyTrimmedText("error.required.gender", 256),
       "other_gender" -> optional(Mappings.nonEmptyTrimmedText("error.required.gender", 256)),
-      "preferNotSay_gender" -> optional(checked(Messages("error.required.gender"))),
 
-      "sexOrientation" -> of(Mappings.fieldWithCheckBox(256)),
+      "sexOrientation" -> Mappings.nonEmptyTrimmedText("error.required.sexOrientation", 256),
       "other_sexOrientation" -> optional(Mappings.nonEmptyTrimmedText("error.required.sexOrientation", 256)),
-      "preferNotSay_sexOrientation" -> optional(checked(Messages("error.required.sexOrientation"))),
 
       "ethnicity" -> of(Mappings.fieldWithCheckBox(256)),
       "other_ethnicity" -> optional(Mappings.nonEmptyTrimmedText("error.required.ethnicity", 256)),
@@ -39,22 +37,34 @@ object QuestionnaireDiversityInfoForm {
     )(Data.apply)(Data.unapply)
   )
 
+  val acceptanceForm = Form(
+    mapping(
+      "accept-terms" -> checked(Messages("error.required.acceptance"))
+    )(AcceptanceTerms.apply)(AcceptanceTerms.unapply)
+  )
+
   case class Data(
-    gender: Option[String],
-    otherGender: Option[String],
-    preferNotSayGender: Option[Boolean],
-    sexOrientation: Option[String],
-    otherSexOrientation: Option[String],
-    preferNotSaySexOrientation: Option[Boolean],
-    ethnicity: Option[String],
-    otherEthnicity: Option[String],
-    preferNotSayEthnicity: Option[Boolean]
-  ) {
-    def toQuestionnaire: Questionnaire = Questionnaire(List(
-      Question(Messages("gender.question"), Answer(gender, otherGender, preferNotSayGender)),
-      Question(Messages("sexOrientation.question"), Answer(sexOrientation, otherSexOrientation, preferNotSaySexOrientation)),
+                   gender: String,
+                   otherGender: Option[String],
+                   sexOrientation: String,
+                   otherSexOrientation: Option[String],
+                   ethnicity: Option[String],
+                   otherEthnicity: Option[String],
+                   preferNotSayEthnicity: Option[Boolean]
+                 ) {
+    def exchange: Questionnaire = Questionnaire(List(
+      Question(Messages("gender.question"), getFormattedAnswer(Some(gender), otherGender)),
+      Question(Messages("sexOrientation.question"), getFormattedAnswer(Some(sexOrientation), otherSexOrientation)),
       Question(Messages("ethnicity.question"), Answer(ethnicity, otherEthnicity, preferNotSayEthnicity))
     ))
   }
 
+  case class AcceptanceTerms(acceptTerms: Boolean) {
+    def toQuestionnaire: Questionnaire = {
+      val answer = if (acceptTerms) Some("Yes") else Some("No")
+      Questionnaire(List(
+        Question(Messages("accept-terms.question"), Answer(answer, None, None)
+        )))
+    }
+  }
 }

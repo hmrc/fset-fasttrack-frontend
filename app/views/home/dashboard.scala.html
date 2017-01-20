@@ -80,14 +80,14 @@
                 <div class="grid-wrapper">
                     <div class="grid grid-2-3">
                         <div class="inner-block-padr">
-                            <h2 class='@inProgress() {heading-large} @inProgress(false) {heading-medium} '>
+                            <h2 class='@inProgress() {heading-large} @inProgress(flag = false) {heading-medium} '>
                                 1. Fill in your application form</h2>
-                            @withdrawn(false) {
+                            @withdrawn(flag = false) {
                                 <ul class="list-text list-withicons">
                                     @withdraw() {
                                         <li><i class='fa fa-check the-icon'></i>Your application has been submitted</li>
                                     }
-                                    @withdraw(false) {
+                                    @withdraw(flag = false) {
                                         @renderProgressElement(showLink = PersonalDetailsRole.isAuthorized(usr), checked = SchemesRole.isAuthorized(usr), "personalDetailsStep")(routes.FastTrackApplication.generalDetails(None)) {Add personal details }
                                         @renderProgressElement(showLink = SchemesRole.isAuthorized(usr), checked = AssistanceDetailsRole.isAuthorized(usr), "schemesStep")(routes.SchemeController.schemes()) { Choose locations and schemes }
                                         @renderProgressElement(showLink = AssistanceDetailsRole.isAuthorized(usr), checked = ReviewRole.isAuthorized(usr), "assistanceDetailsStep")(routes.AssistanceDetailsController.present()) { Tell us about any assistance needs you may have }

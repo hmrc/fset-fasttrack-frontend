@@ -16,13 +16,13 @@
 
 package controllers
 
-import _root_.forms.{QuestionnaireDiversityInfoForm, QuestionnaireEducationInfoForm, QuestionnaireOccupationInfoForm}
-import config.{CSRCache, CSRHttp}
+import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
-import connectors.ExchangeObjects.Questionnaire
+import _root_.forms._
+import connectors.exchange.Questionnaire
 import models.CachedDataWithApp
-import play.api.mvc.{Request, Result}
-import security.Roles.{DiversityQuestionnaireRole, EducationQuestionnaireRole, OccupationQuestionnaireRole, StartQuestionnaireRole}
+import play.api.mvc.{ Result, Request }
+import security.Roles.{ DiversityQuestionnaireRole, EducationQuestionnaireRole, OccupationQuestionnaireRole, StartQuestionnaireRole }
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -40,32 +40,24 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
       val p = user.application.progress
       Future.successful {
         if (!p.diversityQuestionnaire && !p.educationQuestionnaire && !p.occupationQuestionnaire) {
-          Ok(views.html.questionnaire.index())
+          Ok(views.html.questionnaire.intro(DiversityQuestionnaireForm.acceptanceForm))
         } else {
           Ok(views.html.questionnaire.continue())
         }
       }
   }
 
-  def firstPageView = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
-    implicit user =>
-      Future.successful(Ok(views.html.questionnaire.firstpage(QuestionnaireDiversityInfoForm.form)))
-  }
-
-  def secondPageView = CSRSecureAppAction(EducationQuestionnaireRole) { implicit request =>
-    implicit user =>
-      Future.successful(Ok(views.html.questionnaire.secondpage(QuestionnaireEducationInfoForm.form)))
-  }
-
-  def thirdPageView = CSRSecureAppAction(OccupationQuestionnaireRole) { implicit request =>
-    implicit user =>
-      Future.successful(Ok(views.html.questionnaire.thirdpage(QuestionnaireOccupationInfoForm.form)))
-  }
-
   def submitStart = CSRSecureAppAction(StartQuestionnaireRole) { implicit request =>
     implicit user =>
-      val empty = Questionnaire(List())
-      submitQuestionnaire(empty, "start_questionnaire")(Redirect(routes.QuestionnaireController.firstPageView()))
+      DiversityQuestionnaireForm.acceptanceForm.bindFromRequest.fold(
+        errorForm => {
+          Future.successful(Ok(views.html.questionnaire.intro(errorForm)))
+        },
+        _ => {
+          val empty = Questionnaire(List())
+          submitQuestionnaire(empty, "start_questionnaire")(Redirect(routes.QuestionnaireController.presentFirstPage()))
+        }
+      )
   }
 
   def submitContinue = CSRSecureAppAction(StartQuestionnaireRole) { implicit request =>
@@ -73,55 +65,68 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
       val p = user.application.progress
       Future.successful((p.diversityQuestionnaire, p.educationQuestionnaire, p.occupationQuestionnaire) match {
         case (_, _, true) => Redirect(routes.SubmitApplicationController.present())
-        case (_, true, _) => Redirect(routes.QuestionnaireController.thirdPageView())
-        case (true, _, _) => Redirect(routes.QuestionnaireController.secondPageView())
-        case (_, _, _) => Redirect(routes.QuestionnaireController.firstPageView())
+        case (_, true, _) => Redirect(routes.QuestionnaireController.presentThirdPage())
+        case (true, _, _) => Redirect(routes.QuestionnaireController.presentSecondPage())
+        case (_, _, _) => Redirect(routes.QuestionnaireController.presentFirstPage())
       })
   }
 
-  def firstPageSubmit = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
+  def presentFirstPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
     implicit user =>
-      QuestionnaireDiversityInfoForm.form.bindFromRequest.fold(
+      Future.successful(Ok(views.html.questionnaire.firstpage(DiversityQuestionnaireForm.form)))
+  }
+
+  def submitFirstPage = CSRSecureAppAction(DiversityQuestionnaireRole) { implicit request =>
+    implicit user =>
+      DiversityQuestionnaireForm.form.bindFromRequest.fold(
         errorForm => {
           Future.successful(Ok(views.html.questionnaire.firstpage(errorForm)))
         },
         data => {
-          submitQuestionnaire(data.toQuestionnaire, "diversity_questionnaire")(Redirect(routes.QuestionnaireController.secondPageView()))
+          submitQuestionnaire(data.exchange, "diversity_questionnaire")(
+            Redirect(routes.QuestionnaireController.presentSecondPage()))
         }
       )
   }
 
-  def secondPageSubmit = CSRSecureAppAction(EducationQuestionnaireRole) { implicit request =>
+  def presentSecondPage = CSRSecureAppAction(EducationQuestionnaireRole) { implicit request =>
     implicit user =>
-      QuestionnaireEducationInfoForm.form.bindFromRequest.fold(
+      Future.successful(Ok(views.html.questionnaire.secondpage(EducationQuestionnaireForm.form)))
+  }
+
+  def submitSecondPage = CSRSecureAppAction(EducationQuestionnaireRole) { implicit request =>
+    implicit user =>
+      EducationQuestionnaireForm.form.bindFromRequest.fold(
         errorForm => {
           Future.successful(Ok(views.html.questionnaire.secondpage(errorForm)))
         },
         data => {
-          submitQuestionnaire(data.toQuestionnaire, "education_questionnaire")(Redirect(routes.QuestionnaireController.thirdPageView()))
+          submitQuestionnaire(data.exchange, "education_questionnaire")(Redirect(routes.QuestionnaireController.presentThirdPage()))
         }
       )
   }
 
-  def thirdPageSubmit = CSRSecureAppAction(OccupationQuestionnaireRole) { implicit request =>
+  def presentThirdPage = CSRSecureAppAction(OccupationQuestionnaireRole) { implicit request =>
     implicit user =>
-      QuestionnaireOccupationInfoForm.form.bindFromRequest.fold(
+      Future.successful(Ok(views.html.questionnaire.thirdpage(ParentalOccupationQuestionnaireForm.form)))
+  }
+
+  def submitThirdPage = CSRSecureAppAction(OccupationQuestionnaireRole) { implicit request =>
+    implicit user =>
+      ParentalOccupationQuestionnaireForm.form.bindFromRequest.fold(
         errorForm => {
           Future.successful(Ok(views.html.questionnaire.thirdpage(errorForm)))
         },
         data => {
-          submitQuestionnaire(data.toQuestionnaire, "occupation_questionnaire")(Redirect(routes.SubmitApplicationController.present()))
+          submitQuestionnaire(data.exchange, "occupation_questionnaire")(Redirect(routes.SubmitApplicationController.present()))
         }
       )
   }
 
-  def submitQuestionnaire(data: Questionnaire, sectionId: String)(onSuccess: Result)(
-    implicit
-    user: CachedDataWithApp, hc: HeaderCarrier, request: Request[_]
-  ) = {
+  private def submitQuestionnaire(data: Questionnaire, sectionId: String)(onSuccess: Result)
+                                 (implicit user: CachedDataWithApp, hc: HeaderCarrier, request: Request[_]) = {
     updateQuestionnaire(user.application.applicationId, sectionId, data).flatMap { _ =>
       updateProgress()(_ => onSuccess)
     }
   }
-
 }

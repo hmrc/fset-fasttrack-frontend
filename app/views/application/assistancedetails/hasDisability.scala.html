@@ -8,7 +8,7 @@
         <h2 class="form-label">Do you consider yourself to have a disability?</h2>
         <legend class="visuallyhidden">Do you consider yourself to have a disability?</legend>
         @radioBoxHorizontal(form("hasDisability"), options = List(("yes", "Yes", true), ("no", "No", false),
-            ("preferNotToSay", "I don't know/prefer not to say", false)), optionTrigger = "hasDisability-describe")
+            ("preferNotToSay", Messages("answer.unknown"), false)), optionTrigger = "hasDisability-describe")
         <div class="toggle-content form-group form-group-compound" id="hasDisability-describe">
             @helper.textarea(form("hasDisabilityDescription"),
             '_label -> "",
