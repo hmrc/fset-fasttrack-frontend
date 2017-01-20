@@ -16,12 +16,12 @@
 
 package forms
 
-import controllers.BaseSpec
-import forms.QuestionnaireDiversityInfoForm.{Data, form}
+import controllers.UnitSpec
+import forms.DiversityQuestionnaireForm.{ Data, form }
 
-class QuestionnaireDiversityFormSpec extends BaseSpec {
+class DiversityQuestionnaireFormSpec extends UnitSpec {
 
-  "the diversity form" should {
+  "The diversity questionnaire form" should {
     "be valid when all values are correct" in new Fixture {
       val validForm = form.bind(validFormValues)
       val expectedData = validFormData
@@ -29,44 +29,37 @@ class QuestionnaireDiversityFormSpec extends BaseSpec {
       actualData mustBe expectedData
     }
 
-    "fail when no gener" in new Fixture {
-      assertFieldRequired("gender", "gender")
+    "fail when no gender" in new Fixture {
+      assertFieldRequired(expectedError = "gender", "gender")
     }
 
     "fail when no orientation" in new Fixture {
-      assertFieldRequired("sexOrientation", "sexOrientation")
+      assertFieldRequired(expectedError = "sexOrientation", "sexOrientation")
     }
 
     "fail when no ethnicity" in new Fixture {
-      assertFieldRequired("ethnicity", "other_sexOrientation", "preferNotSay_ethnicity")
+      assertFieldRequired(expectedError = "ethnicity", "other_ethnicity", "preferNotSay_ethnicity")
     }
 
     "transform properly to a question list" in new Fixture {
-      val questionList = validFormData.toQuestionnaire.questions
-      questionList.size must be(3)
-      questionList(0).answer.answer must be(Some("Male"))
-      questionList(1).answer.otherDetails must be(Some("details"))
-      questionList(2).answer.unknown must be(Some(true))
+      val questionList = validFormData.exchange.questions
+      questionList.size mustBe 3
+      questionList(0).answer.answer mustBe Some("Male")
+      questionList(1).answer.otherDetails mustBe Some("details")
+      questionList(2).answer.unknown mustBe Some(true)
     }
-
   }
 
   trait Fixture {
 
-    val validFormData = Data(
-      Some("Male"), None, None,
-      Some("Other"), Some("details"), None,
-      None, None, Some(true)
-    )
+    val validFormData = Data("Male", None, "Other", Some("details"), None, None, Some(true))
 
     val validFormValues = Map(
       "gender" -> "Male",
       "other_gender" -> "",
-      "preferNotSay_gender" -> "",
 
       "sexOrientation" -> "Other",
       "other_sexOrientation" -> "details",
-      "preferNotSay_sexOrientation" -> "",
 
       "ethnicity" -> "",
       "other_ethnicity" -> "",
@@ -82,5 +75,4 @@ class QuestionnaireDiversityFormSpec extends BaseSpec {
       invalidForm.errors.map(_.key) mustBe Seq(expectedKey)
     }
   }
-
 }

@@ -26,22 +26,23 @@
                 <script src='@routes.Assets.versioned("js/vendor/ie.js")'></script>
                 <![endif]-->
                 <!--[if gte IE 9]><!-->
-            <link href='@routes.Assets.versioned("css/fonts.css")' media="all" rel="stylesheet" type="text/css"
-            />
+            <link href='@routes.Assets.versioned("css/fonts.css")' media="all" rel="stylesheet" type="text/css" />
                 <!--<![endif]-->
             <link rel="shortcut icon" href='@routes.Assets.versioned("img/favicon.ico")' type="image/x-icon">
-            <link href='@routes.Assets.versioned("css/font-awesome/css/font-awesome.min.css")' rel="stylesheet"
-            type="text/css">
-        <script>
-            var html = document.documentElement;
-            html.className += " js-enabled";
+            <link href='@routes.Assets.versioned("css/font-awesome/css/font-awesome.min.css")' rel="stylesheet" type="text/css">
+            <script>
+                var html = document.documentElement;
+                html.className += " js-enabled";
 
-            if (!('open' in document.createElement('details'))) {
-              document.documentElement.className += ' no-details';
-            }
-          </script>
+                if (!('open' in document.createElement('details'))) {
+                  document.documentElement.className += ' no-details';
+                }
+            </script>
 
             <script src='@routes.Assets.versioned("js/vendor/modernizr-custom.js")'></script>
+            @helper.javascriptRouter("jsRoutes")(
+                routes.javascript.SchoolsController.getSchools
+            )
         </head>
         <body>
             @if(!CookiePolicy.bannerSeen(request)) {

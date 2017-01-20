@@ -65,7 +65,5 @@ trait ReviewApplicationController extends BaseController {
           }
         }
       }
-
   }
-
 }
