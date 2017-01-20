@@ -49,7 +49,7 @@ $(function() {
   if($('#validation-summary').is(':visible')) {
     window.csrActive++;
     setTimeout(function()
-      { 
+      {
         window.scrollTo(0, 0);
         window.csrActive--;
       }, 200);
@@ -636,7 +636,7 @@ $(function() {
           $secondSchemeVal = "";
         }
 
-        
+
 
         //disable second selection when there is only 1 scheme
         var disabledSecond = false;
@@ -673,7 +673,7 @@ $(function() {
           .attr('aria-hidden', false)
           .find('b').text(regionName);
       }
-      
+
 
     });
 
@@ -786,6 +786,11 @@ $(function() {
     $(this).text(theSection);
   });
 
+  $('#printLink').on('click', function(e) {
+    e.preventDefault();
+
+    window.print();
+  });
 });
 
 ;$(function() {
