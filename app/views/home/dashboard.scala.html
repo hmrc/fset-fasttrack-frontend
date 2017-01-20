@@ -89,8 +89,8 @@
                                     }
                                     @withdraw(false) {
                                         @renderProgressElement(showLink = PersonalDetailsRole.isAuthorized(usr), checked = SchemesRole.isAuthorized(usr), "personalDetailsStep")(routes.FastTrackApplication.generalDetails(None)) {Add personal details }
-                                        @renderProgressElement(showLink = SchemesRole.isAuthorized(usr), checked = AssistanceDetailsRole.isAuthorized(usr), "schemesStep")(routes.SchemeController.schemes()) { Choose locations and schemes }
-                                        @renderProgressElement(showLink = AssistanceDetailsRole.isAuthorized(usr), checked = ReviewRole.isAuthorized(usr), "assistanceDetailsStep")(routes.AssistanceDetailsController.present()) { Tell us about any assistance needs you may have }
+                                        @renderProgressElement(showLink = SchemesRole.isAuthorized(usr), checked = AssistanceDetailsRole.isAuthorized(usr), "schemesStep")(routes.SchemeController.schemes()) { Choose your preferred schemes and locations }
+                                        @renderProgressElement(showLink = AssistanceDetailsRole.isAuthorized(usr), checked = ReviewRole.isAuthorized(usr), "assistanceDetailsStep")(routes.AssistanceDetailsController.present()) { Disability and health conditions }
                                         @renderProgressElement(showLink = ReviewRole.isAuthorized(usr), checked = (SubmitApplicationRole.isAuthorized(usr) || StartQuestionnaireRole.isAuthorized(usr)), "reviewStep")(routes.ReviewApplicationController.present()) { Check your application }
                                         @renderProgressElement(showLink = QuestionnaireInProgressRole.isAuthorized(usr), checked = SubmitApplicationRole.isAuthorized(usr), "questionnaireStep")(routes.QuestionnaireController.start()) { Fill in the diversity questions }
                                         @renderProgressElement(showLink = SubmitApplicationRole.isAuthorized(usr), checked = WithdrawApplicationRole.isAuthorized(usr), "submitStep")(routes.SubmitApplicationController.present()) { Submit }
@@ -115,6 +115,7 @@
                             @noApp {
                                 <a class="button" id="start-application" href="@routes.HomeController.create()">
                                     Start your application</a>
+                                    <p>(Should take 5 to 10 minutes to fill in)</p>
                             }
 
                         </div>
@@ -219,8 +220,7 @@
                                                     <p>You did not attend your assessment. <a href="@routes.ApplicationController.helpdesk()">Contact us</a> to discuss your options if you're still interested in applying.</p>
                                                 } else {
                                                     <p>If you pass the online tests, you'll be invited to attend an assessment centre.</p>
-                                                    <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#assessment-day" rel="external" target="_blank">
-                                                        Find out more about the assessment day</a></p>
+                                                    <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#assessment-day" rel="external" target="_blank">Find out more about the assessment day</a></p>
                                                 }
                                             }
                                         }
@@ -245,7 +245,7 @@
                                     use the <a href="https://www.gov.uk/apply-apprenticeship" rel="external">find an apprenticeship</a> service to search
                                     for other apprenticeships in England.</p>
                             } else {
-                                <h2 class="heading-medium">4. Your final results</h2>
+                                <h2 class="heading-medium">4. Final stages</h2>
                                 @if(AssessmentCentrePassedNotifiedRole.isAuthorized(usr)) {
                                     <p>We'll contact you soon to tell you about your role, scheme,
                                         department and location. Make sure to regularly check your
@@ -254,9 +254,8 @@
                                         Find out more about the on boarding process</a>
                                     </p>
                                 } else {
-                                    <p>We aim to let you know the outcome of your assessment by October 2016.</p>
-                                    <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#after-assessment" rel="external" target="_blank">
-                                        Find out more about what happens after your assessment day</a></p>
+                                    <p>We aim to make your results available as soon as possible.</p>
+                                    <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#after-assessment" rel="external" target="_blank">Find out more about what happens after you've been accepted for the Fast Track</a></p>
                                 }
                             }
                         </div>

@@ -7,9 +7,21 @@
 
 @applicationStatus match {
     case REGISTERED | CREATED | IN_PROGRESS | WITHDRAWN => {
-            <p>Once you've submitted your application and completed the diversity questions, you'll be invited to take the online tests. Once you've been invited, you'll have 7 days to complete the tests.</p>
-            <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#online-tests" rel="external" target="_blank">
-                        Find out more about the online tests</a></p>
+           <ul class="list-text list-withicons">
+             <li>
+               <p class="med-btm-margin"><i class="fa fa-lock the-icon"></i>Verbal reasoning (6 minutes timed) <span class="font-xsmall" data-locked>- locked</span></p>
+             </li>
+             <li>
+               <p class="med-btm-margin"><i class="fa fa-lock the-icon"></i>Numerical reasoning (6 minutes timed) <span class="font-xsmall" data-locked>- locked</span></p>
+             </li>
+             <li>
+               <p class="med-btm-margin"><i class="fa fa-lock the-icon"></i>Situational judgement questionnaire (untimed) <span class="font-xsmall" data-locked>- locked</span></p>
+             </li>
+             <li>
+               <p class="med-btm-margin"><i class="fa fa-lock the-icon"></i>Competency questionnaire (untimed) <span class="font-xsmall" data-locked>- locked</span></p>
+             </li>
+           </ul>
+           <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#online-tests" rel="external">Find out more about the online tests</a></p>
     }
     case ONLINE_TEST_INVITED => {
 
