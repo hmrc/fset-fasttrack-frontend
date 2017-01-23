@@ -49,7 +49,7 @@ object ApplicationData {
     }
   }
 
-  def isReadOnly(applicationStatus: ApplicationStatus) = applicationStatus match {
+  def isReadOnly(applicationStatus: ApplicationStatus): Boolean = applicationStatus match {
     case ApplicationStatus.REGISTERED => false
     case ApplicationStatus.CREATED => false
     case ApplicationStatus.IN_PROGRESS => false
