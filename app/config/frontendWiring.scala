@@ -27,6 +27,7 @@ import models.services.UserCacheService
 import play.api.Play
 import play.api.Play.current
 import play.api.libs.ws.WS
+import play.api.mvc.Results._
 import play.api.mvc.Results.NotImplemented
 import play.api.mvc.{ Call, RequestHeader, Result }
 import security.CsrCredentialsProvider
@@ -100,5 +101,10 @@ object WhitelistFilter extends AkamaiWhitelistFilter with RunMode {
     path => Call("GET", path)
   }
 
-  override def destination: Call = Call("GET", "https://www.apply-civil-service-fast-stream.service.gov.uk/outage-fset-fasttrack/index.html")
+  val outageUrl = "https://www.apply-civil-service-fast-stream.service.gov.uk/outage-fset-fasttrack/index.html"
+
+  override def destination: Call = Call("GET", outageUrl)
+
+  override def noHeaderAction(f: (RequestHeader) => Future[Result],
+    rh: RequestHeader): Future[Result] = Future.successful(Redirect(outageUrl))
 }
