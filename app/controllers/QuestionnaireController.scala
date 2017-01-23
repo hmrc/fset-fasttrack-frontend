@@ -83,7 +83,7 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
           Future.successful(Ok(views.html.questionnaire.firstpage(errorForm)))
         },
         data => {
-          submitQuestionnaire(data.exchange, "diversity_questionnaire")(
+          submitQuestionnaire(data.exchange, "diversity_questions_completed")(
             Redirect(routes.QuestionnaireController.presentSecondPage()))
         }
       )
@@ -101,7 +101,7 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
           Future.successful(Ok(views.html.questionnaire.secondpage(errorForm)))
         },
         data => {
-          submitQuestionnaire(data.exchange, "education_questionnaire")(Redirect(routes.QuestionnaireController.presentThirdPage()))
+          submitQuestionnaire(data.exchange, "education_questions_completed")(Redirect(routes.QuestionnaireController.presentThirdPage()))
         }
       )
   }
@@ -118,7 +118,7 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
           Future.successful(Ok(views.html.questionnaire.thirdpage(errorForm)))
         },
         data => {
-          submitQuestionnaire(data.exchange, "occupation_questionnaire")(Redirect(routes.SubmitApplicationController.present()))
+          submitQuestionnaire(data.exchange, "occupation_questions_completed")(Redirect(routes.SubmitApplicationController.present()))
         }
       )
   }

@@ -27,7 +27,7 @@ object ProgressResponseExamples {
     hasSchemes = false,
     assistanceDetails = false,
     review = false,
-    questionnaire = Nil,
+    questionnaire = QuestionnaireProgressResponse(),
     submitted = false,
     withdrawn = false,
     OnlineTestProgressResponse(invited = false,
@@ -48,9 +48,10 @@ object ProgressResponseExamples {
   val InPersonalDetails = Initial.copy(personalDetails = true)
   val InSchemePreferencesDetails = InPersonalDetails.copy(hasSchemes = true)
   val InAssistanceDetails = InSchemePreferencesDetails.copy(assistanceDetails = true)
-  val InDiversityQuestionnaire = InAssistanceDetails.copy(questionnaire = List("start_questionnaire", "diversity_questionnaire"))
-  val InParentalOccupationQuestionnaire = InAssistanceDetails.copy(questionnaire = List("start_questionnaire", "diversity_questionnaire",
-    "education_questionnaire", "occupation_questionnaire"))
+  val InDiversityQuestionnaire = InAssistanceDetails.copy(questionnaire = QuestionnaireProgressResponse(diversityStarted = true,
+    diversityCompleted = true, educationCompleted = false, occupationCompleted = false))
+  val InParentalOccupationQuestionnaire = InAssistanceDetails.copy(questionnaire = QuestionnaireProgressResponse(diversityStarted = true,
+    diversityCompleted = true, educationCompleted = true, occupationCompleted = true))
   val InReview = InParentalOccupationQuestionnaire.copy(review = true)
   val Submitted = InReview.copy(submitted = true)
   val WithdrawnAfterSubmitted = Submitted.copy(withdrawn = true)

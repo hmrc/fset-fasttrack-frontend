@@ -19,17 +19,17 @@ package connectors.exchange
 import play.api.libs.json.Json
 
 case class OnlineTestProgressResponse(
-                                       invited: Boolean,
-                                       started: Boolean,
-                                       completed: Boolean,
-                                       expired: Boolean,
-                                       awaitingReevaluation: Boolean,
-                                       failed: Boolean,
-                                       failedNotified: Boolean,
-                                       awaitingAllocation: Boolean,
-                                       allocationConfirmed: Boolean,
-                                       allocationUnconfirmed: Boolean
-                                     )
+  invited: Boolean,
+  started: Boolean,
+  completed: Boolean,
+  expired: Boolean,
+  awaitingReevaluation: Boolean,
+  failed: Boolean,
+  failedNotified: Boolean,
+  awaitingAllocation: Boolean,
+  allocationConfirmed: Boolean,
+  allocationUnconfirmed: Boolean
+)
 
 object OnlineTestProgressResponse {
   implicit val onlineTestProgressResponseFormat = Json.format[OnlineTestProgressResponse]
