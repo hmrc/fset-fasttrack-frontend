@@ -30,8 +30,11 @@ trait SchoolsClient {
   import config.FrontendAppConfig.fasttrackConfig._
 
   def getSchools(term: String)(implicit hc: HeaderCarrier) = {
-    http.GET(s"${url.host}${url.base}/schools?term=$term").map( httpResponse =>
-      httpResponse.json.as[List[School]]
+    http.GET(
+      s"${url.host}${url.base}/schools",
+      Seq("term" -> term)
+    ).map(
+      httpResponse => httpResponse.json.as[List[School]]
     ).recover {
       case e: NotFoundException => throw new SchoolsNotFound
     }
