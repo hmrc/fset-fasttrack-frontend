@@ -22,21 +22,21 @@ import play.api.libs.json.Json
 import scala.language.implicitConversions
 
 case class Progress(
-                     personalDetails: Boolean,
-                     hasLocations: Boolean,
-                     hasSchemes: Boolean,
-                     assistanceDetails: Boolean,
-                     review: Boolean,
-                     startedQuestionnaire: Boolean,
-                     diversityQuestionnaire: Boolean,
-                     educationQuestionnaire: Boolean,
-                     occupationQuestionnaire: Boolean,
-                     submitted: Boolean,
-                     withdrawn: Boolean,
-                     onlineTest: OnlineTestProgress,
-                     failedToAttend: Boolean,
-                     assessmentScores: AssessmentScores,
-                     assessmentCentre: AssessmentCentre
+  personalDetails: Boolean,
+  hasLocations: Boolean,
+  hasSchemes: Boolean,
+  assistanceDetails: Boolean,
+  review: Boolean,
+  startedQuestionnaire: Boolean,
+  diversityQuestionnaire: Boolean,
+  educationQuestionnaire: Boolean,
+  occupationQuestionnaire: Boolean,
+  submitted: Boolean,
+  withdrawn: Boolean,
+  onlineTest: OnlineTestProgress,
+  failedToAttend: Boolean,
+  assessmentScores: AssessmentScores,
+  assessmentCentre: AssessmentCentre
 )
 
 case class OnlineTestProgress(
@@ -68,10 +68,10 @@ object Progress {
       hasSchemes = progressResponse.hasSchemes,
       assistanceDetails = progressResponse.assistanceDetails,
       review = progressResponse.review,
-      startedQuestionnaire = progressResponse.questionnaire.contains("start_questionnaire"),
-      diversityQuestionnaire = progressResponse.questionnaire.contains("diversity_questionnaire"),
-      educationQuestionnaire = progressResponse.questionnaire.contains("education_questionnaire"),
-      occupationQuestionnaire = progressResponse.questionnaire.contains("occupation_questionnaire"),
+      startedQuestionnaire = progressResponse.questionnaire.diversityStarted,
+      diversityQuestionnaire = progressResponse.questionnaire.diversityCompleted,
+      educationQuestionnaire = progressResponse.questionnaire.educationCompleted,
+      occupationQuestionnaire = progressResponse.questionnaire.occupationCompleted,
       submitted = progressResponse.submitted,
       withdrawn = progressResponse.withdrawn,
       onlineTest = OnlineTestProgress(

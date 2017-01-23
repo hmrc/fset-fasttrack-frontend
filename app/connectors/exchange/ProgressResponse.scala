@@ -20,19 +20,26 @@ import models.UniqueIdentifier
 import play.api.libs.json.Json
 
 case class ProgressResponse(
-                             applicationId: UniqueIdentifier,
-                             personalDetails: Boolean,
-                             hasLocations: Boolean,
-                             hasSchemes: Boolean,
-                             assistanceDetails: Boolean,
-                             review: Boolean,
-                             questionnaire: List[String],
-                             submitted: Boolean,
-                             withdrawn: Boolean,
-                             onlineTest: OnlineTestProgressResponse,
-                             failedToAttend: Boolean,
-                             assessmentScores: AssessmentScores = AssessmentScores(),
-                             assessmentCentre: AssessmentCentre = AssessmentCentre()
+  applicationId: UniqueIdentifier,
+  personalDetails: Boolean,
+  hasLocations: Boolean,
+  hasSchemes: Boolean,
+  assistanceDetails: Boolean,
+  review: Boolean,
+  questionnaire: QuestionnaireProgressResponse,
+  submitted: Boolean,
+  withdrawn: Boolean,
+  onlineTest: OnlineTestProgressResponse,
+  failedToAttend: Boolean,
+  assessmentScores: AssessmentScores = AssessmentScores(),
+  assessmentCentre: AssessmentCentre = AssessmentCentre()
+)
+
+case class QuestionnaireProgressResponse(
+  diversityStarted: Boolean = false,
+  diversityCompleted: Boolean = false,
+  educationCompleted: Boolean = false,
+  occupationCompleted: Boolean = false
 )
 
 case class AssessmentScores(
@@ -49,5 +56,6 @@ case class AssessmentCentre(
 object ProgressResponse {
   implicit val assessmentScoresFormat = Json.format[AssessmentScores]
   implicit val assessmentCentreFormat = Json.format[AssessmentCentre]
+  implicit val questionnaireReponseFormat = Json.format[QuestionnaireProgressResponse]
   implicit val progressResponseFormat = Json.format[ProgressResponse]
 }
