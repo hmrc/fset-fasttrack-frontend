@@ -22,7 +22,7 @@ import _root_.forms._
 import connectors.exchange.Questionnaire
 import models.CachedDataWithApp
 import play.api.mvc.{ Result, Request }
-import security.Roles.{ DiversityQuestionnaireRole, EducationQuestionnaireRole, OccupationQuestionnaireRole, StartQuestionnaireRole }
+import security.Roles.{ DiversityQuestionnaireRole, EducationQuestionnaireRole, ParentalOccupationQuestionnaireRole, StartQuestionnaireRole }
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -106,12 +106,12 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
       )
   }
 
-  def presentThirdPage = CSRSecureAppAction(OccupationQuestionnaireRole) { implicit request =>
+  def presentThirdPage = CSRSecureAppAction(ParentalOccupationQuestionnaireRole) { implicit request =>
     implicit user =>
       Future.successful(Ok(views.html.questionnaire.thirdpage(ParentalOccupationQuestionnaireForm.form)))
   }
 
-  def submitThirdPage = CSRSecureAppAction(OccupationQuestionnaireRole) { implicit request =>
+  def submitThirdPage = CSRSecureAppAction(ParentalOccupationQuestionnaireRole) { implicit request =>
     implicit user =>
       ParentalOccupationQuestionnaireForm.form.bindFromRequest.fold(
         errorForm => {

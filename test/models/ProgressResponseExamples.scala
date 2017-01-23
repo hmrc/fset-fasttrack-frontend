@@ -23,7 +23,7 @@ import connectors.exchange._
 object ProgressResponseExamples {
   val Initial = ProgressResponse(UniqueIdentifier(UUID.randomUUID().toString),
     personalDetails = false,
-    hasLocations = false,
+    hasSchemeLocations = false,
     hasSchemes = false,
     assistanceDetails = false,
     review = false,
