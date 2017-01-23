@@ -89,7 +89,7 @@ class ReviewApplicationControllerSpec extends BaseControllerSpec {
       when(mockApplicationClient.getApplicationProgress(eqTo(currentApplicationId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(ProgressResponseExamples.InReview))
 
-      val Application = currentCandidateWithApp.application.copy(progress = ProgressResponseExamples.InQuestionnaire)
+      val Application = currentCandidateWithApp.application.copy(progress = ProgressResponseExamples.InParentalOccupationQuestionnaire)
       val UpdatedCandidate = currentCandidate.copy(application = Some(Application))
       when(mockUserService.save(eqTo(UpdatedCandidate))(any[HeaderCarrier])).thenReturn(Future.successful(UpdatedCandidate))
 
@@ -124,7 +124,7 @@ class ReviewApplicationControllerSpec extends BaseControllerSpec {
       when(mockSecurityEnvironment.userService).thenReturn(mockUserService)
 
       override def getApplicationProgress(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[ProgressResponse] = {
-        Future.successful(ProgressResponseExamples.InQuestionnaire)
+        Future.successful(ProgressResponseExamples.InParentalOccupationQuestionnaire)
       }
     }
 
