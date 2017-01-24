@@ -100,5 +100,5 @@ object WhitelistFilter extends AkamaiWhitelistFilter with RunMode {
     path => Call("GET", path)
   }
 
-  override def destination: Call = Call("GET", "https://www.apply-civil-service-fast-stream.service.gov.uk/outage-fset-fasttrack/index.html")
+  override def destination: Call = Call("GET", "https://www.apply-civil-service-apprenticeship.service.gov.uk/outage-fset-fasttrack/index.html")
 }

@@ -28,12 +28,12 @@ object FrontendBuild extends Build with MicroService {
 private object Versions {
 
   val ficus         = "1.1.2"
-  val cacheClient   = "5.3.0"
-  val frontend      = "6.4.0"
+  val cacheClient   = "5.6.0"
+  val frontend      = "6.7.0"
   val playConfig    = "2.0.1"
   val playHealth    = "1.1.0"
   val urlBuilder    = "1.0.0"
-  val httpclient    = "4.3.4"
+  val httpclient    = "4.3.6"
   val jsonLogger    = "2.1.1"
   val scalatest     = "2.2.2"
   val pegdown       = "1.4.2"
