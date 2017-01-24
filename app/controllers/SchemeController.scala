@@ -56,7 +56,7 @@ trait SchemeController extends BaseController {
         locations => displaySchemeLocations(
           schemeLocationForm.fill(SchemeLocationPreferenceForm.Data(locations.map(_.id))))
       }.recoverWith {
-        case _: SchemeLocationsChoicesNotFound => displaySchemeLocations(schemeLocationForm)
+        case _: SchemeLocationChoicesNotFound => displaySchemeLocations(schemeLocationForm)
       }
   }
 
