@@ -217,7 +217,7 @@ object RoleUtils {
 
   def hasSchemesAndLocations(implicit user: CachedData) = progress.hasSchemeLocations && progress.hasSchemes
 
-  def hasAssistanceDetails(implicit user: CachedData) = progress.assistanceDetails
+  def hasAssistanceDetails(implicit user: CachedData) = user.application.isDefined && progress.assistanceDetails
 
   def hasStartedQuestionnaire(implicit user: CachedData) = progress.startedQuestionnaire
 
