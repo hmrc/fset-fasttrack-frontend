@@ -234,7 +234,7 @@ trait ApplicationClient {
     http.GET(s"$hostBase/scheme-locations/$applicationId").map { response =>
       response.json.as[List[LocationSchemes]]
     } recover {
-      case _: NotFoundException => throw new SchemeChoicesNotFound()
+      case _: NotFoundException => throw new SchemeLocationChoicesNotFound()
     }
   }
 
@@ -242,7 +242,7 @@ trait ApplicationClient {
     http.GET(s"$hostBase/schemes/$applicationId").map { response =>
       response.json.as[List[SchemeInfo]]
     } recover {
-      case _: NotFoundException => throw new SchemeLocationChoicesNotFound()
+      case _: NotFoundException => throw new SchemeChoicesNotFound()
     }
   }
 
