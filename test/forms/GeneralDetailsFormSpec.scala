@@ -17,8 +17,8 @@
 package forms
 
 import controllers.BaseSpec
-import forms.GeneralDetailsForm.Data
-import mappings.{Address, DayMonthYear}
+import forms.GeneralDetailsForm.{ Data, deptMaxLength }
+import mappings.{ Address, DayMonthYear }
 import org.joda.time.LocalDate
 
 class GeneralDetailsFormSpec extends BaseSpec {
@@ -129,6 +129,25 @@ class GeneralDetailsFormSpec extends BaseSpec {
       assertFormError("alevel.required", validFormValues - "alevel")
     }
 
+    "be invalid when you don't specify if you are a civil servant" in new Fixture {
+      assertFormError("error.civilServant.required", validFormValues - "civilServant")
+    }
+
+    "be invalid if you specify you are a civil servant but do not specify which department" in new Fixture {
+      assertFormError("error.department.required", validFormValues - "civilServant" + ("civilServant" -> "Yes"))
+    }
+
+    "be invalid if you specify you are a civil servant and enter a department which exceeds the max length" in new Fixture {
+      assertFormError("error.department.maxLength", validFormValues - "civilServant"
+        + ("civilServant" -> "Yes")
+        + ("department" -> "A" * (deptMaxLength + 1)))
+    }
+
+    "be invalid if you specify you are a civil servant and enter a department which exceeds the max length with spaces" in new Fixture {
+      assertFormError("error.department.required", validFormValues - "civilServant"
+        + ("civilServant" -> "Yes")
+        + ("department" -> " " * (deptMaxLength + 1)))
+    }
   }
 
   trait Fixture {
@@ -145,7 +164,9 @@ class GeneralDetailsFormSpec extends BaseSpec {
       "E14 9EL",
       Some("07912333333"),
       Some(false),
-      Some(false)
+      Some(false),
+      "No",
+      None
     )
 
     val validFormValues = Map(
@@ -162,7 +183,9 @@ class GeneralDetailsFormSpec extends BaseSpec {
       "postCode" -> "E14 9EL",
       "phone" -> "07912333333",
       "alevel-d" -> "false",
-      "alevel" -> "false"
+      "alevel" -> "false",
+      "civilServant" -> "No",
+      "department" -> ""
     )
 
     def assertFieldRequired(expectedError: String, fieldKey: String) =

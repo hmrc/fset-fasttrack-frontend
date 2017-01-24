@@ -124,13 +124,18 @@
         <section>
             <h2 class="heading-large">Civil servants</h2>
             <fieldset class="form-group">
-                <h2 class="form-label text">@Messages("liveInUKBetween14and18.question")</h2>
-                <legend class="visuallyhidden">@Messages("liveInUKBetween14and18.question")</legend>
-                @radioBoxHorizontal(form("liveInUKBetween14and18"), options = List(("yes", "Yes", true), ("no", "No", false)),
-                    optionTrigger = "liveInUKBetween14and18-panel")
-                <div id="liveInUKBetween14and18-panel" class="toggle-content" aria-hidden="true">
-                    @postcode(questionnaireForm)
-                    @school(questionnaireForm)
+                <legend class="form-label">Are you a civil servant?</legend>
+                @radioBoxHorizontal(form("civilServant"), options = List(("yes", "Yes", true), ("no", "No", false)),
+                    optionTrigger = "civilservant-panel")
+                <div id="civilservant-panel" class="toggle-content" aria-hidden="true">
+                    <div class="form-group">
+                        <label for="isCivilServantInput" class="form-label">Which department do you work in?</label>
+                        @helper.inputText(form("department"),
+                            '_label -> "",
+                            'class -> "form-control",
+                            '_showConstraints -> false
+                        )
+                    </div>
                 </div>
             </fieldset>
         </section>

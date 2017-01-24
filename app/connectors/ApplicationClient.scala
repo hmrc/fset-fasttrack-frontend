@@ -94,7 +94,6 @@ trait ApplicationClient {
 
   def updateGeneralDetails(applicationId: UniqueIdentifier, userId: UniqueIdentifier, data: GeneralDetailsForm.Data,
     email: String)(implicit hc: HeaderCarrier): Future[Unit] = {
-
     http.POST(
       s"${url.host}${url.base}/personal-details/$userId/$applicationId",
       GeneralDetailsExchange(
@@ -107,7 +106,9 @@ trait ApplicationClient {
         PostCodeMapping.formatPostcode(data.postCode),
         data.phone,
         data.aLevel.getOrElse(false),
-        data.stemLevel.getOrElse(false)
+        data.stemLevel.getOrElse(false),
+        data.civilServant == "Yes",
+        data.department
       )
     ).map {
         case x: HttpResponse if x.status == CREATED => ()
