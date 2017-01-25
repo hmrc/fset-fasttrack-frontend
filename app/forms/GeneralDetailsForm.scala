@@ -44,6 +44,24 @@ object GeneralDetailsForm {
     override def unbind(key: String, value: Option[String]) = Map(key -> value.map(_.trim).getOrElse(""))
   }
 
+  private[forms] val deptMaxLength = 256
+
+  val civilServantDependentFormatter = new Formatter[Option[String]] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
+      val check = data.get("civilServant")
+      val value = data.get(key).filterNot(_.trim.isEmpty)
+
+      (check, value) match {
+        case (Some("Yes"), Some(v)) if v.trim.length > deptMaxLength => Left(List(FormError(key, s"error.$key.maxLength")))
+        case (Some("Yes"), Some(v)) => Right(value)
+        case (Some("Yes"), None) => Left(List(FormError(key, s"error.$key.required")))
+        case _ => Right(None)
+      }
+    }
+
+    override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
+  }
+
   def form(implicit now: LocalDate) = {
     val maxDob = Some(ageReference.minusYears(minAge))
 
@@ -57,7 +75,9 @@ object GeneralDetailsForm {
         "postCode" -> text.verifying(validPostcode),
         "phone" -> of(phoneNumberFormatter),
         "alevel-d" -> optional(boolean).verifying("aleveld.required", _.isDefined),
-        "alevel" -> optional(boolean).verifying("alevel.required", _.isDefined)
+        "alevel" -> optional(boolean).verifying("alevel.required", _.isDefined),
+        "civilServant" -> nonEmptyTrimmedText("error.civilServant.required", 3),
+        "department" -> of(civilServantDependentFormatter)
       )(Data.apply)(Data.unapply)
     )
   }
@@ -76,7 +96,8 @@ object GeneralDetailsForm {
     phone: Option[PhoneNumber],
 
     aLevel: Option[Boolean],
-    stemLevel: Option[Boolean]
+    stemLevel: Option[Boolean],
+    civilServant: String,
+    department: Option[String]
   )
-
 }

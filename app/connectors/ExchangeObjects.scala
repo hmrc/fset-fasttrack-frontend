@@ -52,7 +52,9 @@ object ExchangeObjects {
     postCode: PostCode,
     phone: Option[PhoneNumber],
     aLevel: Boolean,
-    stemLevel: Boolean
+    stemLevel: Boolean,
+    civilServant: Boolean,
+    department: Option[String]
   )
 
   case class AddMedia(userId: UniqueIdentifier, media: String)

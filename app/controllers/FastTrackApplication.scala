@@ -48,6 +48,8 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
         "",
         None,
         None,
+        None,
+        "No",
         None
       ))
 
@@ -61,7 +63,9 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
           gd.postCode,
           gd.phone,
           Some(gd.aLevel),
-          Some(gd.stemLevel)
+          Some(gd.stemLevel),
+          if (gd.civilServant) "Yes" else "No",
+          gd.department
         ))
         Ok(views.html.application.personalDetails(form))
 
