@@ -26,9 +26,10 @@ object ProgressExamples {
   val PersonalDetailsProgress = InitialProgress.copy(personalDetails = true)
   val SchemePreferencesProgress = PersonalDetailsProgress.copy(hasSchemes = true)
   val AssistanceDetailsProgress = SchemePreferencesProgress.copy(assistanceDetails = true)
-  val QuestionnaireProgress = AssistanceDetailsProgress.copy(startedQuestionnaire = true, diversityQuestionnaire = true,
-    educationQuestionnaire = true ,occupationQuestionnaire = true)
-  val ReviewProgress = QuestionnaireProgress.copy(review = true)
+  val DiversityQuestionnaireProgress = AssistanceDetailsProgress.copy(startedQuestionnaire = true, diversityQuestionnaire = true)
+  val ParentalOcuppationQuestionnaireProgress = DiversityQuestionnaireProgress.copy(educationQuestionnaire = true,
+    occupationQuestionnaire = true)
+  val ReviewProgress = ParentalOcuppationQuestionnaireProgress.copy(review = true)
   val SubmitProgress = ReviewProgress.copy(submitted = true)
   val WithdrawnAfterSubmitProgress = SubmitProgress.copy(withdrawn = true)
 

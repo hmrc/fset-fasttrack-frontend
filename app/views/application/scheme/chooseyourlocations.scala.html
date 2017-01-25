@@ -1,12 +1,12 @@
 @import viewmodels.application.scheme.SchemeLocationsViewModel
 @import connectors.exchange.GeoLocationSchemeResult
-@import connectors.ExchangeObjects.GeneralDetailsExchange
+@import connectors.ExchangeObjects.PersonalDetails
 @import _root_.forms.SchemeLocationPreferenceForm
 
 @(
         locationForm: Form[_root_.forms.SchemeLocationPreferenceForm.Data],
         viewModel: SchemeLocationsViewModel,
-        personalDetails: GeneralDetailsExchange,
+        personalDetails: PersonalDetails,
         schemeLocations: List[GeoLocationSchemeResult]
 )(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 

@@ -77,43 +77,47 @@ object Roles {
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasSchemesAndLocations(user)
   }
 
-  object ReviewRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && !statusIn(user)(CREATED) &&
-        hasPersonalDetails(user) && hasAssistanceDetails(user) && hasSchemesAndLocations(user)
-  }
-
   object StartQuestionnaireRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasReview(user) &&
-        !(hasDiversity(user) && hasEducation(user) && hasOccupation(user))
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) &&
+        !(hasDiversityQuestionnaire(user) && hasEducationQuestionnaire(user) && hasParentalOccupationQuestionnaire(user))
   }
 
   object QuestionnaireInProgressRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasReview(user) &&
-        (!hasDiversity(user) || !hasEducation(user) || !hasOccupation(user))
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) &&
+        ((hasDiversityQuestionnaire(user) || hasEducationQuestionnaire(user) || hasParentalOccupationQuestionnaire(user)) &&
+          !(hasDiversityQuestionnaire(user) && hasEducationQuestionnaire(user) && hasParentalOccupationQuestionnaire(user)))
   }
 
   object DiversityQuestionnaireRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuestionnaire(user) && !hasDiversity(user)
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuestionnaire(user) && !hasDiversityQuestionnaire(user)
   }
 
   object EducationQuestionnaireRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasDiversity(user) && !hasEducation(user)
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasDiversityQuestionnaire(user) && !hasEducationQuestionnaire(user)
   }
 
-  object OccupationQuestionnaireRole extends CsrAuthorization {
+  object ParentalOccupationQuestionnaireRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasEducation(user) && !hasOccupation(user)
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasEducationQuestionnaire(user) && !hasParentalOccupationQuestionnaire(user)
+  }
+
+  object QuestionnaireFinishedRole extends CsrAuthorization {
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasParentalOccupationQuestionnaire(user)
+  }
+
+  object ReviewRole extends CsrAuthorization {
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+      activeUserWithApp(user) && !statusIn(user)(CREATED) && hasParentalOccupationQuestionnaire(user)
   }
 
   object SubmitApplicationRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) &&
-        hasDiversity(user) && hasEducation(user) && hasOccupation(user)
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasReview(user)
   }
 
   object InProgressRole extends CsrAuthorization {
@@ -185,11 +189,11 @@ object Roles {
     PersonalDetailsRole -> routes.FastTrackApplication.generalDetails(None),
     SchemesRole -> routes.SchemeController.schemes(),
     AssistanceDetailsRole -> routes.AssistanceDetailsController.present,
-    ReviewRole -> routes.ReviewApplicationController.present,
     StartQuestionnaireRole -> routes.QuestionnaireController.start,
     DiversityQuestionnaireRole -> routes.QuestionnaireController.presentFirstPage,
     EducationQuestionnaireRole -> routes.QuestionnaireController.presentSecondPage,
-    OccupationQuestionnaireRole -> routes.QuestionnaireController.presentThirdPage,
+    ParentalOccupationQuestionnaireRole -> routes.QuestionnaireController.presentThirdPage,
+    ReviewRole -> routes.ReviewApplicationController.present,
     SubmitApplicationRole -> routes.SubmitApplicationController.present,
     DisplayOnlineTestSectionRole -> routes.HomeController.present,
     ConfirmedAllocatedCandidateRole -> routes.HomeController.present,
@@ -211,17 +215,17 @@ object RoleUtils {
 
   def hasPersonalDetails(implicit user: CachedData) = progress.personalDetails
 
-  def hasSchemesAndLocations(implicit user: CachedData) = progress.hasLocations && progress.hasSchemes
+  def hasSchemesAndLocations(implicit user: CachedData) = progress.hasSchemeLocations && progress.hasSchemes
 
-  def hasAssistanceDetails(implicit user: CachedData) = progress.assistanceDetails
-
-  def hasReview(implicit user: CachedData) = progress.review
+  def hasAssistanceDetails(implicit user: CachedData) = user.application.isDefined && progress.assistanceDetails
 
   def hasStartedQuestionnaire(implicit user: CachedData) = progress.startedQuestionnaire
 
-  def hasDiversity(implicit user: CachedData) = progress.diversityQuestionnaire
+  def hasDiversityQuestionnaire(implicit user: CachedData) = progress.diversityQuestionnaire
 
-  def hasEducation(implicit user: CachedData) = progress.educationQuestionnaire
+  def hasEducationQuestionnaire(implicit user: CachedData) = progress.educationQuestionnaire
 
-  def hasOccupation(implicit user: CachedData) = progress.occupationQuestionnaire
+  def hasParentalOccupationQuestionnaire(implicit user: CachedData) = progress.occupationQuestionnaire
+
+  def hasReview(implicit user: CachedData) = progress.review
 }

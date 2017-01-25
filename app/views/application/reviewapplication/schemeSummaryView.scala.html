@@ -1,0 +1,46 @@
+@import connectors.exchange.LocationSchemes
+@import connectors.exchange.SchemeInfo
+
+@(schemeLocations: List[LocationSchemes], schemes: List[SchemeInfo])(edit: Html)
+
+@renderBoolean(value: Boolean) = {
+    @(value match {
+        case true => "Yes"
+        case false => "No"
+    })
+}
+
+@renderPosition(position: Int) = @{
+    position match {
+        case 10 | 11 | 12 => s"${position}th"
+        case _ => (position).toString.takeRight(1) match {
+            case "1" => s"${position}st"
+            case "2" => s"${position}nd"
+            case "3" => s"${position}rd"
+            case _ => s"${position}th"
+        }
+    }
+}
+
+<section class="section-border" id="choiceInfo">
+    <h2 class="heading-large">
+        <span class="sectionTitle">Schemes and locations</span>
+        @edit
+    </h2>
+    <div class="grid-wrapper text">
+        <section class="grid grid-1-2">
+            <h2 class="heading-medium">Schemes</h2>
+            @for(schemeData <- schemes.zipWithIndex) {
+                <h3 class="heading-small">@renderPosition(schemeData._2+1) preference</h3>
+                <p id="scheme@schemeData._2" schemeId="@schemeData._1.id">@schemeData._1.name</p>
+            }
+        </section>
+        <section class="grid grid-1-2">
+            <h2 class="heading-medium">Locations</h2>
+            @for(schemeLocationData <- schemeLocations.zipWithIndex) {
+                <h3 class="heading-small">@renderPosition(schemeLocationData._2+1) preference</h3>
+                <p id="location@schemeLocationData._2">@schemeLocationData._1.locationName</p>
+            }
+        </section>
+    </div>
+</section>

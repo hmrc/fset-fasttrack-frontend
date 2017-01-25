@@ -51,7 +51,7 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
         None
       ))
 
-      findPersonalDetails(user.user.userID, user.application.applicationId).map { gd =>
+      getPersonalDetails(user.user.userID, user.application.applicationId).map { gd =>
         val form = GeneralDetailsForm.form.fill(GeneralDetailsForm.Data(
           gd.firstName,
           gd.lastName,
@@ -63,11 +63,11 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
           Some(gd.aLevel),
           Some(gd.stemLevel)
         ))
-        Ok(views.html.application.generalDetails(form))
+        Ok(views.html.application.personalDetails(form))
 
       }.recover {
         case e: PersonalDetailsNotFound =>
-          Ok(views.html.application.generalDetails(formFromUser))
+          Ok(views.html.application.personalDetails(formFromUser))
       }
   }
 
@@ -76,11 +76,11 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
       implicit val now: LocalDate = LocalDate.now
       GeneralDetailsForm.form.bindFromRequest.fold(
         errorForm => {
-          Future.successful(Ok(views.html.application.generalDetails(errorForm)))
+          Future.successful(Ok(views.html.application.personalDetails(errorForm)))
         },
         generalDetails => {
           (for {
-            _ <- updateGeneralDetails(user.application.applicationId, user.user.userID, generalDetails, user.user.email)
+            _ <- updatePersonalDetails(user.application.applicationId, user.user.userID, generalDetails, user.user.email)
             _ <- updateDetails(user.user.userID, generalDetails.firstName, generalDetails.lastName, Some(generalDetails.preferredName))
             redirect <- updateProgress(data =>
               data.copy(

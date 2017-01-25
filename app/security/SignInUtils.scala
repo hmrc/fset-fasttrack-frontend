@@ -49,7 +49,7 @@ trait SignInUtils {
         result
       }
 
-      findApplication(user.userID, ExchangeObjects.frameworkId).map { appData =>
+      getApplication(user.userID, ExchangeObjects.frameworkId).map { appData =>
         signIn(Some(appData))
       } recover {
         case e: ApplicationNotFound => signIn(None)
