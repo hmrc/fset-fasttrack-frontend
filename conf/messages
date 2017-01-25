@@ -72,7 +72,7 @@ error.phoneNumber.format = You''ve entered an invalid phone number
 
 error.civilServant.required = Tell us if you are a civil servant
 error.department.required = Tell us which department you work in
-error.department.maxLength = You have exceeded the maximum number of characters allowed (256) for the department
+error.department.maxLength = Maximum length is 256
 
 #assistance
 error.hasDisability.required=Tell us if you consider yourself to have a disability
