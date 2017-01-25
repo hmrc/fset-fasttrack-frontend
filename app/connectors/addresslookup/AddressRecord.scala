@@ -127,6 +127,7 @@ case class AddressRecord(
                           // see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
                           language: String,
                           localCustodian: Option[LocalCustodian],
+                          location: Option[Seq[BigDecimal]],
                           blpuState: Option[String],
                           logicalState: Option[String],
                           streetClassification: Option[String]) {
