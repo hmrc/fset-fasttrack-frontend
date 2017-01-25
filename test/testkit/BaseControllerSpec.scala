@@ -52,7 +52,7 @@ abstract class BaseControllerSpec extends UnitWithAppSpec {
   def currentCandidateWithApp: CachedDataWithApp = CachedDataWithApp(ActiveCandidate.user,
     CreatedApplication.copy(userId = ActiveCandidate.user.userID))
 
-  def currentApplicationId = {
+  def currentApplicationId: UniqueIdentifier = {
     currentCandidate.user.userID
     currentCandidateWithApp.application.applicationId
   }

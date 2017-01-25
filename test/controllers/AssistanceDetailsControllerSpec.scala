@@ -35,17 +35,15 @@ import scala.concurrent.Future
 class AssistanceDetailsControllerSpec extends BaseControllerSpec {
 
   // This is the implicit user
-  override def currentCandidateWithApp: CachedDataWithApp = {
-    CachedDataWithApp(ActiveCandidate.user,
-      CachedDataExample.InProgressInSchemePreferencesApplication.copy(userId = ActiveCandidate.user.userID))
-  }
+  override def currentCandidateWithApp: CachedDataWithApp = CachedDataWithApp(ActiveCandidate.user,
+    CachedDataExample.InProgressInSchemePreferencesApplication.copy(userId = ActiveCandidate.user.userID))
 
   "present" should {
     "load assistance details page for the new user" in new TestFixture {
       when(mockApplicationClient.getAssistanceDetails(eqTo(currentUserId), eqTo(currentApplicationId))(any[HeaderCarrier]))
         .thenReturn(Future.failed(new AssistanceDetailsNotFound))
 
-      val result = controller.present()(fakeRequest)
+      val result = controller().present()(fakeRequest)
       status(result) must be(OK)
       val content = contentAsString(result)
       content must include("<title>Disability and health conditions")
@@ -57,7 +55,7 @@ class AssistanceDetailsControllerSpec extends BaseControllerSpec {
       when(mockApplicationClient.getAssistanceDetails(eqTo(currentUserId), eqTo(currentApplicationId))(any[HeaderCarrier]))
         .thenReturn(Future.successful(AssistanceDetailsExamples.DisabilityGisAndAdjustments))
 
-      val result = controller.present()(fakeRequest)
+      val result = controller().present()(fakeRequest)
 
       status(result) must be(OK)
       val content = contentAsString(result)
@@ -69,48 +67,57 @@ class AssistanceDetailsControllerSpec extends BaseControllerSpec {
   }
 
   "submit assistance details" should {
-    // TODO: This should work once we update QuestionnaireController with FastStream improvements
-    /*
-    "update assistance details and redirect to questionnaire if questionnaire is not completed" in new TestFixture {
+
+    "update assistance details and redirect to questionnaire start page if it has not been started" in new TestFixture {
+      val actualCurrentCandidateWithApp = CachedDataWithApp(ActiveCandidate.user,
+        CachedDataExample.InProgressInSchemePreferencesApplication.copy(userId = ActiveCandidate.user.userID))
+
       val Request = fakeRequest.withFormUrlEncodedBody(AssistanceDetailsFormExamples.DisabilityGisAndAdjustmentsFormUrlEncodedBody: _*)
       when(mockApplicationClient.updateAssistanceDetails(eqTo(currentApplicationId), eqTo(currentUserId),
         eqTo(AssistanceDetailsExamples.DisabilityGisAndAdjustments))(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
-      when(mockApplicationClient.getApplicationProgress(eqTo(currentApplicationId))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(ProgressResponseExamples.InAssistanceDetails))
-      val Application = currentCandidateWithApp.application
-        .copy(progress = ProgressResponseExamples.InAssistanceDetails)
+      val Application = actualCurrentCandidateWithApp.application.copy(progress = ProgressResponseExamples.InAssistanceDetails)
       val UpdatedCandidate = currentCandidate.copy(application = Some(Application))
       when(mockUserService.save(eqTo(UpdatedCandidate))(any[HeaderCarrier])).thenReturn(Future.successful(UpdatedCandidate))
 
-      val result = controller.submit()(Request)
+      val result = controller(ProgressResponseExamples.InAssistanceDetails)(actualCurrentCandidateWithApp).submit()(Request)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(routes.QuestionnaireController.presentStartOrContinue().url))
+      redirectLocation(result) must be(Some(routes.QuestionnaireController.start().url))
     }
-    */
 
-    "update assistance details and redirect to review if questionnaire is completed" in new TestFixture {
-
-      class TestableAssistanceDetailsControllerWithUserInQuestionnaire extends TestableAssistanceDetailsController {
-        override val cacheClient = CSRCache
-        override val CandidateWithApp: CachedDataWithApp = CachedDataWithApp(ActiveCandidate.user,
-          CachedDataExample.InProgressInQuestionnaireApplication.copy(userId = ActiveCandidate.user.userID))
-      }
-
-      override def controller(implicit candidateWithApp: CachedDataWithApp = currentCandidateWithApp) =
-        new TestableAssistanceDetailsControllerWithUserInQuestionnaire
+    "update assistance details and redirect to questionnaire if questionnaire is started and diversity page " +
+      "completed but neither education nor parental occupation are completed" in new TestFixture {
+      val actualCurrentCandidateWithApp = CachedDataWithApp(ActiveCandidate.user,
+        CachedDataExample.InProgressInDiversityQuestionnaireApplication.copy(userId = ActiveCandidate.user.userID))
 
       val Request = fakeRequest.withFormUrlEncodedBody(AssistanceDetailsFormExamples.DisabilityGisAndAdjustmentsFormUrlEncodedBody: _*)
       when(mockApplicationClient.updateAssistanceDetails(eqTo(currentApplicationId), eqTo(currentUserId),
         eqTo(AssistanceDetailsExamples.DisabilityGisAndAdjustments))(any[HeaderCarrier])).thenReturn(Future.successful(()))
-      when(mockApplicationClient.getApplicationProgress(eqTo(currentApplicationId))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(ProgressResponseExamples.InQuestionnaire))
-      val Application = currentCandidateWithApp.application.copy(progress = ProgressResponseExamples.InQuestionnaire)
+
+      val Application = actualCurrentCandidateWithApp.application.copy(progress = ProgressResponseExamples.InDiversityQuestionnaire)
       val UpdatedCandidate = currentCandidate.copy(application = Some(Application))
       when(mockUserService.save(eqTo(UpdatedCandidate))(any[HeaderCarrier])).thenReturn(Future.successful(UpdatedCandidate))
 
-      val result = controller.submit()(Request)
+      val result = controller(ProgressResponseExamples.InDiversityQuestionnaire)(actualCurrentCandidateWithApp).submit()(Request)
+
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result) must be(Some(routes.QuestionnaireController.submitContinue().url))
+    }
+
+    "update assistance details and redirect to review if questionnaire is completed" in new TestFixture {
+      val actualCurrentCandidateWithApp = CachedDataWithApp(ActiveCandidate.user,
+        CachedDataExample.InProgressInParentalOccupationQuestionnaireApplication.copy(userId = ActiveCandidate.user.userID))
+
+      val Request = fakeRequest.withFormUrlEncodedBody(AssistanceDetailsFormExamples.DisabilityGisAndAdjustmentsFormUrlEncodedBody: _*)
+      when(mockApplicationClient.updateAssistanceDetails(eqTo(currentApplicationId), eqTo(currentUserId),
+        eqTo(AssistanceDetailsExamples.DisabilityGisAndAdjustments))(any[HeaderCarrier])).thenReturn(Future.successful(()))
+
+      val Application = actualCurrentCandidateWithApp.application.copy(progress = ProgressResponseExamples.InParentalOccupationQuestionnaire)
+      val UpdatedCandidate = currentCandidate.copy(application = Some(Application))
+      when(mockUserService.save(eqTo(UpdatedCandidate))(any[HeaderCarrier])).thenReturn(Future.successful(UpdatedCandidate))
+
+      val result = controller(ProgressResponseExamples.InParentalOccupationQuestionnaire)(actualCurrentCandidateWithApp).submit()(Request)
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some(routes.ReviewApplicationController.present().url))
@@ -123,22 +130,25 @@ class AssistanceDetailsControllerSpec extends BaseControllerSpec {
     val mockUserService = mock[UserService]
     val mockCSRHttp = mock[CSRHttp]
 
-    class TestableAssistanceDetailsController extends AssistanceDetailsController(mockApplicationClient, mockCacheClient)
-      with TestableSecureActions {
-      val http: CSRHttp = mockCSRHttp
-      val cacheClient = mockCacheClient
-      override protected def env = mockSecurityEnvironment
+    abstract class TestableAssistanceDetailsController extends AssistanceDetailsController(mockApplicationClient, mockCacheClient)
+      with TestableSecureActions
 
-      when(mockSecurityEnvironment.userService).thenReturn(mockUserService)
+    def controller(progressResponse: ProgressResponse = ProgressResponseExamples.InParentalOccupationQuestionnaire)
+                  (implicit candidateWithApp: CachedDataWithApp = currentCandidateWithApp) =
+      new TestableAssistanceDetailsController {
+        override val CandidateWithApp: CachedDataWithApp = candidateWithApp
 
-      override def getApplicationProgress(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[ProgressResponse] = {
-        Future.successful(ProgressResponseExamples.InQuestionnaire)
+        override val http: CSRHttp = mockCSRHttp
+        override val cacheClient = mockCacheClient
+
+        override protected def env = mockSecurityEnvironment
+
+        when(mockSecurityEnvironment.userService).thenReturn(mockUserService)
+
+        override def getApplicationProgress(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[ProgressResponse] = {
+          Future.successful(progressResponse)
+        }
       }
-    }
-
-    def controller(implicit candidateWithApp: CachedDataWithApp = currentCandidateWithApp) = new TestableAssistanceDetailsController {
-      override val CandidateWithApp: CachedDataWithApp = candidateWithApp
-    }
   }
 
 }

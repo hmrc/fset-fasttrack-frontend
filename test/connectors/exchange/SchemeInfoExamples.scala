@@ -16,8 +16,8 @@
 
 package connectors.exchange
 
-object AssistanceDetailsExamples {
-  val OnlyDisabilityNoGisNoAdjustments = AssistanceDetails("Yes", Some(""), Some(false), false, None, false, None)
-  val DisabilityGisAndAdjustments = AssistanceDetails("Yes", Some("Epilepsy"), Some(true), true,
-    Some("Some adjustment"), true, Some("Some other adjustments"))
+object SchemeInfoExamples {
+  val NoALevelsScheme = SchemeInfo("Business", "SchemeNoALevels", requiresALevel = false, requiresALevelInStem = false)
+  val ALevelsScheme = SchemeInfo("Commercial", "SchemeALevels", requiresALevel = true, requiresALevelInStem = false)
+  val ALevelsStemScheme = SchemeInfo("ProjectDelivery", "SchemeALevelsStem", requiresALevel = true, requiresALevelInStem = true)
 }

@@ -84,7 +84,7 @@ trait ApplicationClient {
     }
   }
 
-  def findApplication(userId: UniqueIdentifier, frameworkId: String)(implicit hc: HeaderCarrier): Future[ApplicationResponse] = {
+  def getApplication(userId: UniqueIdentifier, frameworkId: String)(implicit hc: HeaderCarrier): Future[ApplicationResponse] = {
     http.GET(s"${url.host}${url.base}/application/find/user/$userId/framework/$frameworkId").map { response =>
       response.json.as[ApplicationResponse]
     } recover {
@@ -92,11 +92,11 @@ trait ApplicationClient {
     }
   }
 
-  def updateGeneralDetails(applicationId: UniqueIdentifier, userId: UniqueIdentifier, data: GeneralDetailsForm.Data,
-    email: String)(implicit hc: HeaderCarrier): Future[Unit] = {
+  def updatePersonalDetails(applicationId: UniqueIdentifier, userId: UniqueIdentifier, data: GeneralDetailsForm.Data,
+                            email: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     http.POST(
       s"${url.host}${url.base}/personal-details/$userId/$applicationId",
-      GeneralDetailsExchange(
+      PersonalDetails(
         data.firstName,
         data.lastName,
         data.preferredName,
@@ -117,10 +117,10 @@ trait ApplicationClient {
       }
   }
 
-  def findPersonalDetails(userId: UniqueIdentifier, applicationId: UniqueIdentifier)
-    (implicit hc: HeaderCarrier): Future[GeneralDetailsExchange] = {
+  def getPersonalDetails(userId: UniqueIdentifier, applicationId: UniqueIdentifier)
+                        (implicit hc: HeaderCarrier): Future[PersonalDetails] = {
     http.GET(s"${url.host}${url.base}/personal-details/$userId/$applicationId").map { response =>
-      response.json.as[GeneralDetailsExchange]
+      response.json.as[PersonalDetails]
     } recover {
       case e: NotFoundException => throw new PersonalDetailsNotFound()
     }
@@ -235,7 +235,7 @@ trait ApplicationClient {
     http.GET(s"$hostBase/scheme-locations/$applicationId").map { response =>
       response.json.as[List[LocationSchemes]]
     } recover {
-      case _: NotFoundException => throw new LocationPreferencesNotFound()
+      case _: NotFoundException => throw new SchemeLocationChoicesNotFound()
     }
   }
 
@@ -243,7 +243,7 @@ trait ApplicationClient {
     http.GET(s"$hostBase/schemes/$applicationId").map { response =>
       response.json.as[List[SchemeInfo]]
     } recover {
-      case _: NotFoundException => throw new SchemePreferencesNotFound()
+      case _: NotFoundException => throw new SchemeChoicesNotFound()
     }
   }
 
@@ -266,9 +266,9 @@ object ApplicationClient extends ApplicationClient {
 
   sealed class PersonalDetailsNotFound extends Exception
 
-  sealed class SchemePreferencesNotFound extends Exception
+  sealed class SchemeLocationChoicesNotFound extends Exception
 
-  sealed class LocationPreferencesNotFound extends Exception
+  sealed class SchemeChoicesNotFound extends Exception
 
   sealed class AssistanceDetailsNotFound extends Exception
 

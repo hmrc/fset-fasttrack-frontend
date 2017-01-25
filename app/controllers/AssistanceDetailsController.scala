@@ -17,10 +17,12 @@
 package controllers
 
 import _root_.forms.AssistanceDetailsForm
-import config.{CSRCache, CSRHttp}
+import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import connectors.ApplicationClient.AssistanceDetailsNotFound
 import helpers.NotificationType._
+import models.CachedData
+import security.RoleUtils
 import security.Roles.AssistanceDetailsRole
 
 import scala.concurrent.Future
@@ -50,7 +52,15 @@ abstract class AssistanceDetailsController(applicationClient: ApplicationClient,
           Future.successful(Ok(views.html.application.assistanceDetails(invalidForm))),
         data => {
           applicationClient.updateAssistanceDetails(user.application.applicationId, user.user.userID, data.sanitizeData).flatMap { _ =>
-              updateProgress()(_ => Redirect(routes.ReviewApplicationController.present()))
+              updateProgress()(_ => {
+                if (!user.application.progress.startedQuestionnaire) {
+                  Redirect(routes.QuestionnaireController.start())
+                } else if (user.application.progress.occupationQuestionnaire) {
+                  Redirect(routes.ReviewApplicationController.present())
+                } else {
+                  Redirect(routes.QuestionnaireController.submitContinue())
+                }
+              })
             }.recover {
               case e: AssistanceDetailsNotFound =>
                 Redirect(routes.HomeController.present()).flashing(danger("account.error"))

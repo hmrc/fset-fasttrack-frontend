@@ -20,20 +20,19 @@ import models.UniqueIdentifier
 import play.api.libs.json.Json
 
 case class ProgressResponse(
-  applicationId: UniqueIdentifier,
-  personalDetails: Boolean,
-  hasLocations: Boolean,
-  hasSchemes: Boolean,
-  assistanceDetails: Boolean,
-  review: Boolean,
-  questionnaire: QuestionnaireProgressResponse,
-  submitted: Boolean,
-  withdrawn: Boolean,
-  onlineTest: OnlineTestProgressResponse,
-  failedToAttend: Boolean,
-  assessmentScores: AssessmentScores = AssessmentScores(),
-  assessmentCentre: AssessmentCentre = AssessmentCentre()
-)
+                             applicationId: UniqueIdentifier,
+                             personalDetails: Boolean,
+                             hasSchemeLocations: Boolean,
+                             hasSchemes: Boolean,
+                             assistanceDetails: Boolean,
+                             review: Boolean,
+                             questionnaire: QuestionnaireProgressResponse,
+                             submitted: Boolean,
+                             withdrawn: Boolean,
+                             onlineTest: OnlineTestProgressResponse,
+                             failedToAttend: Boolean,
+                             assessmentScores: AssessmentScores = AssessmentScores(),
+                             assessmentCentre: AssessmentCentre = AssessmentCentre())
 
 case class QuestionnaireProgressResponse(
   diversityStarted: Boolean = false,

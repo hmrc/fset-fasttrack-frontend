@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package connectors.exchange
+package mappings
 
-object AssistanceDetailsExamples {
-  val OnlyDisabilityNoGisNoAdjustments = AssistanceDetails("Yes", Some(""), Some(false), false, None, false, None)
-  val DisabilityGisAndAdjustments = AssistanceDetails("Yes", Some("Epilepsy"), Some(true), true,
-    Some("Some adjustment"), true, Some("Some other adjustments"))
+object AddressExamples {
+  val FullAddress = Address("line1", Some("line2"), Some("line3"), Some("line4"))
 }

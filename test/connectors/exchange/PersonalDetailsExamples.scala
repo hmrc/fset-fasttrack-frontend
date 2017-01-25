@@ -16,8 +16,11 @@
 
 package connectors.exchange
 
-object AssistanceDetailsExamples {
-  val OnlyDisabilityNoGisNoAdjustments = AssistanceDetails("Yes", Some(""), Some(false), false, None, false, None)
-  val DisabilityGisAndAdjustments = AssistanceDetails("Yes", Some("Epilepsy"), Some(true), true,
-    Some("Some adjustment"), true, Some("Some other adjustments"))
+import connectors.ExchangeObjects.PersonalDetails
+import mappings.AddressExamples
+import org.joda.time.LocalDate
+
+object PersonalDetailsExamples {
+  val FullDetails = PersonalDetails("firstName", "lastName", "preferredName", "email", LocalDate.now(),
+    AddressExamples.FullAddress, "ABC123", Some("1234567"), true, true)
 }
