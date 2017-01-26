@@ -85,8 +85,10 @@ $(function(){
             //console.log("Request succeeded for postcode=" + currentPostcode + ": location=" + data.latitude +"," + data.longitude);
             loadLocationsJson(locationsCallback, data.latitude, data.longitude);
         }).fail(function(xhr, textStatus, error ) {
-            console.log( "Request failed for postcode=" + currentPostcode + ": " +  textStatus + ", " + error);
-            if ("Bad Request" == error) {
+            console.log( "Request failed for postcode=" + currentPostcode + ": " +  textStatus + ", " + error + ", " + xhr.status);
+            var BAD_REQUEST = 400;
+            var NOT_FOUND = 404;
+            if (BAD_REQUEST == xhr.status || NOT_FOUND == xhr.status) {
                 showInvalidPostcodePanel();
             }
             if(locations.length === 0) loadLocationsJson(locationsCallback);

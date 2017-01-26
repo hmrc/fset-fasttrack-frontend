@@ -50,7 +50,7 @@ trait AddressLookupClient {
     val pq = "?postcode=" + enc(safePostcode)
     val fq = filter.map(fi => "&filter=" + enc(fi)).getOrElse("")
     http.GET[List[AddressRecord]](url + pq + fq).map{ addressRecords =>
-      addressRecords.filterNot(ar => ar.location.isEmpty).headOption.map(ar => ar.locationValue).getOrElse(None)
+      addressRecords.flatMap(_.locationValue).headOption
     }
   }
 
