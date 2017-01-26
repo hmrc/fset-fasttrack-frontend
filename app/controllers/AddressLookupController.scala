@@ -16,11 +16,13 @@
 
 package controllers
 
-import config.{CSRCache, CSRHttp}
+import config.{ CSRCache, CSRHttp }
 import connectors.addresslookup.AddressLookupClient
+import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.{ Action, AnyContent }
 import security.Roles.SchemesRole
+import uk.gov.hmrc.play.http.BadRequestException
 
 trait AddressLookupController extends BaseController {
   val addressLookupClient: AddressLookupClient
@@ -28,7 +30,15 @@ trait AddressLookupController extends BaseController {
   def addressLookup(postcode: String): Action[AnyContent] = CSRSecureAction(SchemesRole) {
     implicit request => implicit cachedData =>
     val decoded = java.net.URLDecoder.decode(postcode, "UTF8")
-    addressLookupClient.findByPostcode(decoded, None).map(r => Ok(Json.toJson(r)))
+    addressLookupClient.findByPostcode(decoded, None)
+      .map(r => {
+        Logger.debug(s"postcode=$postcode fetched location location=$r")
+        r.fold(NotFound(Json.toJson(r))) { data => Ok(Json.toJson(data))}
+      }).recover {
+      case e: BadRequestException =>
+        Logger.warn(s"Postcode lookup service returned ${e.getMessage} for postcode $postcode")
+        BadRequest
+    }
   }
 }
 

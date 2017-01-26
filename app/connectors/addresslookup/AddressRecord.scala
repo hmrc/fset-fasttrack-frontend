@@ -115,8 +115,12 @@ object Address {
   implicit val addressWriteFormat = Json.writes[Address]
 }
 
-case class LatLong(lat: Double, long: Double) {
-  def toLocation: String = lat.toString + "," + long.toString
+case class Location(latitude: BigDecimal, longitude: BigDecimal) {
+  override def toString: String = latitude + "," + longitude
+}
+
+object Location {
+  implicit val locationFormat = Json.format[Location]
 }
 
 case class AddressRecord(
@@ -127,15 +131,14 @@ case class AddressRecord(
                           // see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
                           language: String,
                           localCustodian: Option[LocalCustodian],
+                          location: Option[Seq[BigDecimal]],
                           blpuState: Option[String],
                           logicalState: Option[String],
                           streetClassification: Option[String]) {
 
   def withoutMetadata: AddressRecord = copy(blpuState = None, logicalState = None, streetClassification = None)
 
-  // TODO put in the real lat/lng once the address lookup service supports it
-  // Hardcoded to Coventry for the time being
-  val geoLocation: LatLong = LatLong(52.40656, -1.51217)
+  def locationValue: Option[Location] = location.map(loc => Location(loc.head, loc(1)))
 }
 
 object AddressRecord {
