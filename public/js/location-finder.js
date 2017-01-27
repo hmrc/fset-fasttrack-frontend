@@ -114,15 +114,16 @@ $(function(){
         $('#listOfLocations input').not(':checked').closest('li').remove();
         $('#loadingLocations').addClass('toggle-content');
         for (var i = 0; i < locations.length; i++) {
-            if($('#listOfLocations label:contains("' + locations[i].locationName + '")').length ) {
-
+            var locationElem = $('#listOfLocations label:contains("' + locations[i].locationName + '")')
+            var distanceText = "";
+            if (typeof locations[i].distanceKm !== 'undefined') {
+                var distanceToMax2DP = +parseFloat(locations[i].distanceKm).toFixed(2)
+                distanceText = '<span class="location-distance">' + distanceToMax2DP + ' miles</span>';
+            }
+            if(locationElem.length ) {
+                locationElem.find('.location-distance').remove();
+                locationElem.append(distanceText);
             } else {
-                var distanceText = "";
-                if (typeof locations[i].distanceKm !== 'undefined') {
-                    var distanceToMax2DP = +parseFloat(locations[i].distanceKm).toFixed(2)
-                    distanceText = '<span class="location-distance">' + distanceToMax2DP + ' miles</span>';
-                }
-
                 $('#listOfLocations').append(
                     '<li class="scheme-container">' +
                     '<span class="selected-preference invisible">N/A</span>' +
@@ -139,7 +140,7 @@ $(function(){
 
     $('#updateLocation').on('click', function(e) {
         $('#updateLocationWrapper').slideUp(300);
-        setTimeout(loadLocationsFromPostCode(), 300);
+        setTimeout(loadLocationsFromPostCode, 300);
         e.preventDefault();
     });
 
