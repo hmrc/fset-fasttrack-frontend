@@ -18,7 +18,7 @@ package connectors.exchange
 
 import play.api.libs.json.Json
 
-case class GeoLocationSchemeResult(locationId: String, locationName: String, distanceKm: Option[Double], schemes: List[SchemeInfo])
+case class GeoLocationSchemeResult(locationId: String, locationName: String, distanceMiles: Option[Double], schemes: List[SchemeInfo])
 
 object GeoLocationSchemeResult {
   implicit val geoLocationSchemesFormat = Json.format[GeoLocationSchemeResult]

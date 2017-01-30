@@ -82,7 +82,7 @@ $(function(){
                                     addDistance();
                                 }
         $.getJSON(addressLookupUrl, function(data) {
-            //console.log("Request succeeded for postcode=" + currentPostcode + ": location=" + data.latitude +"," + data.longitude);
+            console.log("Request succeeded for postcode=" + currentPostcode + ": location=" + data.latitude +"," + data.longitude);
             loadLocationsJson(locationsCallback, data.latitude, data.longitude);
         }).fail(function(xhr, textStatus, error ) {
             console.log( "Request failed for postcode=" + currentPostcode + ": " +  textStatus + ", " + error + ", " + xhr.status);
@@ -116,8 +116,8 @@ $(function(){
         for (var i = 0; i < locations.length; i++) {
             var locationElem = $('#listOfLocations label:contains("' + locations[i].locationName + '")')
             var distanceText = "";
-            if (typeof locations[i].distanceKm !== 'undefined') {
-                var distanceToMax2DP = +parseFloat(locations[i].distanceKm).toFixed(2)
+            if (typeof locations[i].distanceMiles !== 'undefined') {
+                var distanceToMax2DP = +parseFloat(locations[i].distanceMiles).toFixed(2)
                 distanceText = '<span class="location-distance">' + distanceToMax2DP + ' miles</span>';
             }
             if(locationElem.length ) {
