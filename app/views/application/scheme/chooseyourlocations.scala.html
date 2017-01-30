@@ -59,14 +59,14 @@
                         </div>
                     </div>
                     <section>
+                        <div class="toggle-content loading-panel" id="loadingLocations">
+                            <h3 class="heading-small">Loading locations...</h3>
+                        </div>
                         <div id="scheme-input-container" class="scheme-input-container" data-hasALevels="@viewModel.hasALevels" data-hasStemALevels="@viewModel.hasStemALevels">
                             <div id="scrollingList" class="scrolling-panel max-height-25">
                                 <ul class="schemes-list" id="listOfLocations">
                                 </ul>
                             </div>
-                        </div>
-                        <div class="toggle-content loading-panel" id="loadingLocations">
-                            <h3 class="heading-small">Loading locations...</h3>
                         </div>
                         @for(i <- 0 until schemeLocations.size) {
                             <input type="hidden" id="locationIds_@i" name="locationIds_@i" value='@selectedLocations(i).getOrElse("")' />
