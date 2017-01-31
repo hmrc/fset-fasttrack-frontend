@@ -203,6 +203,10 @@ trait ApplicationClient {
     http.POST(s"${url.host}${url.base}/online-test/candidate/$userId/status", body).map(_ => ())
   }
 
+  def startOnlineTests(cubiksUserId: Int)(implicit hc: HeaderCarrier): Future[Unit] = {
+    http.POST(s"${url.host}${url.base}/online-tests/start/$cubiksUserId", "") map { _ => () }
+  }
+
   def completeTests(token: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Unit] = {
     http.POST(s"${url.host}${url.base}/online-test/complete/$token", "").map(_ => ())
   }

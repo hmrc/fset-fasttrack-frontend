@@ -16,18 +16,21 @@
 
 package controllers
 
-import config.{CSRCache, CSRHttp}
+import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import models.ApplicationData.ApplicationStatus
 import models.UniqueIdentifier
-import security.Roles.{DisplayOnlineTestSectionRole, OnlineTestInvitedRole}
+import play.api.mvc.{ Action, AnyContent }
+import security.Roles.{ DisplayOnlineTestSectionRole, OnlineTestInvitedRole }
+
+import scala.concurrent.Future
 
 object OnlineTestController extends OnlineTestController {
   val http = CSRHttp
   val cacheClient = CSRCache
 }
 
-trait OnlineTestController extends BaseController with ApplicationClient {
+trait OnlineTestController extends BaseController {
 
   // TODO: I think the names can be improved
   // startTests is plural but then we call getTestAssesment.
@@ -55,16 +58,23 @@ trait OnlineTestController extends BaseController with ApplicationClient {
   }
 */
 
-  def startTests = CSRSecureAppAction(OnlineTestInvitedRole) { implicit request =>
+  def startOrContinueTest(cubiksUserId: Int): Action[AnyContent] = CSRSecureAppAction(OnlineTestInvitedRole) { implicit request =>
     implicit user =>
       getTestAssessment(user.user.userID).flatMap { onlineTest =>
-        onlineTestUpdate(user.user.userID, ApplicationStatus.ONLINE_TEST_STARTED).map { _ =>
+
+        val maybeUpdateTestProfile = if (!onlineTest.isStarted) {
+          startOnlineTests(cubiksUserId)
+        } else {
+         Future.successful(())
+        }
+
+        maybeUpdateTestProfile.map { _ =>
           Redirect(onlineTest.onlineTestLink)
         }
       }
   }
 
-  def downloadPDFReport = CSRSecureAppAction(DisplayOnlineTestSectionRole) { implicit request =>
+  def downloadPDFReport: Action[AnyContent] = CSRSecureAppAction(DisplayOnlineTestSectionRole) { implicit request =>
     implicit user =>
       getPDFReport(user.application.applicationId).map { pdfBinary =>
         Ok(pdfBinary).as("application/pdf")
@@ -72,7 +82,7 @@ trait OnlineTestController extends BaseController with ApplicationClient {
       }
   }
 
-  def complete(token: UniqueIdentifier) = CSRUserAwareAction { implicit request =>
+  def complete(token: UniqueIdentifier): Action[AnyContent] = CSRUserAwareAction { implicit request =>
     implicit user =>
       completeTests(token).map { _ =>
         Ok(views.html.application.onlineTestSuccess())
