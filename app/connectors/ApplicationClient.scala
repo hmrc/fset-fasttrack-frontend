@@ -204,7 +204,7 @@ trait ApplicationClient {
   }
 
   def startOnlineTests(cubiksUserId: Int)(implicit hc: HeaderCarrier): Future[Unit] = {
-    http.POST(s"${url.host}${url.base}/online-test/start/$cubiksUserId", "") map { _ => () }
+    http.PUT(s"${url.host}${url.base}/online-test/start/$cubiksUserId", "") map { _ => () }
   }
 
   def completeTests(token: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Unit] = {
