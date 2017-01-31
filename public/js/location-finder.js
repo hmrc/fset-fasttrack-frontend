@@ -1,5 +1,7 @@
 $(function(){
 
+    var ENTER_KEY = 13;
+
     jQuery.fn.scrollTo = function(elem, speed) {
         $(this).animate({
             scrollTop:  $(this).scrollTop() - $(this).offset().top + $(elem).offset().top
@@ -36,7 +38,8 @@ $(function(){
         select: function(e, ui) {
             if(!$('#listOfLocations li:contains("' + ui.item.label + '")').find('input').is(':checked')) {
                 $('#scrollingList').scrollTo($('#listOfLocations li:contains("' + ui.item.label + '")'), 400);
-                $('#listOfLocations li:contains("' + ui.item.label + '")').find('input').trigger('click').prop('checked', true).parent().addClass('selected');
+                $('#listOfLocations li:contains("' + ui.item.label + '")').find('input').trigger('click')
+                    .prop('checked', true).parent().addClass('selected');
             } else {
                 $('#scrollingList').scrollTo($('#listOfLocations li:contains("' + ui.item.label + '")'), 400);
             }
@@ -51,7 +54,7 @@ $(function(){
         }
     }).on('keyup', function(e) {
         var thisVal = $(this).val();
-        if(e.which == 13 && ($('.ui-autocomplete li:contains("' + thisVal + '")').text() == thisVal)) {
+        if(e.which == ENTER_KEY && ($('.ui-autocomplete li:contains("' + thisVal + '")').text() == thisVal)) {
             $('.ui-autocomplete li:contains("' + thisVal + '")').trigger('click');
             $('#yourPostcode').val('');
         }
@@ -79,11 +82,15 @@ $(function(){
                                     addDistance();
                                 }
         $.getJSON(addressLookupUrl, function(data) {
-            // TODO: Implement the logic to parse latitude and longitude
-            console.log(data)
-            loadLocationsJson(locationsCallback);
+            console.log("Request succeeded for postcode=" + currentPostcode + ": location=" + data.latitude +"," + data.longitude);
+            loadLocationsJson(locationsCallback, data.latitude, data.longitude);
         }).fail(function(xhr, textStatus, error ) {
-            console.log( "Request Failed: " +  textStatus + ", " + error);
+            console.log( "Request failed for postcode=" + currentPostcode + ": " +  textStatus + ", " + error + ", " + xhr.status);
+            var BAD_REQUEST = 400;
+            var NOT_FOUND = 404;
+            if (BAD_REQUEST == xhr.status || NOT_FOUND == xhr.status) {
+                showInvalidPostcodePanel();
+            }
             if(locations.length === 0) loadLocationsJson(locationsCallback);
         }).always(function(){
             $('#loadingLocations').addClass('toggle-content');
@@ -95,20 +102,28 @@ $(function(){
         displaySelectedLocations();
     }
 
+    function showInvalidPostcodePanel() {
+        $('#invalidPostcodeWrapper').slideDown(300);
+    }
+
+    function hideInvalidPostcodePanel() {
+        $('#invalidPostcodeWrapper').slideUp(300);
+    }
+
     function showNearby() {
         $('#listOfLocations input').not(':checked').closest('li').remove();
         $('#loadingLocations').addClass('toggle-content');
         for (var i = 0; i < locations.length; i++) {
-            if($('#listOfLocations label:contains("' + locations[i].locationName + '")').length ) {
-
+            var locationElem = $('#listOfLocations label:contains("' + locations[i].locationName + '")')
+            var distanceText = "";
+            if (typeof locations[i].distanceMiles !== 'undefined') {
+                var distanceToMax2DP = +parseFloat(locations[i].distanceMiles).toFixed(2)
+                distanceText = '<span class="location-distance">' + distanceToMax2DP + ' miles</span>';
+            }
+            if(locationElem.length ) {
+                locationElem.find('.location-distance').remove();
+                locationElem.append(distanceText);
             } else {
-
-                var distanceText = "";
-                if (typeof locations[i].distanceKm !== 'undefined') {
-                    var distanceToMax2DP = +parseFloat(locations[i].distanceKm).toFixed(2)
-                    distanceText = '<span class="location-distance">' + distanceToMax2DP + ' miles</span>';
-                }
-
                 $('#listOfLocations').append(
                     '<li class="scheme-container">' +
                     '<span class="selected-preference invisible">N/A</span>' +
@@ -125,18 +140,20 @@ $(function(){
 
     $('#updateLocation').on('click', function(e) {
         $('#updateLocationWrapper').slideUp(300);
-        setTimeout(loadLocationsFromPostCode(), 300);
+        setTimeout(loadLocationsFromPostCode, 300);
         e.preventDefault();
     });
 
     $('#yourPostcode').on('keyup', function(e) {
-        var searchByPostcode = $(this).val().length > 5 && hasNumber($(this).val());
+        var MIN_LENGTH = 5;
+        var searchByPostcode = $(this).val().length > MIN_LENGTH && hasNumber($(this).val());
         if(searchByPostcode) {
             $('#updateLocationWrapper').slideDown(300);
+            hideInvalidPostcodePanel();
         }
-        if(e.which == 13 && searchByPostcode) {
+        if(e.which == ENTER_KEY && searchByPostcode) {
             $('#updateLocationWrapper').slideUp(300);
-            setTimeout(loadLocationsFromPostCode(), 300);
+            setTimeout(loadLocationsFromPostCode, 300);
         }
     });
 
@@ -226,7 +243,6 @@ $(function(){
             $('#' + schemeID).trigger('click');
             $('#' + schemeID).trigger('click');
         });
-
     });
 
     function displaySelectedLocations(){

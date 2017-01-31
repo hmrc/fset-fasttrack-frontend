@@ -54,25 +54,30 @@
                         <div id="updateLocationWrapper" style="display: none">
                             <a id="updateLocation" href="#" class="button-link no-btm-margin">Update list</a>
                         </div>
+                        <div id="invalidPostcodeWrapper" style="display: none">
+                            <p id="invalidPostcode" class="button-link no-btm-margin">Postcode is not valid</p>
+                        </div>
                     </div>
-                    <section>
-                        <div id="scheme-input-container" class="scheme-input-container" data-hasALevels="@viewModel.hasALevels" data-hasStemALevels="@viewModel.hasStemALevels">
-                            <div id="scrollingList" class="scrolling-panel max-height-25">
-                                <ul class="schemes-list" id="listOfLocations">
-                                </ul>
+                    @helper.input(locationForm("locationIds"), '_label -> "") { (id, name, value, _) =>
+                        <section>
+                            <div class="toggle-content loading-panel" id="loadingLocations">
+                                <h3 class="heading-small">Loading locations...</h3>
                             </div>
-                        </div>
-                        <div class="toggle-content loading-panel" id="loadingLocations">
-                            <h3 class="heading-small">Loading locations...</h3>
-                        </div>
-                        @for(i <- 0 until schemeLocations.size) {
-                            <input type="hidden" id="locationIds_@i" name="locationIds_@i" value='@selectedLocations(i).getOrElse("")' />
-                        }
-                        <div class="toggle-content noresults-panel" id="noLocationsFound">
-                            <h3 class="heading-small">Postcode not found</h3>
-                            <p>Make sure you've entered a correct postcode</p>
-                        </div>
-                    </section>
+                            <div id="scheme-input-container" class="scheme-input-container" data-hasALevels="@viewModel.hasALevels" data-hasStemALevels="@viewModel.hasStemALevels">
+                                <div id="scrollingList" class="scrolling-panel max-height-25">
+                                    <ul class="schemes-list" id="listOfLocations">
+                                    </ul>
+                                </div>
+                            </div>
+                            @for(i <- 0 until schemeLocations.size) {
+                                <input type="hidden" id="locationIds_@i" name="locationIds_@i" value='@selectedLocations(i).getOrElse("")' />
+                            }
+                            <div class="toggle-content noresults-panel" id="noLocationsFound">
+                                <h3 class="heading-small">Postcode not found</h3>
+                                <p>Make sure you've entered a correct postcode</p>
+                            </div>
+                        </section>
+                    }
                 </div>
             </section>
             <section class="grid grid-1-2">

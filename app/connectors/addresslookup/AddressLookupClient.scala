@@ -19,7 +19,7 @@ package connectors.addresslookup
 import java.net.URLEncoder
 
 import config.CSRHttp
-import uk.gov.hmrc.play.http.{ HeaderCarrier, _ }
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -33,8 +33,7 @@ import scala.concurrent.Future
   * but there is some copied code that is not idiomatic Scala and should be changed at some point in the future
   */
 
-object AddressLookupClient extends AddressLookupClient
-{
+object AddressLookupClient extends AddressLookupClient {
   val http = CSRHttp
   val addressLookupEndpoint = config.FrontendAppConfig.addressLookupConfig.url
 }
@@ -46,31 +45,13 @@ trait AddressLookupClient {
 
   private def url = s"$addressLookupEndpoint/v2/uk/addresses"
 
-  def findById(id: String)(implicit hc: HeaderCarrier): Future[Option[AddressRecord]] = {
-    assert(id.length <= 100, "Postcodes cannot be larger than 100 characters")
-    val uq = "/" + enc(id)
-    http.GET[Option[AddressRecord]](url + uq).recover {
-      case _: NotFoundException => None
-    }
-  }
-
-  def findByUprn(uprn: Long)(implicit hc: HeaderCarrier): Future[List[AddressRecord]] = {
-    val uq = "?uprn=" + uprn.toString
-    http.GET[List[AddressRecord]](url + uq)
-  }
-
-  def findByPostcode(postcode: String, filter: Option[String])(implicit hc: HeaderCarrier): Future[List[AddressRecord]] = {
+  def findByPostcode(postcode: String, filter: Option[String])(implicit hc: HeaderCarrier): Future[Option[Location]] = {
     val safePostcode = postcode.replaceAll("[^A-Za-z0-9]", "")
-    assert(safePostcode.length <= 10, "Postcodes cannot be larger than 10 characters")
     val pq = "?postcode=" + enc(safePostcode)
     val fq = filter.map(fi => "&filter=" + enc(fi)).getOrElse("")
-    http.GET[List[AddressRecord]](url + pq + fq)
-  }
-
-  def findByOutcode(outcode: Outcode, filter: String)(implicit hc: HeaderCarrier): Future[List[AddressRecord]] = {
-    val pq = "?outcode=" + outcode.toString
-    val fq = "&filter=" + enc(filter)
-    http.GET[List[AddressRecord]](url + pq + fq)
+    http.GET[List[AddressRecord]](url + pq + fq).map{ addressRecords =>
+      addressRecords.flatMap(_.locationValue).headOption
+    }
   }
 
   private def enc(s: String) = URLEncoder.encode(s, "UTF-8")

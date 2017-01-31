@@ -17,12 +17,12 @@
 package connectors.exchange
 
 object LocationSchemesExamples {
-  val LocationSchemes1 = LocationSchemes("id1", "testLocation1", 2.0, 5.0,
+  val LocationSchemes1 = LocationSchemes("id1", "testLocation1",
     schemes = List("SchemeNoALevels", "SchemeALevels", "SchemeALevelsStem"))
-  val LocationSchemes2 = LocationSchemes("id2", "testLocation2", 6.0, 2.0,
+  val LocationSchemes2 = LocationSchemes("id2", "testLocation2",
     schemes = List("SchemeNoALevels", "SchemeALevels", "SchemeALevelsStem"))
-  val LocationSchemes3 = LocationSchemes("id3", "testLocation3", 2.5, 2.6,
+  val LocationSchemes3 = LocationSchemes("id3", "testLocation3",
     schemes = List("SchemeNoALevels", "SchemeALevels", "SchemeALevelsStem"))
-  val LocationSchemes4 = LocationSchemes("id4", "testLocation4", 1.0, 1.0,
+  val LocationSchemes4 = LocationSchemes("id4", "testLocation4",
     schemes = List("SchemeNoALevels", "SchemeALevels", "SchemeALevelsStem"))
 }

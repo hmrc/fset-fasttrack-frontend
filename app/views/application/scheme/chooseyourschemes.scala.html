@@ -47,7 +47,8 @@
         </div>
         <section class="grid-wrapper scheme-wrapper">
             <div class="scheme-input-container">
-                <div class="inner-block-padr">
+                @helper.input(schemesForm("schemes"), '_label -> "") { (id, name, value, _) =>
+                <div class="inner-block-padr" id="@id">
                     <ul class="schemes-list">
                         @for(scheme <- viewModel.schemeOptions) {
                             <li class="scheme-container">
@@ -63,6 +64,7 @@
                         }
                     </ul>
                 </div>
+                }
             </div>
         </section>
         <section id="selectedPreferences" class="hide-nojs">

@@ -18,7 +18,7 @@ package connectors.exchange
 
 import play.api.libs.json.Json
 
-case class LocationSchemes(id: String, locationName: String, latitude: Double, longitude: Double, schemes: List[String])
+case class LocationSchemes(id: String, locationName: String, schemes: List[String])
 
 object LocationSchemes {
   implicit val locationSchemesReader = Json.reads[LocationSchemes]
