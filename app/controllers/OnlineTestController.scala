@@ -60,17 +60,10 @@ trait OnlineTestController extends BaseController {
       }
   }
 
-  def completeByToken(token: UniqueIdentifier): Action[AnyContent] = CSRUserAwareAction { implicit request =>
+  def completeTestByToken(token: UniqueIdentifier): Action[AnyContent] = CSRUserAwareAction { implicit request =>
     implicit user =>
-      onlineTestClient.completeTests(token).map { _ =>
+      onlineTestClient.completeTestByToken(token).map { _ =>
         Ok(views.html.application.onlineTestSuccess())
       }
   }
-
-  def completeTest(cubiksUserId: Int): Action[AnyContent] = CSRUserAwareAction { implicit request =>
-    implicit user =>
-      onlineTestClient.completeTests(
-
-  }
-
 }
