@@ -85,7 +85,21 @@ object ExchangeObjects {
 
   case class ReviewRequest(flag: Boolean)
 
-  case class OnlineTest(expireDate: DateTime, onlineTestLink: String, isOnlineTestEnabled: Boolean, pdfReportAvailable: Boolean) {
+  case class OnlineTest(
+    cubiksUserId: Int,
+    inviteDate: DateTime,
+    expireDate: DateTime,
+    onlineTestLink: String,
+    token: String,
+    isOnlineTestEnabled: Boolean = false,
+    pdfReportAvailable: Boolean = false,
+    startedDateTime: Option[DateTime] = None,
+    completedDateTime: Option[DateTime] = None
+  ) {
+
+    def isStarted : Boolean = startedDateTime.isDefined
+    def isCompleted: Boolean = completedDateTime.isDefined
+
     def getDuration: String = {
 
       val now = DateTime.now

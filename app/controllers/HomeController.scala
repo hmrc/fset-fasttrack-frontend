@@ -39,10 +39,12 @@ trait HomeController extends BaseController with ApplicationClient {
   val Withdrawer = "Candidate"
   val present = CSRSecureAction(ActiveUserRole) { implicit request =>
     implicit user =>
+
       // TODO: I think the non existance of the onlineTest can be handled with an Option
       // not an Exception. It is not really an exceptional situation as in most situations
       // the onlineTest will not be present until later.
       getTestAssessment(user.user.userID).flatMap { onlineTest =>
+
         getAllocationDetails(user.application.get.applicationId).flatMap { allocationDetails =>
           // It is possible that the scheduler may have enabled testing, but that the
           // current user session has older cached user data, so force an update
@@ -57,7 +59,7 @@ trait HomeController extends BaseController with ApplicationClient {
           }
         }
       } recover {
-        case e: OnlineTestNotFound =>
+        case _: OnlineTestNotFound =>
           val applicationSubmitted = !user.application.forall { app =>
             app.applicationStatus == ApplicationStatus.CREATED || app.applicationStatus == ApplicationStatus.IN_PROGRESS
           }
