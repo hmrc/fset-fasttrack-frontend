@@ -30,7 +30,7 @@ import play.api.mvc.{ Request, Result }
 import scala.concurrent.Future
 
 trait SignInUtils {
-  this: BaseController with ApplicationClient =>
+  this: BaseController =>
 
   def signInUser(
     user: CachedUser,

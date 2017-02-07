@@ -17,14 +17,15 @@
 package controllers
 
 import _root_.forms.WithdrawApplicationForm
-import config.{CSRCache, CSRHttp}
-import connectors.ApplicationClient.{CannotWithdraw, OnlineTestNotFound}
+import config.{ CSRCache, CSRHttp }
+import connectors.ApplicationClient.CannotWithdraw
 import connectors.ExchangeObjects.WithdrawApplicationRequest
-import connectors.{ApplicationClient, ExchangeObjects}
+import connectors.OnlineTestClient.OnlineTestNotFound
+import connectors.{ ApplicationClient, ExchangeObjects, OnlineTestClient }
 import helpers.NotificationType._
 import models.ApplicationData.ApplicationStatus
 import models.page.DashboardPage
-import models.{CachedData, CachedDataWithApp}
+import models.{ CachedData, CachedDataWithApp }
 import security.Roles
 import security.Roles._
 
@@ -33,17 +34,27 @@ import scala.concurrent.Future
 object HomeController extends HomeController {
   val http = CSRHttp
   val cacheClient = CSRCache
+
+  val onlineTestClient = OnlineTestClient
+  val applicationClient = ApplicationClient
 }
 
-trait HomeController extends BaseController with ApplicationClient {
+trait HomeController extends BaseController {
+
+  def onlineTestClient: OnlineTestClient
+
+  def applicationClient: ApplicationClient
+
   val Withdrawer = "Candidate"
+
+
   val present = CSRSecureAction(ActiveUserRole) { implicit request =>
     implicit user =>
 
       // TODO: I think the non existance of the onlineTest can be handled with an Option
       // not an Exception. It is not really an exceptional situation as in most situations
       // the onlineTest will not be present until later.
-      getTestAssessment(user.user.userID).flatMap { onlineTest =>
+      onlineTestClient.getTestAssessment(user.user.userID).flatMap { onlineTest =>
 
         getAllocationDetails(user.application.get.applicationId).flatMap { allocationDetails =>
           // It is possible that the scheduler may have enabled testing, but that the
