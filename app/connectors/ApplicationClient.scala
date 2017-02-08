@@ -230,7 +230,7 @@ trait ApplicationClient {
   }
 
   def getAvailableSchemes(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
-    http.GET(s"$hostBase/available/schemes").map { response =>
+    http.GET(s"$hostBase/schemes/available").map { response =>
       response.json.as[List[SchemeInfo]]
     }
   }
