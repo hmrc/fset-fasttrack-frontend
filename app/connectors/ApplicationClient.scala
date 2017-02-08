@@ -228,6 +228,12 @@ trait ApplicationClient {
       case ex: Throwable => throw new ErrorRetrievingAvailableSchemes(ex)
     }
   }
+
+  def getAvailableSchemes(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
+    http.GET(s"$hostBase/schemes/available").map { response =>
+      response.json.as[List[SchemeInfo]]
+    }
+  }
 }
 
 object ApplicationClient extends ApplicationClient {
