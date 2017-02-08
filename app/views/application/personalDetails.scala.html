@@ -1,10 +1,37 @@
-@(form: Form[_root_.forms.GeneralDetailsForm.Data])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+@(form: Form[_root_.forms.GeneralDetailsForm.Data])(implicit request: Request[_], lang: play.api.i18n.Lang, flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
-@import views.html.widgets.{ date, radioBox, radioBoxHorizontal }
+@import views.html.widgets.{ checkbox, date, radioBox, radioBoxHorizontal }
+
+@isOutsideUkChecked = @{
+    form("outsideUk").value match {
+        case Some("true") => "checked"
+        case _ => ""
+    }
+}
+
+@isOutsideUk = @{
+    form("outsideUk").value match {
+        case Some("true") => true
+        case _ => false
+    }
+}
 
 @main_template(title = "Personal details", pageForms = Seq(form)) {
 
+<script type="text/javascript">
+function outsideUK() {
+    var checked = document.getElementById('outsideUk').checked;
+    document.getElementById('outsideUk').value = checked;
+    if(checked) {
+        document.getElementById('postCode_field').className = 'form-group toggle-content';
+        document.getElementById('country_field').className = 'form-group';
+    } else {
+        document.getElementById('country_field').className = 'form-group toggle-content';
+        document.getElementById('postCode_field').className = 'form-group';
+    }
+}
+</script>
     <h1 class="heading-xlarge">Personal details</h1>
 
     @helper.form(action = routes.FastTrackApplication.submitGeneralDetails(), 'novalidate -> "novalidate") {
@@ -36,15 +63,33 @@
         <section class="section-border">
             <h2 class="heading-large">Contact details</h2>
 
+            <div class="form-group">
+                <div id="outsideUk_field" class="form-group  ">
+                    <label for="outsideUk" class="block-label" data-distarget=''>
+                        <input type="checkbox" id="outsideUk" name="outsideUk" value="@isOutsideUk" onclick ="outsideUK()" @isOutsideUkChecked />
+                        My address is outside the UK
+                    </label>
+                    <span class="has-error"></span>
+                </div>
+            </div>
+
             <div id="addressManualInput">
                 @views.html.widgets.address(form,"address")
 
                 @helper.inputText(form("postCode"),
-                    '_label -> "Postcode",
-                    'autocapitalize -> "characters",
-                    'autocorrect -> "off",
-                    'class -> "form-control form-control-large",
-                    '_showConstraints -> false)
+                '_label -> "Postcode",
+                'autocapitalize -> "characters",
+                'autocorrect -> "off",
+                'class -> "form-control form-control-large",
+                '_class -> (if(isOutsideUk) "toggle-content" else ""),
+                '_showConstraints -> false)
+
+                @helper.inputText(form("country"),
+                '_label -> "Country",
+                'autocorrect -> "off",
+                'class -> "form-control",
+                '_class -> (if(!isOutsideUk) "toggle-content" else ""),
+                '_showConstraints -> false)
             </div>
 
             @helper.inputText(form("phone"),

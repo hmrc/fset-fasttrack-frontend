@@ -25,42 +25,42 @@ class PostCodeFormatterSpec extends PlaySpec {
 
   "Postcode Formatter" should {
 
-    def postcodeFormatValidation(from: String, against: String) = {
-      validPostcode(from) mustBe Valid
+    def postcodeFormatValidation(from: Option[String], against: Option[String]) = {
+      validPostcode(from.get) mustBe Valid
       val formatted = formatPostcode(from)
       formatted mustBe against
-      validPostcode(formatted) mustBe Valid
+      validPostcode(formatted.get) mustBe Valid
     }
 
     "Format A99AA type of postcode" in {
-      postcodeFormatValidation("d33fi", "D3 3FI")
+      postcodeFormatValidation(Some("d33fi"), Some("D3 3FI"))
     }
 
     "Format A099AA type of postcode" in {
-      postcodeFormatValidation("b032az", "B3 2AZ")
+      postcodeFormatValidation(Some("b032az"), Some("B3 2AZ"))
     }
 
     "Format A999AA type of postcode" in {
-      postcodeFormatValidation("j321ik", "J32 1IK")
+      postcodeFormatValidation(Some("j321ik"), Some("J32 1IK"))
     }
 
     "Format A9A9AA type of postcode" in {
-      postcodeFormatValidation("z5i2uj", "Z5I 2UJ")
+      postcodeFormatValidation(Some("z5i2uj"), Some("Z5I 2UJ"))
     }
 
     "Format AA99AA type of postcode" in {
-      postcodeFormatValidation("ab32qu", "AB3 2QU")
+      postcodeFormatValidation(Some("ab32qu"), Some("AB3 2QU"))
     }
 
     "Format AA099AA type of postcode" in {
-      postcodeFormatValidation("jh072ui", "JH7 2UI")
+      postcodeFormatValidation(Some("jh072ui"), Some("JH7 2UI"))
 
     }
     "Format AA999AA type of postcode" in {
-      postcodeFormatValidation("rm285qk", "RM28 5QK")
+      postcodeFormatValidation(Some("rm285qk"), Some("RM28 5QK"))
     }
     "Format AA9A9AA type of postcode" in {
-      postcodeFormatValidation("eh3w4uc", "EH3W 4UC")
+      postcodeFormatValidation(Some("eh3w4uc"), Some("EH3W 4UC"))
     }
   }
 }
