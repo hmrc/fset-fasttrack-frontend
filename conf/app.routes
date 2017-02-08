@@ -67,8 +67,8 @@ POST        /questionnaire/page/3                                   controllers.
 GET         /schools                                                controllers.SchoolsController.getSchools(item: String)
 
 # Online Test
-POST        /online-tests/start                                     controllers.OnlineTestController.startTests
-GET         /online-tests/complete/:token                           controllers.OnlineTestController.complete(token: UniqueIdentifier)
+POST        /online-tests/start                                     controllers.OnlineTestController.startOrContinueTest(cubiksUserId: Int)
+PUT         /online-tests/by-token/:token/complete                  controllers.OnlineTestController.completeTestByToken(token: UniqueIdentifier)
 GET         /online-tests/pdf-report/download                       controllers.OnlineTestController.downloadPDFReport
 
 # Assets controller

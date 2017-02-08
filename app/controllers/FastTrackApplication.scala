@@ -17,16 +17,15 @@
 package controllers
 
 import _root_.forms.GeneralDetailsForm
-import config.{CSRCache, CSRHttp}
+import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient.PersonalDetailsNotFound
-import connectors.{ApplicationClient, UserManagementClient}
+import connectors.exchange.SchemeInfo
+import connectors.{ ApplicationClient, UserManagementClient }
 import helpers.NotificationType._
-import mappings.{Address, DayMonthYear}
+import mappings.{ Address, DayMonthYear }
 import models.ApplicationData.ApplicationStatus._
 import org.joda.time.LocalDate
 import security.Roles.PersonalDetailsRole
-
-import scala.concurrent.Future
 
 object FastTrackApplication extends FastTrackApplication {
   val http = CSRHttp
@@ -54,29 +53,31 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
         "No",
         None
       ))
+      def presentPersonalDetails(availableSchemes: List[SchemeInfo]) = {
+        getPersonalDetails(user.user.userID, user.application.applicationId).map { gd =>
+          val form = GeneralDetailsForm.form.fill(GeneralDetailsForm.Data(
+            gd.firstName,
+            gd.lastName,
+            gd.preferredName,
+            gd.dateOfBirth,
+            Some(gd.outsideUk),
+            gd.address,
+            gd.postCode,
+            gd.country,
+            gd.phone,
+            Some(gd.aLevel),
+            Some(gd.stemLevel),
+            if (gd.civilServant) "Yes" else "No",
+            gd.department
+          ))
+          Ok(views.html.application.personalDetails(form, availableSchemes))
 
-      getPersonalDetails(user.user.userID, user.application.applicationId).map { gd =>
-        val form = GeneralDetailsForm.form.fill(GeneralDetailsForm.Data(
-          gd.firstName,
-          gd.lastName,
-          gd.preferredName,
-          gd.dateOfBirth,
-          Some(gd.outsideUk),
-          gd.address,
-          gd.postCode,
-          gd.country,
-          gd.phone,
-          Some(gd.aLevel),
-          Some(gd.stemLevel),
-          if (gd.civilServant) "Yes" else "No",
-          gd.department
-        ))
-        Ok(views.html.application.personalDetails(form))
-
-      }.recover {
-        case e: PersonalDetailsNotFound =>
-          Ok(views.html.application.personalDetails(formFromUser))
+        }.recover {
+          case e: PersonalDetailsNotFound =>
+            Ok(views.html.application.personalDetails(formFromUser, availableSchemes))
+        }
       }
+      getAvailableSchemes.flatMap { presentPersonalDetails }
   }
 
   def submitGeneralDetails = CSRSecureAppAction(PersonalDetailsRole) { implicit request =>
@@ -84,7 +85,7 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
       implicit val now: LocalDate = LocalDate.now
       GeneralDetailsForm.form.bindFromRequest.fold(
         errorForm => {
-          Future.successful(Ok(views.html.application.personalDetails(errorForm)))
+          getAvailableSchemes.map { schemes => Ok(views.html.application.personalDetails(errorForm, schemes)) }
         },
         generalDetails => {
           (for {

@@ -1,4 +1,6 @@
-@(form: Form[_root_.forms.GeneralDetailsForm.Data])(implicit request: Request[_], lang: play.api.i18n.Lang, flash: Flash, user: Option[CachedData], feedbackUrl: String)
+@import connectors.exchange.SchemeInfo
+
+@(form: Form[_root_.forms.GeneralDetailsForm.Data], availableSchemes: List[SchemeInfo])(implicit request: Request[_], lang: play.api.i18n.Lang, flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
 @import views.html.widgets.{ checkbox, date, radioBox, radioBoxHorizontal }
@@ -121,32 +123,44 @@ function outsideUK() {
                   <tr>
                     <td>
                       <ul class="">
-                        <li>Business</li>
-                        <li>Commercial</li>
-                        <li>Finance</li>
+                        @availableSchemes.filter(scheme => !scheme.requiresALevel && !scheme.requiresALevelInStem).map { scheme =>
+                          <li>@scheme.name</li>
+                        }
                       </ul>
                     </td>
-                    <td>At least 5 GCSEs, grades A* to C including English language and maths, <a href="https://www.gov.uk/what-different-qualification-levels-mean/compare-different-qualification-levels" rel="external" target="_blank">or equivalent</a>
+                    <td>At least 5 GCSEs, grades C or above including English language
+                      and maths, <a href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" rel="external" target="_blank">or equivalent</a>.
+                      <br>
+                      <p>From 2017, the equivalent GCSE grades are 4 or above.</p>
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <ul class="">
-                        <li>Project delivery</li>
+                        @availableSchemes.filter(scheme => scheme.requiresALevel && !scheme.requiresALevelInStem).map { scheme =>
+                          <li>@scheme.name</li>
+                        }
                       </ul>
                     </td>
                     <td>
-                      2 A levels at grade D or above, in addition to your GCSEs, <a href="https://www.gov.uk/what-different-qualification-levels-mean/compare-different-qualification-levels" rel="external" target="_blank">or equivalent</a>
+                      2 A levels, grade D or above in addition to your GCSEs,
+                      <a href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" rel="external" target="_blank">or equivalent</a>.
                     </td>
                   </tr>
                   <tr>
                     <td>
                       <ul class="">
-                        <li>Digital technology</li>
+                        @availableSchemes.filter(_.requiresALevelInStem).map { scheme =>
+                          <li>@scheme.name</li>
+                        }
                       </ul>
                     </td>
                     <td>
-                    2 A levels at grade C or above in a <a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-list-of-qualifying-stem-subjects" rel="external" target="_blank">STEM</a> subject (science, technology, engineering, mathematics) in addition to your GCSEs, <a href="https://www.gov.uk/what-different-qualification-levels-mean/compare-different-qualification-levels" rel="external" target="_blank">or equivalent</a>
+                      2 A levels, grade C or above in addition to your GCSEs,
+                      <a href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" rel="external" target="_blank">or equivalent</a>.
+                      <p>It's desirable that at least one of your A levels was in
+                          a <a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-list-of-qualifying-stem-subjects" rel="external" target="_blank">STEM</a> subject (science,
+                          technology, engineering, mathematics).</p>
                     </td>
                   </tr>
                 </tbody>
@@ -154,8 +168,8 @@ function outsideUK() {
             </div>
 
             <fieldset>
-              <legend class="form-label" id="alevelGradeD">Do you have 2 A levels at grade D or above?</legend>
-              <p class="form-hint">(Or you expect to have these by 31 August 2016, <a href="https://www.gov.uk/what-different-qualification-levels-mean/compare-different-qualification-levels" rel="external" target="_blank">or an equivalent qualification</a>)</p>
+              <legend class="form-label" id="alevelGradeD">Do you have 2 A levels, grades D or above?</legend>
+              <p class="form-hint">In addition to your GCSEs or equivalent, by 31 August 2017</p>
               @radioBox(form("alevel-d"), options = Seq("true" -> "Yes", "false" -> "No"))
             </fieldset>
 

@@ -170,23 +170,6 @@ trait ApplicationClient {
       }
   }
 
-  def getTestAssessment(userId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[OnlineTest] = {
-    http.GET(s"${url.host}${url.base}/online-test/candidate/$userId").map { response =>
-      response.json.as[ExchangeObjects.OnlineTest]
-    } recover {
-      case _: NotFoundException => throw new OnlineTestNotFound()
-    }
-  }
-
-  def getPDFReport(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Array[Byte]] = {
-    http.wS.url(s"${url.host}${url.base}/online-test/pdf-report/$applicationId").get(resp =>
-      if (resp.status == 200) {
-        Iteratee.consume[Array[Byte]]()
-      } else {
-        throw new PdfReportNotFoundException()
-      }).flatMap { it => it.run }
-  }
-
   def getAllocationDetails(appId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Option[AllocationDetails]] = {
     import AllocationExchangeObjects.Implicits._
     http.GET(s"${url.host}${url.base}/allocation-status/$appId").map { response =>
@@ -198,15 +181,6 @@ trait ApplicationClient {
 
   def confirmAllocation(appId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Unit] = {
     http.POST(s"${url.host}${url.base}/allocation-status/confirm/$appId", "").map(_ => ())
-  }
-
-  def onlineTestUpdate(userId: UniqueIdentifier, status: ApplicationStatus)(implicit hc: HeaderCarrier): Future[Unit] = {
-    val body = Json.toJson(OnlineTestStatus(status))
-    http.POST(s"${url.host}${url.base}/online-test/candidate/$userId/status", body).map(_ => ())
-  }
-
-  def completeTests(token: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Unit] = {
-    http.POST(s"${url.host}${url.base}/online-test/complete/$token", "").map(_ => ())
   }
 
   def getEligibleSchemeLocations(applicationId: UniqueIdentifier, latitudeOpt: Option[Double], longitudeOpt: Option[Double])
@@ -256,6 +230,12 @@ trait ApplicationClient {
       case ex: Throwable => throw new ErrorRetrievingAvailableSchemes(ex)
     }
   }
+
+  def getAvailableSchemes(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
+    http.GET(s"$hostBase/schemes/available").map { response =>
+      response.json.as[List[SchemeInfo]]
+    }
+  }
 }
 
 object ApplicationClient extends ApplicationClient {
@@ -280,8 +260,6 @@ object ApplicationClient extends ApplicationClient {
 
   sealed class CannotWithdraw extends Exception
 
-  sealed class OnlineTestNotFound extends Exception
-
   sealed class ErrorRetrievingEligibleLocationSchemes(throwable: Throwable) extends Exception(throwable)
 
   sealed class ErrorRetrievingLocationSchemes(throwable: Throwable) extends Exception(throwable)
@@ -289,6 +267,4 @@ object ApplicationClient extends ApplicationClient {
   sealed class ErrorRetrievingAvailableSchemes(throwable: Throwable) extends Exception(throwable)
 
   sealed class ErrorRetrievingSchemes(throwable: Throwable) extends Exception(throwable)
-
-  sealed class PdfReportNotFoundException extends Exception
 }
