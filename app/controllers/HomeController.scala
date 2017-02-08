@@ -88,7 +88,7 @@ trait HomeController extends BaseController {
 
   val resume = CSRSecureAppAction(ActiveUserRole) { implicit request =>
     implicit user =>
-      Future.successful(Redirect(Roles.userJourneySequence.find(_._1.isAuthorized(user)).map(_._2).getOrElse(routes.HomeController.present())))
+      Future.successful(Redirect(Roles.getLatestJourneyStep(user)))
   }
 
   val create = CSRSecureAction(ApplicationStartRole) { implicit request =>

@@ -22,21 +22,21 @@ import play.api.libs.json.Json
 import scala.language.implicitConversions
 
 case class Progress(
-                     personalDetails: Boolean,
-                     hasSchemeLocations: Boolean,
-                     hasSchemes: Boolean,
-                     assistanceDetails: Boolean,
-                     review: Boolean,
-                     startedQuestionnaire: Boolean,
-                     diversityQuestionnaire: Boolean,
-                     educationQuestionnaire: Boolean,
-                     occupationQuestionnaire: Boolean,
-                     submitted: Boolean,
-                     withdrawn: Boolean,
-                     onlineTest: OnlineTestProgress,
-                     failedToAttend: Boolean,
-                     assessmentScores: AssessmentScores,
-                     assessmentCentre: AssessmentCentre
+  personalDetails: Boolean,
+  hasSchemeLocations: Boolean,
+  hasSchemes: Boolean,
+  assistanceDetails: Boolean,
+  review: Boolean,
+  startedQuestionnaire: Boolean,
+  diversityQuestionnaire: Boolean,
+  educationQuestionnaire: Boolean,
+  occupationQuestionnaire: Boolean,
+  submitted: Boolean,
+  withdrawn: Boolean,
+  onlineTest: OnlineTestProgress,
+  failedToAttend: Boolean,
+  assessmentScores: AssessmentScores,
+  assessmentCentre: AssessmentCentre
 )
 
 case class OnlineTestProgress(
