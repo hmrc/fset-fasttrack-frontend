@@ -17,31 +17,75 @@
 package forms
 
 import connectors.exchange.AssistanceDetails
-import play.api.data.Form
+import play.api.data.{ FormError, Form }
 import play.api.data.Forms.{mapping, of, optional}
+import play.api.data.format.Formatter
 
 object AssistanceDetailsForm {
+
+  private[forms] val deptMaxLength = 256
+
+  val disabilityAndGisDependentFormatter = new Formatter[Option[String]] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
+      val disabilityCheck = data.get("hasDisability")
+      val gisCheck = data.get("guaranteedInterview")
+      val value = data.get(key).filterNot(_.trim.isEmpty)
+
+      //scalastyle:off
+      println(s"****** disabilityAndGisDependentFormatter - disabilityCheck=$disabilityCheck, gisCheck=$gisCheck, value=$value")
+      (disabilityCheck, gisCheck, value) match {
+        case (Some("Yes"), Some("Yes"), None) =>
+          //scalastyle:off
+          println(s"****** disabilityAndGisDependentFormatter - CASE ONE")
+          Right(Some("No"))
+        case (Some("No"), Some("No"), None) =>
+          //scalastyle:off
+          println(s"****** disabilityAndGisDependentFormatter - CASE TWO")
+          Left(List(FormError(key, s"error.$key.required")))
+        case (Some("Yes"), None, None) =>
+          println(s"****** disabilityAndGisDependentFormatter - CASE THREE")
+          Left(List(FormError(key, s"error.$key.required")))
+        case (Some("Yes"), Some("No"), None) =>
+          println(s"****** disabilityAndGisDependentFormatter - CASE FOUR")
+          Left(List(FormError(key, s"error.$key.required")))
+        case (Some("Yes"), Some("No"), Some("Yes")) =>
+          println(s"****** disabilityAndGisDependentFormatter - CASE SIX")
+          Right(Some("Yes"))
+        case (Some("No"), None, Some("Yes")) =>
+          println(s"****** disabilityAndGisDependentFormatter - CASE SEVEN")
+          Right(Some("Yes"))
+        case (Some("I don't know/prefer not to say"), None, Some("Yes")) =>
+          println(s"****** disabilityAndGisDependentFormatter - CASE EIGHT")
+          Right(Some("Yes"))
+        case _ =>
+          //scalastyle:off
+          println(s"****** disabilityAndGisDependentFormatter - CASE DEFAULT")
+          Right(None)
+      }
+    }
+
+    override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
+  }
 
   val form = Form(
     mapping(
       "hasDisability" -> Mappings.nonEmptyTrimmedText("error.hasDisability.required", 31),
       "hasDisabilityDescription" -> optional(Mappings.nonEmptyTrimmedText("error.hasDisabilityDescription.required", 2048)),
       "guaranteedInterview" -> of(requiredFormatterWithMaxLengthCheck("hasDisability", "guaranteedInterview", None)),
-      "needsSupportForOnlineAssessment" -> Mappings.nonEmptyTrimmedText("error.needsSupportForOnlineAssessment.required", 31),
+      "needsSupportForOnlineAssessment" -> of(disabilityAndGisDependentFormatter),
       "needsSupportForOnlineAssessmentDescription" -> of(requiredFormatterWithMaxLengthCheck("needsSupportForOnlineAssessment",
-        "needsSupportForOnlineAssessmentDescription", Some(2048))),
+      "needsSupportForOnlineAssessmentDescription", Some(2048))),
       "needsSupportAtVenue" -> Mappings.nonEmptyTrimmedText("error.needsSupportAtVenue.required", 31),
       "needsSupportAtVenueDescription" -> of(requiredFormatterWithMaxLengthCheck("needsSupportAtVenue", "needsSupportAtVenueDescription",
         Some(2048)))
     )(Data.apply)(Data.unapply)
   )
 
-  import Data._
   case class Data(
                    hasDisability: String,
                    hasDisabilityDescription: Option[String],
                    guaranteedInterview: Option[String],
-                   needsSupportForOnlineAssessment: String,
+                   needsSupportForOnlineAssessment: Option[String],
                    needsSupportForOnlineAssessmentDescription: Option[String],
                    needsSupportAtVenue: String,
                    needsSupportAtVenueDescription: Option[String]) {
@@ -49,9 +93,10 @@ object AssistanceDetailsForm {
       AssistanceDetailsForm.Data(
         hasDisability,
         if (hasDisability == "Yes") hasDisabilityDescription else None,
-        if (hasDisability == "Yes") { guaranteedInterview } else { None },
-        needsSupportForOnlineAssessment,
-        if (needsSupportForOnlineAssessment.contains("Yes")) needsSupportForOnlineAssessmentDescription else None,
+        if (hasDisability == "Yes") guaranteedInterview else None,
+        if (hasDisability == "Yes" && guaranteedInterview.contains("Yes")) needsSupportForOnlineAssessment else None,
+        if (hasDisability == "Yes" && guaranteedInterview.contains("Yes") && needsSupportForOnlineAssessment.contains("Yes"))
+          needsSupportForOnlineAssessmentDescription else None,
         needsSupportAtVenue,
         if (needsSupportAtVenue.contains("Yes")) needsSupportAtVenueDescription else None
       )
@@ -72,7 +117,7 @@ object AssistanceDetailsForm {
         ad.hasDisability,
         ad.hasDisabilityDescription,
         toOptString(ad.guaranteedInterview),
-        if (ad.needsSupportForOnlineAssessment) "Yes" else "No",
+        if (ad.needsSupportForOnlineAssessment) Some("Yes") else Some("No"),
         ad.needsSupportForOnlineAssessmentDescription,
         if (ad.needsSupportAtVenue) "Yes" else "No",
         ad.needsSupportAtVenueDescription

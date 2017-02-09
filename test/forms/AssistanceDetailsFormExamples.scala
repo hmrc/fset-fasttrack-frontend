@@ -17,15 +17,15 @@
 package forms
 
 object AssistanceDetailsFormExamples {
-  val DisabilityGisAndAdjustmentsForm = AssistanceDetailsForm.Data("Yes", Some("Epilepsy"), Some("Yes"), "Yes",
+  val DisabilityGisAndAdjustmentsForm = AssistanceDetailsForm.Data("Yes", Some("Epilepsy"), Some("Yes"), Some("Yes"),
     Some("Some adjustment"), "Yes", Some("Some other adjustments"))
 
-  val NoDisabilitiesForm = AssistanceDetailsForm.Data("No", None, None, "No", None, "No", None)
+  val NoDisabilitiesForm = AssistanceDetailsForm.Data("No", None, None, Some("No"), None, "No", None)
 
-  val NoAdjustmentsForm = AssistanceDetailsForm.Data("Yes", Some("Some disabilities"), Some("No"), "No", None,
+  val NoAdjustmentsForm = AssistanceDetailsForm.Data("Yes", Some("Some disabilities"), Some("No"), Some("No"), None,
     "No", None)
 
-  val FullForm = AssistanceDetailsForm.Data("Yes", Some("Some disabilities"), Some("Yes"), "Yes",
+  val FullForm = AssistanceDetailsForm.Data("Yes", Some("Some disabilities"), Some("Yes"), Some("Yes"),
     Some("Some adjustments online"), "Yes", Some("Some adjustments at venue"))
 
   val DisabilityGisAndAdjustmentsMap = Map[String, String](
