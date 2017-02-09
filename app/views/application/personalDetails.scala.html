@@ -28,9 +28,19 @@ function outsideUK() {
     if(checked) {
         document.getElementById('postCode_field').className = 'form-group toggle-content';
         document.getElementById('country_field').className = 'form-group';
+        document.getElementById('postCode').value = '';
+        document.getElementById('address_line1').value = '';
+        document.getElementById('address_line2').value = '';
+        document.getElementById('address_line3').value = '';
+        document.getElementById('address_line4').value = '';
     } else {
         document.getElementById('country_field').className = 'form-group toggle-content';
         document.getElementById('postCode_field').className = 'form-group';
+        document.getElementById('country').value = '';
+        document.getElementById('address_line1').value = '';
+        document.getElementById('address_line2').value = '';
+        document.getElementById('address_line3').value = '';
+        document.getElementById('address_line4').value = '';
     }
 }
 </script>
