@@ -24,7 +24,7 @@ $(function(){
 
             if ($("#guaranteedInterview-Yes").is(":checked")) {
                 $('#' + target).hide();
-                // Set the "need support for online tests" to No so we have no problems with the adjustments which is
+                // Set the "need support for online tests" to No so we have no problems with the adjustments which are
                 // mandatory when the controlling question has been answered with Yes
                 $('input:radio[name='+target+'][value=No]').trigger("click");
             } else {

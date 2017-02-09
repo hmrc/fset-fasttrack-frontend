@@ -36,27 +36,31 @@ object AssistanceDetailsForm {
       (disabilityCheck, gisCheck, value) match {
         case (Some("Yes"), Some("Yes"), None) =>
           //scalastyle:off
-          println(s"****** disabilityAndGisDependentFormatter - CASE ONE")
+          println(s"****** disabilityAndGisDependentFormatter - CASE 1")
           Right(Some("No"))
         case (Some("No"), Some("No"), None) =>
           //scalastyle:off
-          println(s"****** disabilityAndGisDependentFormatter - CASE TWO")
+          println(s"****** disabilityAndGisDependentFormatter - CASE 2")
+          Left(List(FormError(key, s"error.$key.required")))
+        case (None, None, None) =>
+          println(s"****** disabilityAndGisDependentFormatter - CASE 3")
           Left(List(FormError(key, s"error.$key.required")))
         case (Some("Yes"), None, None) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE THREE")
+          println(s"****** disabilityAndGisDependentFormatter - CASE 4")
           Left(List(FormError(key, s"error.$key.required")))
         case (Some("Yes"), Some("No"), None) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE FOUR")
+          println(s"****** disabilityAndGisDependentFormatter - CASE 5")
           Left(List(FormError(key, s"error.$key.required")))
         case (Some("Yes"), Some("No"), Some("Yes")) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE SIX")
+          println(s"****** disabilityAndGisDependentFormatter - CASE 6")
           Right(Some("Yes"))
         case (Some("No"), None, Some("Yes")) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE SEVEN")
+          println(s"****** disabilityAndGisDependentFormatter - CASE 7")
           Right(Some("Yes"))
         case (Some("I don't know/prefer not to say"), None, Some("Yes")) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE EIGHT")
+          println(s"****** disabilityAndGisDependentFormatter - CASE 8")
           Right(Some("Yes"))
+
         case _ =>
           //scalastyle:off
           println(s"****** disabilityAndGisDependentFormatter - CASE DEFAULT")
@@ -94,8 +98,8 @@ object AssistanceDetailsForm {
         hasDisability,
         if (hasDisability == "Yes") hasDisabilityDescription else None,
         if (hasDisability == "Yes") guaranteedInterview else None,
-        if (hasDisability == "Yes" && guaranteedInterview.contains("Yes")) needsSupportForOnlineAssessment else None,
-        if (hasDisability == "Yes" && guaranteedInterview.contains("Yes") && needsSupportForOnlineAssessment.contains("Yes"))
+        if ((hasDisability == "Yes" && guaranteedInterview.contains("No")) || hasDisability != "Yes") needsSupportForOnlineAssessment else None,
+        if ((hasDisability == "Yes" && guaranteedInterview.contains("No") && needsSupportForOnlineAssessment.contains("Yes")) || hasDisability != "Yes")
           needsSupportForOnlineAssessmentDescription else None,
         needsSupportAtVenue,
         if (needsSupportAtVenue.contains("Yes")) needsSupportAtVenueDescription else None
