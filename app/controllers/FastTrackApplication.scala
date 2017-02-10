@@ -19,13 +19,18 @@ package controllers
 import _root_.forms.GeneralDetailsForm
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient.PersonalDetailsNotFound
+import connectors.ExchangeObjects.PersonalDetails
 import connectors.exchange.SchemeInfo
 import connectors.{ ApplicationClient, UserManagementClient }
 import helpers.NotificationType._
 import mappings.{ Address, DayMonthYear }
 import models.ApplicationData.ApplicationStatus._
+import models.CachedDataWithApp
 import org.joda.time.LocalDate
 import security.Roles.PersonalDetailsRole
+import uk.gov.hmrc.play.http.HeaderCarrier
+
+import scala.concurrent.Future
 
 object FastTrackApplication extends FastTrackApplication {
   val http = CSRHttp
@@ -89,6 +94,7 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
         },
         generalDetails => {
           (for {
+            _ <- removePreviousSchemeAndLocationChoicesMayBe(generalDetails)
             _ <- updatePersonalDetails(user.application.applicationId, user.user.userID, generalDetails, user.user.email)
             _ <- updateDetails(user.user.userID, generalDetails.firstName, generalDetails.lastName, Some(generalDetails.preferredName))
             redirect <- updateProgress(data =>
@@ -107,5 +113,31 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
           }
         }
       )
+  }
+
+  def removePreviousSchemeAndLocationChoicesMayBe(newPersonalDetails: GeneralDetailsForm.Data)(
+    implicit user: CachedDataWithApp, hc: HeaderCarrier) = {
+
+    def educationQualificationsChanged(previousPersonalDetails: PersonalDetails) =
+      newPersonalDetails.aLevel.contains(!previousPersonalDetails.aLevel) ||
+      newPersonalDetails.stemLevel.contains(!previousPersonalDetails.stemLevel)
+
+    def removeSchemesAndLocationsMayBe(previousPersonalDetails: PersonalDetails) =
+      educationQualificationsChanged(previousPersonalDetails) match {
+      case true =>
+        for {
+          _ <- removeSchemes(user.application.applicationId)
+          _ <- removeSchemeLocations(user.application.applicationId)
+        } yield {}
+      case false => Future.successful(())
+    }
+
+    (for {
+      previousPersonalDetails <- getPersonalDetails(user.user.userID, user.application.applicationId)
+      _ <- removeSchemesAndLocationsMayBe(previousPersonalDetails)
+    } yield {
+    }) recover {
+      case e: PersonalDetailsNotFound => ()
+    }
   }
 }

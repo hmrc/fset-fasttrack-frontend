@@ -207,6 +207,14 @@ trait ApplicationClient {
     http.PUT(s"$hostBase/schemes/$applicationId", schemeNames).map(_ => ())
   }
 
+  def removeSchemeLocations(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Unit] = {
+    http.DELETE(s"$hostBase/scheme-locations/remove/$applicationId").map(_ => ())
+  }
+
+  def removeSchemes(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Unit] = {
+    http.DELETE(s"$hostBase/schemes/remove/$applicationId").map(_ => ())
+  }
+
   def getSchemeLocationChoices(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[List[LocationSchemes]] = {
     http.GET(s"$hostBase/scheme-locations/$applicationId").map { response =>
       response.json.as[List[LocationSchemes]]

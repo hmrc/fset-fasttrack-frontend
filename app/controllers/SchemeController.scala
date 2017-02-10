@@ -20,11 +20,15 @@ import _root_.forms.{ SchemeLocationPreferenceForm, SchemePreferenceForm }
 import config.{ CSRCache, CSRHttp, FrontendAppConfig }
 import connectors.ApplicationClient
 import connectors.ApplicationClient.{ SchemeChoicesNotFound, SchemeLocationChoicesNotFound }
+import connectors.exchange.SchemeInfo
 import models.CachedDataWithApp
 import play.api.data.Form
 import play.api.mvc.Request
 import security.Roles.SchemesRole
+import uk.gov.hmrc.play.http.HeaderCarrier
 import viewmodels.application.scheme.{ SchemeLocationsViewModel, SchemePreferenceViewModel }
+
+import scala.concurrent.Future
 
 object SchemeController extends SchemeController {
   val http = CSRHttp
@@ -65,8 +69,12 @@ trait SchemeController extends BaseController {
       schemeForm.bindFromRequest.fold(
         displaySchemes,
         schemeForm => {
-          applicationClient.saveSchemeChoices(cachedData.application.applicationId, schemeForm.schemes).flatMap { _ =>
-            updateProgress()(_ => Redirect(routes.SchemeController.schemeLocations()))
+          for {
+            _ <- removePreviousSchemeLocationChoicesMayBe(schemeForm.schemes)
+            _ <- applicationClient.saveSchemeChoices(cachedData.application.applicationId, schemeForm.schemes)
+            redirect <- updateProgress()(_ => Redirect(routes.SchemeController.schemeLocations()))
+          } yield {
+            redirect
           }
         }
       )
@@ -100,6 +108,27 @@ trait SchemeController extends BaseController {
     applicationClient.getEligibleSchemes(cachedData.application.applicationId).map { availableSchemes =>
       val viewModel = SchemePreferenceViewModel(availableSchemes.distinct)
       Ok(views.html.application.scheme.chooseyourschemes(form, viewModel))
+    }
+  }
+
+  private def removePreviousSchemeLocationChoicesMayBe(newSchemeChoices: List[String])(
+    implicit user: CachedDataWithApp, hc: HeaderCarrier) = {
+    def schemeChoicesChanged(previousSchemeChoices: List[SchemeInfo]) = {
+      newSchemeChoices.toSet != previousSchemeChoices.map(_.id).toSet
+    }
+
+    def removeSchemeChoicesMayBe(previousSchemeChoices: List[SchemeInfo]) = schemeChoicesChanged(previousSchemeChoices) match {
+      case true => removeSchemeLocations(user.application.applicationId)
+      case false => Future.successful(())
+    }
+
+    (for {
+      previousSchemeChoices <- applicationClient.getSchemeChoices(user.application.applicationId)
+      _ <- removeSchemeChoicesMayBe(previousSchemeChoices)
+    } yield {
+
+    }) recover {
+      case e: SchemeChoicesNotFound => ()
     }
   }
 }

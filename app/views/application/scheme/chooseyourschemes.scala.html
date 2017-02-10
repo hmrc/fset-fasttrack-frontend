@@ -45,25 +45,32 @@
             <p>In preference order, select only the schemes you'd like to work in. You'll
                 select your location preferences afterwards.</p>
         </div>
+        @schemesForm("orderAgreed").value.map { _ =>
+            <fieldset>
+                <div class="panel-warning">
+                    <p>If you edit your schemes, you must re-enter your location selections</p>
+                </div>
+            </fieldset>
+        }
         <section class="grid-wrapper scheme-wrapper">
             <div class="scheme-input-container">
                 @helper.input(schemesForm("schemes"), '_label -> "") { (id, name, value, _) =>
-                <div class="inner-block-padr" id="@id">
-                    <ul class="schemes-list">
-                        @for(scheme <- viewModel.schemeOptions) {
-                            <li class="scheme-container">
-                                <span class="selected-preference invisible">N/A</span>
-                                <label for="scheme-@scheme.id" class="block-label block-label-slim">
-                                    <input type="checkbox" id="scheme-@scheme.id" data-schemename value="@scheme.id">@scheme.name</input>
-                                </label>
-                                <span class="alwayshidden" @if(isSpecialScheme(scheme)){data-spec-scheme} else {data-scheme-req}>@schemeRequirements(scheme)</span>
-                            </li>
-                        }
-                        @for(i <- 0 until viewModel.schemeOptions.size) {
-                            <input type="hidden" id="schemes_@i" name="schemes_@i" value='@selectedSchemes(i).getOrElse("")' />
-                        }
-                    </ul>
-                </div>
+                    <div class="inner-block-padr" id="@id">
+                        <ul class="schemes-list">
+                            @for(scheme <- viewModel.schemeOptions) {
+                                <li class="scheme-container">
+                                    <span class="selected-preference invisible">N/A</span>
+                                    <label for="scheme-@scheme.id" class="block-label block-label-slim">
+                                        <input type="checkbox" id="scheme-@scheme.id" data-schemename value="@scheme.id">@scheme.name</input>
+                                    </label>
+                                    <span class="alwayshidden" @if(isSpecialScheme(scheme)){data-spec-scheme} else {data-scheme-req}>@schemeRequirements(scheme)</span>
+                                </li>
+                            }
+                            @for(i <- 0 until viewModel.schemeOptions.size) {
+                                <input type="hidden" id="schemes_@i" name="schemes_@i" value='@selectedSchemes(i).getOrElse("")' />
+                            }
+                        </ul>
+                    </div>
                 }
             </div>
         </section>
