@@ -24,8 +24,9 @@ object ProgressExamples {
     false, AssessmentScores(false, false), AssessmentCentre(false, false, false))
 
   val PersonalDetailsProgress = InitialProgress.copy(personalDetails = true)
-  val SchemePreferencesProgress = PersonalDetailsProgress.copy(hasSchemes = true)
+  val SchemePreferencesProgress = PersonalDetailsProgress.copy(hasSchemes = true, hasSchemeLocations = true)
   val AssistanceDetailsProgress = SchemePreferencesProgress.copy(assistanceDetails = true)
+  val StartedDiversityQuestionnaireProgress = AssistanceDetailsProgress.copy(startedQuestionnaire = true)
   val DiversityQuestionnaireProgress = AssistanceDetailsProgress.copy(startedQuestionnaire = true, diversityQuestionnaire = true)
   val ParentalOcuppationQuestionnaireProgress = DiversityQuestionnaireProgress.copy(educationQuestionnaire = true,
     occupationQuestionnaire = true)
