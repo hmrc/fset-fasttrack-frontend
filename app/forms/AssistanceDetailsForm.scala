@@ -32,43 +32,17 @@ object AssistanceDetailsForm {
       val gisCheck = data.get("guaranteedInterview")
       val value = data.get(key).filterNot(_.trim.isEmpty) // value for needsSupportForOnlineAssessment
 
-      // scalastyle:off
-      println(s"****** disabilityAndGisDependentFormatter - disabilityCheck=$disabilityCheck, gisCheck=$gisCheck, value=$value")
       (disabilityCheck, gisCheck, value) match {
-        case (Some("Yes"), Some("Yes"), None) =>
-          //scalastyle:off
-          println(s"****** disabilityAndGisDependentFormatter - CASE 1")
-          Right(Some("No"))
-        case (Some("No"), Some("No"), None) =>
-          //scalastyle:off
-          println(s"****** disabilityAndGisDependentFormatter - CASE 2")
-          Left(List(FormError(key, s"error.$key.required")))
-        case (None, None, None) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE 3")
-          Left(List(FormError(key, s"error.$key.required")))
-        case (Some("Yes"), None, None) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE 4")
-          Left(List(FormError(key, s"error.$key.required")))
-        case (Some("Yes"), Some("No"), None) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE 5")
-          Left(List(FormError(key, s"error.$key.required")))
-        case (Some("Yes"), Some("No"), Some("Yes")) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE 6")
-          Right(Some("Yes"))
-        case (Some("No"), None, Some("Yes")) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE 7")
-          Right(Some("Yes"))
-        case (Some("No"), Some("No"), Some("Yes")) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE 8")
-          Right(Some("Yes"))
-        case (Some("I don't know/prefer not to say"), None, Some("Yes")) =>
-          println(s"****** disabilityAndGisDependentFormatter - CASE 9")
-          Right(Some("Yes"))
-
-        case _ =>
-          //scalastyle:off
-          println(s"****** disabilityAndGisDependentFormatter - CASE DEFAULT")
-          Right(None)
+        case (Some("Yes"), Some("Yes"), None) => Right(Some("No"))
+        case (Some("No"), Some("No"), None) => Left(List(FormError(key, s"error.$key.required")))
+        case (None, None, None) => Left(List(FormError(key, s"error.$key.required")))
+        case (Some("Yes"), None, None) => Left(List(FormError(key, s"error.$key.required")))
+        case (Some("Yes"), Some("No"), None) => Left(List(FormError(key, s"error.$key.required")))
+        case (Some("Yes"), Some("No"), Some("Yes")) => Right(Some("Yes"))
+        case (Some("No"), None, Some("Yes")) => Right(Some("Yes"))
+        case (Some("No"), Some("No"), Some("Yes")) => Right(Some("Yes"))
+        case (Some("I don't know/prefer not to say"), None, Some("Yes")) => Right(Some("Yes"))
+        case _ => Right(None)
       }
     }
 
