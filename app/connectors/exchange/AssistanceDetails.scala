@@ -45,7 +45,7 @@ object AssistanceDetails {
       hasDisability = formData.hasDisability,
       hasDisabilityDescription = formData.hasDisabilityDescription,
       guaranteedInterview = toOptBoolean(formData.guaranteedInterview),
-      needsSupportForOnlineAssessment = if (formData.needsSupportForOnlineAssessment == "Yes") true else false,
+      needsSupportForOnlineAssessment = formData.needsSupportForOnlineAssessment.contains("Yes"),
       needsSupportForOnlineAssessmentDescription = formData.needsSupportForOnlineAssessmentDescription,
       needsSupportAtVenue = if (formData.needsSupportAtVenue == "Yes") true else false,
       needsSupportAtVenueDescription = formData.needsSupportAtVenueDescription

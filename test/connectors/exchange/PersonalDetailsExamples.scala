@@ -21,7 +21,7 @@ import mappings.AddressExamples
 import org.joda.time.LocalDate
 
 object PersonalDetailsExamples {
-  val FullDetails = PersonalDetails("firstName", "lastName", "preferredName", "email", LocalDate.now(),
-    AddressExamples.FullAddress, "ABC123", Some("1234567"), aLevel = true, stemLevel = true, civilServant = false,
+  val FullDetails = PersonalDetails("firstName", "lastName", "preferredName", "email", LocalDate.now(), false,
+    AddressExamples.FullAddress, Some("ABC123"), None, Some("1234567"), aLevel = true, stemLevel = true, civilServant = false,
     department = None)
 }

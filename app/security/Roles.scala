@@ -85,7 +85,7 @@ object Roles {
 
   object StartQuestionnaireRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) &&
+      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasAssistanceDetails(user) &&
         !(hasDiversityQuestionnaire(user) && hasEducationQuestionnaire(user) && hasParentalOccupationQuestionnaire(user))
   }
 
@@ -206,6 +206,10 @@ object Roles {
     UnconfirmedAllocatedCandidateRole -> routes.HomeController.present,
     WithdrawApplicationRole -> routes.HomeController.present
   ).reverse
+
+
+  def getLatestJourneyStep(user: CachedDataWithApp)(implicit request: RequestHeader, lang: Lang): Call =
+    userJourneySequence.find(_._1.isAuthorized(user)).map(_._2).getOrElse(routes.HomeController.present())
 }
 
 object RoleUtils {

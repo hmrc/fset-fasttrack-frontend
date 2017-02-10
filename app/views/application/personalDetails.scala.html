@@ -1,12 +1,49 @@
 @import connectors.exchange.SchemeInfo
 
-@(form: Form[_root_.forms.GeneralDetailsForm.Data], availableSchemes: List[SchemeInfo])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+@(form: Form[_root_.forms.GeneralDetailsForm.Data], availableSchemes: List[SchemeInfo])(implicit request: Request[_], lang: play.api.i18n.Lang, flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
-@import views.html.widgets.{ date, radioBox, radioBoxHorizontal }
+@import views.html.widgets.{ checkbox, date, radioBox, radioBoxHorizontal }
+
+@isOutsideUkChecked = @{
+    form("outsideUk").value match {
+        case Some("true") => "checked"
+        case _ => ""
+    }
+}
+
+@isOutsideUk = @{
+    form("outsideUk").value match {
+        case Some("true") => true
+        case _ => false
+    }
+}
 
 @main_template(title = "Personal details", pageForms = Seq(form)) {
 
+<script type="text/javascript">
+function outsideUK() {
+    var checked = document.getElementById('outsideUk').checked;
+    document.getElementById('outsideUk').value = checked;
+    if(checked) {
+        document.getElementById('postCode_field').className = 'form-group toggle-content';
+        document.getElementById('country_field').className = 'form-group';
+        document.getElementById('postCode').value = '';
+        document.getElementById('address_line1').value = '';
+        document.getElementById('address_line2').value = '';
+        document.getElementById('address_line3').value = '';
+        document.getElementById('address_line4').value = '';
+    } else {
+        document.getElementById('country_field').className = 'form-group toggle-content';
+        document.getElementById('postCode_field').className = 'form-group';
+        document.getElementById('country').value = '';
+        document.getElementById('address_line1').value = '';
+        document.getElementById('address_line2').value = '';
+        document.getElementById('address_line3').value = '';
+        document.getElementById('address_line4').value = '';
+    }
+}
+</script>
     <h1 class="heading-xlarge">Personal details</h1>
 
     @helper.form(action = routes.FastTrackApplication.submitGeneralDetails(), 'novalidate -> "novalidate") {
@@ -38,15 +75,33 @@
         <section class="section-border">
             <h2 class="heading-large">Contact details</h2>
 
+            <div class="form-group">
+                <div id="outsideUk_field" class="form-group  ">
+                    <label for="outsideUk" class="block-label" data-distarget=''>
+                        <input type="checkbox" id="outsideUk" name="outsideUk" value="@isOutsideUk" onclick ="outsideUK()" @isOutsideUkChecked />
+                        My address is outside the UK
+                    </label>
+                    <span class="has-error"></span>
+                </div>
+            </div>
+
             <div id="addressManualInput">
                 @views.html.widgets.address(form,"address")
 
                 @helper.inputText(form("postCode"),
-                    '_label -> "Postcode",
-                    'autocapitalize -> "characters",
-                    'autocorrect -> "off",
-                    'class -> "form-control form-control-large",
-                    '_showConstraints -> false)
+                '_label -> "Postcode",
+                'autocapitalize -> "characters",
+                'autocorrect -> "off",
+                'class -> "form-control form-control-large",
+                '_class -> (if(isOutsideUk) "toggle-content" else ""),
+                '_showConstraints -> false)
+
+                @helper.inputText(form("country"),
+                '_label -> "Country",
+                'autocorrect -> "off",
+                'class -> "form-control",
+                '_class -> (if(!isOutsideUk) "toggle-content" else ""),
+                '_showConstraints -> false)
             </div>
 
             @helper.inputText(form("phone"),
@@ -135,8 +190,8 @@
             </fieldset>
 
             <fieldset id="stem-panel">
-              <legend class="form-label" id="alevelGradeStem">Do you have 2 A levels, grades C or above?</legend>
-              <p class="form-hint">In addition to your GCSEs or equivalent, by 31 August 2017</p>
+              <legend class="form-label" id="alevelGradeStem">Do you have 2 A levels in STEM subjects at grade C or above?</legend>
+              <p class="form-hint">(Or you expect to have these by 31 August 2016, <a href="https://www.gov.uk/what-different-qualification-levels-mean/compare-different-qualification-levels" rel="external" target="_blank">or an equivalent qualification</a>)</p>
               @radioBox(form("alevel"), options = Seq("true" -> "Yes", "false" -> "No"))
             </fieldset>
         </section>
