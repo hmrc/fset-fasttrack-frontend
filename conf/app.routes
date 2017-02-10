@@ -71,6 +71,7 @@ GET         /schools                                                controllers.
 # Online Test
 POST        /online-tests/start                                     controllers.OnlineTestController.startOrContinueTest(cubiksUserId: Int)
 PUT         /online-tests/by-token/:token/complete                  controllers.OnlineTestController.completeTestByToken(token: UniqueIdentifier)
+GET         /online-tests/by-token/:token/complete                  controllers.OnlineTestController.completeTestByToken(token: UniqueIdentifier)
 GET         /online-tests/pdf-report/download                       controllers.OnlineTestController.downloadPDFReport
 
 # Assets controller
