@@ -194,6 +194,7 @@ object Roles {
     ApplicationStartRole -> routes.HomeController.present,
     PersonalDetailsRole -> routes.FastTrackApplication.generalDetails(None),
     SchemesRole -> routes.SchemeController.schemes(),
+    SchemeLocationsRole -> routes.SchemeController.schemeLocations(),
     AssistanceDetailsRole -> routes.AssistanceDetailsController.present,
     StartQuestionnaireRole -> routes.QuestionnaireController.start,
     DiversityQuestionnaireRole -> routes.QuestionnaireController.presentFirstPage,
