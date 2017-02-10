@@ -57,6 +57,8 @@ GET         /application/success                                    controllers.
 # Questionnaire
 GET         /questionnaire/start                                    controllers.QuestionnaireController.start
 POST        /questionnaire/start                                    controllers.QuestionnaireController.submitStart
+# This endpoint is used by AssistanceDetailsController
+GET         /questionnaire/continue                                 controllers.QuestionnaireController.submitContinue
 POST        /questionnaire/continue                                 controllers.QuestionnaireController.submitContinue
 GET         /questionnaire/page/1                                   controllers.QuestionnaireController.presentFirstPage
 POST        /questionnaire/page/1                                   controllers.QuestionnaireController.submitFirstPage
