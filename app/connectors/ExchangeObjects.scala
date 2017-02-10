@@ -23,7 +23,7 @@ import mappings.PostCodeMapping._
 import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
 import org.joda.time.format.{ DateTimeFormatterBuilder, PeriodFormatterBuilder }
-import org.joda.time.{ DateTime, LocalDate, Period }
+import org.joda.time.{ DateTime, LocalDate, Period, PeriodType }
 import play.api.libs.json.{ Format, Json }
 
 /**
@@ -107,16 +107,22 @@ object ExchangeObjects {
       val now = DateTime.now
       val date = expireDate
 
-      val periodFormat = new PeriodFormatterBuilder().
-        printZeroAlways().
-        appendDays().
-        appendSuffix(" day ", " days ").
-        appendSeparator(" and ").
-        appendHours().
-        appendSuffix(" hour ", " hours ").
-        toFormatter
+      val period = new Period(now, date).normalizedStandard(PeriodType.yearMonthDayTime())
 
-      val period = new Period(now, date)
+      val periodFormat = new PeriodFormatterBuilder()
+        .appendYears()
+        .appendSuffix(" year", " years")
+        .appendSeparator(", ")
+        .appendMonths()
+        .appendSuffix(" month", " months")
+        .appendSeparator(", ")
+        .printZeroAlways()
+        .appendDays()
+        .appendSuffix(" day", " days")
+        .appendSeparator(" and ")
+        .appendHours()
+        .appendSuffix(" hour", " hours")
+        .toFormatter
 
       periodFormat print period
     }
