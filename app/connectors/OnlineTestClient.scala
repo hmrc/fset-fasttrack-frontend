@@ -66,7 +66,7 @@ trait OnlineTestClient {
   }
 
   def completeTestByToken(token: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Unit] = {
-    http.POST(s"${url.host}${url.base}/online-test/by-token/$token/complete", "").map( _ => ())
+    http.PUT(s"${url.host}${url.base}/online-test/by-token/$token/complete", "").map( _ => ())
   }
 }
 
