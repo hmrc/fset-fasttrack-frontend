@@ -23,7 +23,6 @@ import play.api.i18n.Lang
 import play.api.mvc.{ Call, RequestHeader }
 import uk.gov.hmrc.play.http.HeaderCarrier
 
-// scalastyle:off
 object Roles {
 
   import RoleUtils._
@@ -71,11 +70,6 @@ object Roles {
   object SchemesRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasPersonalDetails(user)
-  }
-
-  object SchemeLocationsRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasSchemes(user)
   }
 
   object AssistanceDetailsRole extends CsrAuthorization {
@@ -194,7 +188,6 @@ object Roles {
     ApplicationStartRole -> routes.HomeController.present,
     PersonalDetailsRole -> routes.FastTrackApplication.generalDetails(None),
     SchemesRole -> routes.SchemeController.schemes(),
-    SchemeLocationsRole -> routes.SchemeController.schemeLocations(),
     AssistanceDetailsRole -> routes.AssistanceDetailsController.present,
     StartQuestionnaireRole -> routes.QuestionnaireController.start,
     DiversityQuestionnaireRole -> routes.QuestionnaireController.presentFirstPage,
@@ -225,8 +218,6 @@ object RoleUtils {
   def progress(implicit user: CachedData): Progress = user.application.get.progress
 
   def hasPersonalDetails(implicit user: CachedData) = progress.personalDetails
-
-  def hasSchemes(implicit user: CachedData) = progress.hasSchemes
 
   def hasSchemesAndLocations(implicit user: CachedData) = progress.hasSchemeLocations && progress.hasSchemes
 

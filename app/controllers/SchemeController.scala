@@ -24,7 +24,7 @@ import connectors.exchange.SchemeInfo
 import models.CachedDataWithApp
 import play.api.data.Form
 import play.api.mvc.Request
-import security.Roles.{ SchemeLocationsRole, SchemesRole }
+import security.Roles.SchemesRole
 import uk.gov.hmrc.play.http.HeaderCarrier
 import viewmodels.application.scheme.{ SchemeLocationsViewModel, SchemePreferenceViewModel }
 
@@ -54,7 +54,7 @@ trait SchemeController extends BaseController {
       }
   }
 
-  def schemeLocations = CSRSecureAppAction(SchemeLocationsRole) { implicit request =>
+  def schemeLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
       applicationClient.getSchemeLocationChoices(cachedData.application.applicationId).flatMap {
         locations => displaySchemeLocations(
@@ -80,7 +80,7 @@ trait SchemeController extends BaseController {
       )
   }
 
-  def submitLocations = CSRSecureAppAction(SchemeLocationsRole) { implicit request =>
+  def submitLocations = CSRSecureAppAction(SchemesRole) { implicit request =>
     implicit cachedData =>
       schemeLocationForm.bindFromRequest.fold(
         displaySchemeLocations,

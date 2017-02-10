@@ -51,13 +51,6 @@
 @if(!(flag ^ WithdrawnApplicationRole.isAuthorized(usr))) {@body}
 }
 
-@chooseSchemeLocationsLink() = @{
-    if(SchemeLocationsRole.isAuthorized(usr) && !AssistanceDetailsRole.isAuthorized(usr))
-        routes.SchemeController.schemeLocations()
-    else
-        routes.SchemeController.schemes()
-}
-
 
 @renderProgressElement(showLink: Boolean, checked: Boolean, id: String)(link: Call)(body: Html) = {
     <li id="@id"><i id="@id-icon" class='fa @if(checked) { fa-check } else {fa-minus} the-icon'></i> @if(showLink) {
@@ -97,7 +90,7 @@
                                     }
                                     @withdraw(flag = false) {
                                         @renderProgressElement(showLink = PersonalDetailsRole.isAuthorized(usr), checked = SchemesRole.isAuthorized(usr), "personalDetailsStep")(routes.FastTrackApplication.generalDetails(None)) {Add personal details }
-                                        @renderProgressElement(showLink = SchemesRole.isAuthorized(usr), checked = AssistanceDetailsRole.isAuthorized(usr), "schemesStep")(chooseSchemeLocationsLink()) { Choose locations and schemes }
+                                        @renderProgressElement(showLink = SchemesRole.isAuthorized(usr), checked = AssistanceDetailsRole.isAuthorized(usr), "schemesStep")(routes.SchemeController.schemes()) { Choose locations and schemes }
                                         @renderProgressElement(showLink = AssistanceDetailsRole.isAuthorized(usr), checked = hasAssistanceDetails(usr), "assistanceDetailsStep")(routes.AssistanceDetailsController.present()) { Tell us about any assistance needs you may have }
                                         @renderProgressElement(showLink = (hasAssistanceDetails(usr) && (StartQuestionnaireRole.isAuthorized(usr) || QuestionnaireInProgressRole.isAuthorized(usr))), checked = ReviewRole.isAuthorized(usr), "questionnaireStep")(routes.QuestionnaireController.start()) { Fill in the diversity questions }
                                         @renderProgressElement(showLink = ReviewRole.isAuthorized(usr), checked = SubmitApplicationRole.isAuthorized(usr), "reviewStep")(routes.ReviewApplicationController.present()) { Check your application }
