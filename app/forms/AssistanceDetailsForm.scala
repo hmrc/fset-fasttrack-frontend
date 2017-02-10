@@ -25,13 +25,14 @@ object AssistanceDetailsForm {
 
   private[forms] val deptMaxLength = 256
 
+  // scalastyle:off cyclomatic.complexity
   val disabilityAndGisDependentFormatter = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
       val disabilityCheck = data.get("hasDisability")
       val gisCheck = data.get("guaranteedInterview")
-      val value = data.get(key).filterNot(_.trim.isEmpty)
+      val value = data.get(key).filterNot(_.trim.isEmpty) // value for needsSupportForOnlineAssessment
 
-      //scalastyle:off
+      // scalastyle:off
       println(s"****** disabilityAndGisDependentFormatter - disabilityCheck=$disabilityCheck, gisCheck=$gisCheck, value=$value")
       (disabilityCheck, gisCheck, value) match {
         case (Some("Yes"), Some("Yes"), None) =>
@@ -57,8 +58,11 @@ object AssistanceDetailsForm {
         case (Some("No"), None, Some("Yes")) =>
           println(s"****** disabilityAndGisDependentFormatter - CASE 7")
           Right(Some("Yes"))
-        case (Some("I don't know/prefer not to say"), None, Some("Yes")) =>
+        case (Some("No"), Some("No"), Some("Yes")) =>
           println(s"****** disabilityAndGisDependentFormatter - CASE 8")
+          Right(Some("Yes"))
+        case (Some("I don't know/prefer not to say"), None, Some("Yes")) =>
+          println(s"****** disabilityAndGisDependentFormatter - CASE 9")
           Right(Some("Yes"))
 
         case _ =>
@@ -70,6 +74,7 @@ object AssistanceDetailsForm {
 
     override def unbind(key: String, value: Option[String]): Map[String, String] = Map(key -> value.getOrElse(""))
   }
+  //scalastyle:on
 
   val form = Form(
     mapping(
@@ -99,8 +104,8 @@ object AssistanceDetailsForm {
         if (hasDisability == "Yes") hasDisabilityDescription else None,
         if (hasDisability == "Yes") guaranteedInterview else None,
         if ((hasDisability == "Yes" && guaranteedInterview.contains("No")) || hasDisability != "Yes") needsSupportForOnlineAssessment else None,
-        if ((hasDisability == "Yes" && guaranteedInterview.contains("No") && needsSupportForOnlineAssessment.contains("Yes")) || hasDisability != "Yes")
-          needsSupportForOnlineAssessmentDescription else None,
+        if ((hasDisability == "Yes" && guaranteedInterview.contains("No") && needsSupportForOnlineAssessment.contains("Yes"))
+          || hasDisability != "Yes") { needsSupportForOnlineAssessmentDescription } else { None },
         needsSupportAtVenue,
         if (needsSupportAtVenue.contains("Yes")) needsSupportAtVenueDescription else None
       )
