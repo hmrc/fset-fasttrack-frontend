@@ -18,7 +18,7 @@ package forms
 
 import forms.Mappings._
 import mappings.PhoneNumberMapping.PhoneNumber
-import mappings.PostCodeMapping.{ PostCode, validPostcode }
+import mappings.PostCodeMapping._
 import mappings.{ Address, DayMonthYear, PhoneNumberMapping }
 import org.joda.time.LocalDate
 import play.api.data.Forms._
@@ -71,8 +71,10 @@ object GeneralDetailsForm {
         "lastName" -> nonEmptyTrimmedText("error.lastName", 256),
         "preferredName" -> nonEmptyTrimmedText("error.preferredName", 256),
         "dateOfBirth" -> DayMonthYear.validDayMonthYear("error.dateOfBirth", "error.dateOfBirthInFuture")(Some(minDob), maxDob),
+        "outsideUk" -> optional(checked("error.address.required")),
         "address" -> Address.address,
-        "postCode" -> text.verifying(validPostcode),
+        "postCode" -> of(postCodeFormatter),
+        "country" -> of(countryFormatter),
         "phone" -> of(phoneNumberFormatter),
         "alevel-d" -> optional(boolean).verifying("aleveld.required", _.isDefined),
         "alevel" -> optional(boolean).verifying("alevel.required", _.isDefined),
@@ -80,6 +82,36 @@ object GeneralDetailsForm {
         "department" -> of(civilServantDependentFormatter)
       )(Data.apply)(Data.unapply)
     )
+  }
+
+  val postCodeFormatter = new Formatter[Option[String]] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
+      val outsideUK = data.getOrElse("outsideUk", "false").toBoolean
+      val postCode = data.getOrElse(key, "").trim
+      outsideUK match {
+        case true => Right(None)
+        case _ if postCode.isEmpty => Left(List(FormError(key, "error.postcode.required")))
+        case _ if !postcodePattern.pattern.matcher(postCode).matches() => Left(List(FormError(key, "error.postcode.invalid")))
+        case _ => Right(Some(postCode))
+      }
+    }
+
+    override def unbind(key: String, value: Option[String]) = Map(key -> value.getOrElse(""))
+  }
+
+  val countryFormatter = new Formatter[Option[String]] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
+      val outsideUK = data.getOrElse("outsideUk", "false").toBoolean
+      val country = data.getOrElse(key, "").trim
+      outsideUK match {
+        case true if country.isEmpty => Left(List(FormError(key, "error.country.required")))
+        case true if country.length > 100 => Left(List(FormError(key, "error.country.invalid")))
+        case true => Right(Some(country))
+        case _ => Right(None)
+      }
+    }
+
+    override def unbind(key: String, value: Option[String]) = Map(key -> value.getOrElse(""))
   }
 
   case class Data(
@@ -91,8 +123,10 @@ object GeneralDetailsForm {
     dateOfBirth: DayMonthYear,
 
     //contact details
+    outsideUk: Option[Boolean],
     address: Address,
-    postCode: PostCode,
+    postCode: Option[PostCode],
+    country: Option[String],
     phone: Option[PhoneNumber],
 
     aLevel: Option[Boolean],
