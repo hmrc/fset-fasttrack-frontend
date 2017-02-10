@@ -4,7 +4,7 @@
 @import views.html.widgets.{ pageProgress, saveAndContinueButton }
 @import security.RoleUtils._
 
-@main_template(title = "Disability and health conditions", pageForms = Seq(form)) {
+@main_template(title = "Disability and health conditions", pageForms = Seq(form), None, List("assistance-details.js")) {
     @pageProgress(4, 8)
     <div class="text">
         <h1 class="heading-xlarge" id="assistanceDetailsHeading">Disability and health conditions</h1>
