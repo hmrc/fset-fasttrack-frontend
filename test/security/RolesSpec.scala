@@ -19,22 +19,24 @@ package security
 import java.util.UUID
 
 import connectors.exchange.{ AssessmentCentre, AssessmentScores }
+import controllers.routes
 import models.ApplicationData.ApplicationStatus
 import models.ApplicationData.ApplicationStatus.{ CREATED, _ }
 import models._
 import org.scalatest.MustMatchers
+import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatestplus.play.PlaySpec
 import play.api.i18n.Lang
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import security.Roles.{ AssessmentCentreFailedToAttendRole, CsrAuthorization, WithdrawComponent }
 
-class RolesSpec extends PlaySpec with MustMatchers {
+class RolesSpec extends PlaySpec with MustMatchers with TableDrivenPropertyChecks {
   import RolesSpec._
 
   val request = FakeRequest(GET, "")
 
-  "Withdraw Component" should {
+  "Withdraw Component" must {
     "be enable only for specific roles" in {
       val disabledStatuses = List(IN_PROGRESS, WITHDRAWN, CREATED, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
         ASSESSMENT_CENTRE_FAILED, ASSESSMENT_CENTRE_FAILED_NOTIFIED)
@@ -44,12 +46,40 @@ class RolesSpec extends PlaySpec with MustMatchers {
     }
   }
 
-  "Assessment Centre Failed to attend role" should {
+  "Assessment Centre Failed to attend role" must {
     "be authorised only for specific roles" in {
       val enabledStatuses = List(FAILED_TO_ATTEND)
       val disabledStatuses = ApplicationStatus.values.toList.diff(enabledStatuses)
 
       assertValidAndInvalidStatuses(AssessmentCentreFailedToAttendRole, enabledStatuses, disabledStatuses)
+    }
+  }
+
+  "The latest journey step" must {
+    "be identified from the cached user" in {
+        val progressToStep = Table( "candidate progress" -> "route to call",
+          ProgressExamples.InitialProgress -> routes.FastTrackApplication.generalDetails(None),
+          ProgressExamples.PersonalDetailsProgress -> routes.SchemeController.schemes,
+          ProgressExamples.SchemePreferencesProgress -> routes.AssistanceDetailsController.present,
+          ProgressExamples.AssistanceDetailsProgress -> routes.QuestionnaireController.start,
+          ProgressExamples.StartedDiversityQuestionnaireProgress -> routes.QuestionnaireController.presentFirstPage,
+          ProgressExamples.DiversityQuestionnaireProgress -> routes.QuestionnaireController.presentSecondPage
+        )
+        val uid = UniqueIdentifier(UUID.randomUUID)
+        val applicationData =  ApplicationData(uid, uid, ApplicationStatus.IN_PROGRESS,
+          progress = ProgressExamples.InitialProgress
+        )
+        val inProgressUser = CachedDataWithApp(
+          user = CachedUser(uid, "fname", "lname", None, "email", isActive = true, lockStatus = "none"),
+          application = applicationData
+        )
+
+        forAll (progressToStep) { (progress, routeToCall) =>
+          val user = inProgressUser.copy(application = applicationData.copy(progress = progress))
+          val result = Roles.getLatestJourneyStep(user)(request, Lang("en-GB"))
+
+          result mustBe routeToCall
+        }
     }
   }
 
