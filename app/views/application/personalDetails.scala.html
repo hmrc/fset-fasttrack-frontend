@@ -121,7 +121,13 @@
                 </tbody>
               </table>
             </div>
-
+            @form("alevel").value.map { _ =>
+                <fieldset>
+                    <div class="panel-warning">
+                        <p>If you edit your eligibility details, you must re-enter your scheme and location selections</p>
+                    </div>
+                </fieldset>
+            }
             <fieldset>
               <legend class="form-label" id="alevelGradeD">Do you have 2 A levels, grades D or above?</legend>
               <p class="form-hint">In addition to your GCSEs or equivalent, by 31 August 2017</p>
@@ -134,7 +140,6 @@
               @radioBox(form("alevel"), options = Seq("true" -> "Yes", "false" -> "No"))
             </fieldset>
         </section>
-
         <section>
             <h2 class="heading-large">Civil servants</h2>
             <fieldset class="form-group">
