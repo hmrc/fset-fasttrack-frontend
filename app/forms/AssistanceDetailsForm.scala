@@ -28,11 +28,11 @@ object AssistanceDetailsForm {
   // scalastyle:off cyclomatic.complexity
   val disabilityAndGisDependentFormatter = new Formatter[Option[String]] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[String]] = {
-      val disabilityCheck = data.get("hasDisability")
-      val gisCheck = data.get("guaranteedInterview")
-      val value = data.get(key).filterNot(_.trim.isEmpty) // value for needsSupportForOnlineAssessment
+      val disability = data.get("hasDisability")
+      val gis = data.get("guaranteedInterview")
+      val needsSupportForOnlineAssessment = data.get(key).filterNot(_.trim.isEmpty)
 
-      (disabilityCheck, gisCheck, value) match {
+      (disability, gis, needsSupportForOnlineAssessment) match {
         case (Some("Yes"), Some("Yes"), None) => Right(Some("No"))
         case (Some("No"), Some("No"), None) => Left(List(FormError(key, s"error.$key.required")))
         case (None, None, None) => Left(List(FormError(key, s"error.$key.required")))
@@ -42,6 +42,8 @@ object AssistanceDetailsForm {
         case (Some("No"), None, Some("Yes")) => Right(Some("Yes"))
         case (Some("No"), Some("No"), Some("Yes")) => Right(Some("Yes"))
         case (Some("I don't know/prefer not to say"), None, Some("Yes")) => Right(Some("Yes"))
+        case (Some("I don't know/prefer not to say"), None, None) => Left(List(FormError(key, s"error.$key.required")))
+        case (Some("No"), None, None) => Left(List(FormError(key, s"error.$key.required")))
         case _ => Right(None)
       }
     }
