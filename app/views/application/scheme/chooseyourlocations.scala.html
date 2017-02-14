@@ -11,7 +11,7 @@
 )(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
-@import views.html.widgets.{guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
+@import views.html.widgets.{pageProgress, guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
 
 @selectedLocations = @{
     locationForm.value match {
@@ -25,6 +25,7 @@
     @helper.form(action = routes.SchemeController.submitLocations(), 'novalidate -> "novalidate") {
         @helper.CSRF.formField
         <input type="text" id="hiddenInput" class="visuallyhidden">
+        @pageProgress(3, 8)
         <div class="grid-wrapper">
             <div class="grid grid-2-3">
                 <h1 class="heading-xlarge">Choose your preferred locations</h1>
@@ -40,6 +41,7 @@
                     schemes you've selected will be available in your preferred locations.</p>
                 <p>It's important to select each location that you could realistically
                     work from, either by commuting or relocating.</p>
+                <p>Distances shown are estimates, some sites are spread across locations.</p>
             </div>
         </div>
         <div class="grid-wrapper">
