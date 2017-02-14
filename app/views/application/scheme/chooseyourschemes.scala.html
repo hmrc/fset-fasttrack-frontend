@@ -9,7 +9,7 @@
 )(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
-@import views.html.widgets.{guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
+@import views.html.widgets.{pageProgress, guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}
 
 @selectedSchemes = @{
     schemesForm.value match {
@@ -38,6 +38,7 @@
 
     @helper.form(action = routes.SchemeController.submitSchemes(), 'novalidate -> "novalidate") {
         @helper.CSRF.formField
+        @pageProgress(2, 8)
         <div class="hgroup text">
             <h1 class="heading-xlarge">Choose your preferred schemes</h1>
         </div>

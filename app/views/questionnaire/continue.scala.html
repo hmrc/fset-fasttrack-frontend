@@ -1,7 +1,9 @@
 @()(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
-@main_template(title = "Before you continue") {
+@import views.html.widgets.{pageProgress, checkbox}
 
+@main_template(title = "Before you continue") {
+    @pageProgress(5, 8)
     <div class="hgroup">
         <h1 class="heading-xlarge">Before you continue</h1>
         <p class="subtitle">Diversity questions</p>

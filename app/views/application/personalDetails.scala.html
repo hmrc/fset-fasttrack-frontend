@@ -3,7 +3,7 @@
 @(form: Form[_root_.forms.GeneralDetailsForm.Data], availableSchemes: List[SchemeInfo])(implicit request: Request[_], lang: play.api.i18n.Lang, flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
-@import views.html.widgets.{ checkbox, date, radioBox, radioBoxHorizontal }
+@import views.html.widgets.{ pageProgress, checkbox, date, radioBox, radioBoxHorizontal }
 
 @isOutsideUkChecked = @{
     form("outsideUk").value match {
@@ -44,6 +44,7 @@ function outsideUK() {
     }
 }
 </script>
+    @pageProgress(1, 8)
     <h1 class="heading-xlarge">Personal details</h1>
 
     @helper.form(action = routes.FastTrackApplication.submitGeneralDetails(), 'novalidate -> "novalidate") {

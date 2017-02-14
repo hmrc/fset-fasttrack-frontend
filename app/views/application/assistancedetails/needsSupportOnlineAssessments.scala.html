@@ -7,6 +7,7 @@
     <fieldset class="form-group">
         <h2 class="form-label">Will you need extra support for your online tests?</h2>
         <legend class="visuallyhidden">Will you need extra support for your online tests?</legend>
+        <p class="form-hint">The numerical and verbal reasoning tests are timed</p>
         @radioBoxHorizontal(form("needsSupportForOnlineAssessment"), options = List(("yes", "Yes", true), ("no", "No", false)),
         optionTrigger = "needsSupportForOnlineAssessment-describe")
         <div id="needsSupportForOnlineAssessment-describe" class="toggle-content" aria-hidden="true">
@@ -22,7 +23,7 @@
             <div class="panel-indent text">
                 <p>If you want to talk about your adjustment needs in more detail,
                     <a id="contactUsForOnlineAssessment" href="@routes.ApplicationController.helpdesk()" class="">please contact us</a>.</p>
-                <p>It's important you let us know this information now, as there won't
+                <p>It's important you provide this information now, as there won't
                     be another opportunity to do this unless your situation changes.</p>
             </div>
         </div>
