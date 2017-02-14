@@ -23,67 +23,142 @@ import testkit.UnitWithAppSpec
 class AssistanceDetailsFormSpec extends UnitWithAppSpec {
 
   "the assistance details form" should {
-    "be valid when the user selects no in the disability" in new Fixture {
+    "be valid when the user selects no to disability" in new Fixture {
       val (data, form) = NoDisabilities
-      form.get must be(data)
+      form.get mustBe data
     }
 
-    "be valid when the user selects yes in the disability and no in adjustment" in new Fixture {
+    "be valid when the user selects yes to disability and no to adjustment" in new Fixture {
       val (data, form) = NoAdjustments
-      form.get must be(data)
+      form.get mustBe data
     }
 
-    "be valid when the user fills the full form" in new Fixture {
+    "be valid when the user fills in the full form" in new Fixture {
       val (data, form) = Full
-      form.get must be(data)
+      form.get mustBe data
     }
 
-    // TODO: Review message
+    "be valid for scenario 1: disability=Y, gis=Y, online support not answered" in new Fixture {
+      assertNoFormErrors(AssistanceDetailsFormExamples.Scenario1Map)
+    }
+
+    "be invalid for scenario 2: disability=N, gis=N, online support not answered" in new Fixture {
+      assertFormError(Seq(
+        "error.needsSupportForOnlineAssessment.required",
+        "error.needsSupportAtVenue.required"
+      ), AssistanceDetailsFormExamples.Scenario2Map)
+    }
+
+    "be invalid for scenario 3: disability not answered, gis not answered, online support not answered" in new Fixture {
+      assertFormError(Seq(
+        "error.hasDisability.required",
+        "error.needsSupportForOnlineAssessment.required",
+        "error.needsSupportAtVenue.required"
+      ), AssistanceDetailsFormExamples.Scenario3Map)
+    }
+
+    "be invalid for scenario 4: disability=Y, gis not answered, online support not answered" in new Fixture {
+      assertFormError(Seq(
+        "Tell us if you wish to apply under the Guaranteed interview scheme",
+        "error.needsSupportForOnlineAssessment.required",
+        "error.needsSupportAtVenue.required"
+      ), AssistanceDetailsFormExamples.Scenario4Map)
+    }
+
+    "be invalid for scenario 5: disability=Y, gis=N, online support not answered" in new Fixture {
+      assertFormError(Seq(
+        "error.needsSupportForOnlineAssessment.required",
+        "error.needsSupportAtVenue.required"
+      ), AssistanceDetailsFormExamples.Scenario5Map)
+    }
+
+    "be invalid for scenario 6: disability=Y, gis=N, online support=Y" in new Fixture {
+      assertFormError(Seq(
+        "Tell us what adjustments you need for your online tests",
+        "error.needsSupportAtVenue.required"
+      ), AssistanceDetailsFormExamples.Scenario6Map)
+    }
+
+    "be invalid for scenario 7: disability=N, gis not answered, online support=Y" in new Fixture {
+      assertFormError(Seq(
+        "Tell us what adjustments you need for your online tests",
+        "Tell us what adjustments you need at any of our venues"
+      ), AssistanceDetailsFormExamples.Scenario7Map)
+    }
+
+    "be invalid for scenario 8: disability=N, gis=N, online support=Y" in new Fixture {
+      assertFormError(Seq(
+        "Tell us what adjustments you need for your online tests",
+        "Tell us what adjustments you need at any of our venues"
+      ), AssistanceDetailsFormExamples.Scenario8Map)
+    }
+
+    "be invalid for scenario 9: disability=I don't know/prefer not to say, gis not answered, online support=Y" in new Fixture {
+      assertFormError(Seq(
+        "Tell us what adjustments you need for your online tests",
+        "Tell us what adjustments you need at any of our venues"
+      ), AssistanceDetailsFormExamples.Scenario9Map)
+    }
+
+    "be invalid for scenario 10: disability=I don't know/prefer not to say, gis not answered, online support not answered" in new Fixture {
+      assertFormError(Seq(
+        "error.needsSupportForOnlineAssessment.required",
+        "Tell us what adjustments you need at any of our venues"
+      ), AssistanceDetailsFormExamples.Scenario10Map)
+    }
+
+    "be invalid for scenario 11: disability=I don't know/prefer not to say, gis not answered, online support not answered" in new Fixture {
+      assertFormError(Seq(
+        "error.needsSupportForOnlineAssessment.required",
+        "error.needsSupportAtVenue.required"
+      ), AssistanceDetailsFormExamples.Scenario11Map)
+    }
+
+    val hasDisabilityAnswerKey = "hasDisability"
+    val gisAnswerKey = "guaranteedInterview"
+    val supportForOnlineAssessmentAnswerKey = "needsSupportForOnlineAssessment"
+    val supportForOnlineAssessmentDescriptionAnswerKey = "needsSupportForOnlineAssessmentDescription"
+    val supportAtVenueAnswerKey = "needsSupportAtVenue"
+    val supportAtVenueDescriptionAnswerKey = "needsSupportAtVenueDescription"
+
     "be invalid when has disabilities is not selected" in new Fixture {
       assertFormError(Seq(
         "error.hasDisability.required"
-        //"Tell us if you consider yourself to have a disability"
-      ), AssistanceDetailsFormExamples.DisabilityGisAndAdjustmentsMap - "hasDisability")
+      ), AssistanceDetailsFormExamples.DisabilityNoGisAndAdjustmentsMap - hasDisabilityAnswerKey)
     }
 
     "be invalid when has disabilities and gis is not selected" in new Fixture {
       assertFormError(Seq(
         "Tell us if you wish to apply under the Guaranteed interview scheme"
-      ), AssistanceDetailsFormExamples.DisabilityGisAndAdjustmentsMap - "guaranteedInterview")
+      ), AssistanceDetailsFormExamples.DisabilityNoGisAndAdjustmentsMap - gisAnswerKey)
     }
 
-    // TODO: Review message
-    "be invalid when venue adjustments are not selected" in new Fixture {
-      assertFormError(Seq(
-        "error.needsSupportAtVenue.required"
-        //"Tell us if you need extra support when you visit any of our venues"
-      ), AssistanceDetailsFormExamples.DisabilityGisAndAdjustmentsMap - "needsSupportAtVenue")
-    }
-
-    "be invalid when venue adjustments is selected but no description provided" in new Fixture {
-      assertFormError(Seq(
-        "Tell us what adjustments you need at any of our venues"
-      ), AssistanceDetailsFormExamples.DisabilityGisAndAdjustmentsMap - "needsSupportAtVenueDescription")
-    }
-
-    // TODO IS: fix this
-    // TODO: Review message
-    "be invalid when online test adjustments are not selected" ignore new Fixture {
+    "be invalid when online test adjustments are not selected" in new Fixture {
       assertFormError(Seq(
         "error.needsSupportForOnlineAssessment.required"
-        //"Tell us if you will need extra support for your online tests"
-      ), AssistanceDetailsFormExamples.DisabilityGisAndAdjustmentsMap - "needsSupportForOnlineAssessment")
+      ), AssistanceDetailsFormExamples.DisabilityNoGisAndAdjustmentsMap - supportForOnlineAssessmentAnswerKey)
     }
 
     "be invalid when online test adjustments is selected but no description provided" in new Fixture {
       assertFormError(Seq(
         "Tell us what adjustments you need for your online tests"
-      ), AssistanceDetailsFormExamples.DisabilityGisAndAdjustmentsMap - "needsSupportForOnlineAssessmentDescription")
+      ), AssistanceDetailsFormExamples.DisabilityNoGisAndAdjustmentsMap - supportForOnlineAssessmentDescriptionAnswerKey)
+    }
+
+    "be invalid when venue adjustments are not selected" in new Fixture {
+      assertFormError(Seq(
+        "error.needsSupportAtVenue.required"
+      ), AssistanceDetailsFormExamples.DisabilityNoGisAndAdjustmentsMap - supportAtVenueAnswerKey)
+    }
+
+    "be invalid when venue adjustments is selected but no description provided" in new Fixture {
+      assertFormError(Seq(
+        "Tell us what adjustments you need at any of our venues"
+      ), AssistanceDetailsFormExamples.DisabilityNoGisAndAdjustmentsMap - supportAtVenueDescriptionAnswerKey)
     }
   }
 
   trait Fixture {
-
     val NoDisabilities = (AssistanceDetailsFormExamples.NoDisabilitiesForm, AssistanceDetailsForm.form.fill(
       AssistanceDetailsFormExamples.NoDisabilitiesForm))
 
@@ -93,10 +168,15 @@ class AssistanceDetailsFormSpec extends UnitWithAppSpec {
     val Full = (AssistanceDetailsFormExamples.FullForm, AssistanceDetailsForm.form.fill(
       AssistanceDetailsFormExamples.FullForm))
 
-    def assertFormError(expectedError: Seq[String], invalidFormValues: Map[String, String]) = {
+    def assertFormError(expectedErrors: Seq[String], invalidFormValues: Map[String, String]) = {
       val invalidForm: Form[Data] = AssistanceDetailsForm.form.bind(invalidFormValues)
       invalidForm.hasErrors mustBe true
-      invalidForm.errors.map(_.message) mustBe expectedError
+      invalidForm.errors.map(_.message) mustBe expectedErrors
+    }
+
+    def assertNoFormErrors(formValues: Map[String, String]) = {
+      val form: Form[Data] = AssistanceDetailsForm.form.bind(formValues)
+      form.hasErrors mustBe false
     }
   }
 }

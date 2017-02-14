@@ -91,8 +91,8 @@
                                     }
                                     @withdraw(flag = false) {
                                         @renderProgressElement(showLink = PersonalDetailsRole.isAuthorized(usr), checked = SchemesRole.isAuthorized(usr), "personalDetailsStep")(routes.FastTrackApplication.generalDetails(None)) {Add personal details }
-                                        @renderProgressElement(showLink = SchemesRole.isAuthorized(usr), checked = AssistanceDetailsRole.isAuthorized(usr), "schemesStep")(routes.SchemeController.schemes()) { Choose locations and schemes }
-                                        @renderProgressElement(showLink = AssistanceDetailsRole.isAuthorized(usr), checked = hasAssistanceDetails(usr), "assistanceDetailsStep")(routes.AssistanceDetailsController.present()) { Tell us about any assistance needs you may have }
+                                        @renderProgressElement(showLink = SchemesRole.isAuthorized(usr), checked = AssistanceDetailsRole.isAuthorized(usr), "schemesStep")(routes.SchemeController.schemes()) { Choose your preferred locations and schemes }
+                                        @renderProgressElement(showLink = AssistanceDetailsRole.isAuthorized(usr), checked = hasAssistanceDetails(usr), "assistanceDetailsStep")(routes.AssistanceDetailsController.present()) { Disability and health conditions }
                                         @renderProgressElement(showLink = QuestionnaireInProgressRole.isAuthorized(usr), checked = ReviewRole.isAuthorized(usr), "questionnaireStep")(routes.QuestionnaireController.presentStartOrContinue()) { Fill in the diversity questions }
                                         @renderProgressElement(showLink = ReviewRole.isAuthorized(usr), checked = SubmitApplicationRole.isAuthorized(usr), "reviewStep")(routes.ReviewApplicationController.present()) { Check your application }
                                         @renderProgressElement(showLink = SubmitApplicationRole.isAuthorized(usr), checked = WithdrawApplicationRole.isAuthorized(usr), "submitStep")(routes.SubmitApplicationController.present()) { Submit }
@@ -112,11 +112,13 @@
                             @inProgress() {
                                 <a class="" id="continue-application" href="@routes.HomeController.resume()">
                                     Continue with your application</a>
+                                <p>(Should take 5 to 10 minutes to fill in)</p>
                             }
 
                             @noApp {
                                 <a class="button" id="start-application" href="@routes.HomeController.create()">
                                     Start your application</a>
+                                <p>(Should take 5 to 10 minutes to fill in)</p>
                             }
 
                         </div>
@@ -206,7 +208,7 @@
                                         @if(AssessmentCentreFailedNotifiedRole.isAuthorized(usr)  && onlineTest.exists(_.pdfReportAvailable)) {
                                             <p>Thank you for attending the Fast Track assessment centre.</p>
                                             <p>Unfortunately on this occasion you didn't reach the pass mark for the Fast Track scheme and we won't be taking your application further.</p>
-                                            <p>From December 2016, after we've finished allocating placements, we can give you feedback on your performance at the assessment centre. Please contact us if you'd like feedback.</p>
+                                            <p>From December 2017, after we've finished allocating placements, we can give you feedback on your performance at the assessment centre. Please contact us if you'd like feedback.</p>
                                             <p>Thank you for your interest in the Fast Track programme and we wish you every success for the future.</p>
                                         } else {
                                             @if(AssessmentCentrePassedNotifiedRole.isAuthorized(usr) && onlineTest.exists(_.pdfReportAvailable)) {
@@ -214,7 +216,7 @@
                                                 <p>As soon as we’ve matched you to a role, we'll confirm your allocated scheme, department and location.</p>
                                                 <p>We'll also ask you to give us the information we need to complete a pre-appointment security check. Your offer depends upon successful completion of the checks. If you give information you know is false, or you withhold any relevant information, your application may be rejected. Or, if you've already been appointed, you may be dismissed.</p>
                                                 <p>We aim to match you to a role on your preferred scheme and in your preferred location. If we can't do this, we'll always aim to offer an alternative role or location. In the very few cases this isn't possible, we'll hold you on a reserve list.</p>
-                                                <p>From December 2016, after we've finished allocating placements, we can give you feedback on your performance at the assessment centre. Please contact us if you'd like feedback.</p>
+                                                <p>From December 2017, after we've finished allocating placements, we can give you feedback on your performance at the assessment centre. Please contact us if you'd like feedback.</p>
                                                 <p>We recommend you don't resign from any employment until you've received a formal offer of appointment. If you withdraw your application, it won't be possible to re-instate your application at a later date.</p>
                                             } else {
                                                 @if(AssessmentCentreFailedToAttendRole.isAuthorized(usr)) {
@@ -256,9 +258,9 @@
                                         Find out more about the on boarding process</a>
                                     </p>
                                 } else {
-                                    <p>We aim to let you know the outcome of your assessment by October 2016.</p>
+                                    <p>We aim to make your results available as soon as possible.</p>
                                     <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#after-assessment" rel="external" target="_blank">
-                                        Find out more about what happens after your assessment day</a></p>
+                                        Find out more about what happens after you've been accepted for the Fast Track</a></p>
                                 }
                             }
                         </div>

@@ -5,23 +5,13 @@
 
 @main_template(title = "Create your account or Sign in", pageForms = Seq(signInForm), notification = notification) {
 
-    <h1 class="heading-xlarge">Create your account</h1>
+    <h1 class="heading-xlarge">Sign in</h1>
         @if(fasttrackConfig.newAccountsEnabled) {
         <div class="text">
 
-            <p class="small-btm-margin">
-                To apply for a Civil Service Fast Track apprenticeship you'll need to create an account.
-            </p>
-            <p>Before you start make sure:</p>
-            <ul class="list-bullet">
-                <li>you meet the <a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-who-can-apply" rel="external" target="_blank">
-                    eligibility</a> requirements to apply</li>
-                <li>you’ve read about the <a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-fast-track-schemes" rel="external" target="_blank">
-                    schemes</a></li>
-            </ul>
-
-            <div class="form-group">
-                <a href="@routes.SignUpController.signUp()" class="button" id="createAccount">Create your account</a>
+            <div class="panel-indent">
+                <p>To sign in you must have already created an account.</p>
+                <p>If you don't have an account you can <a href="@routes.SignUpController.signUp()" id="createAccount">create your account</a></p>
             </div>
         </div>
 
@@ -34,11 +24,6 @@
             </section>
         }
     
-
-    <div class="text" id="signInSection">
-        <h2 class="heading-xlarge">Already have an account?</h2>
-        <h2 class="heading-large">Sign in</h2>
-    </div>
 
     @helper.form(action = routes.SignInController.signIn(), 'novalidate -> "novalidate") {
         @helper.CSRF.formField
