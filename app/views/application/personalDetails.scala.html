@@ -133,11 +133,11 @@ function outsideUK() {
                 <tbody>
                   <tr>
                     <td>
-                      <ul class="">
-                        <li>Business</li>
-                        <li>Commercial</li>
-                        <li>Finance</li>
-                      </ul>
+                        <ul class="">
+                        @availableSchemes.filter(scheme => !scheme.requiresALevel && !scheme.requiresALevelInStem).map { scheme =>
+                            <li>@scheme.name</li>
+                        }
+                        </ul>
                     </td>
                     <td>
                       At least 5 GCSEs at grade C and above, or the new grade 4 and above, including English Language and Maths, or <a href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" rel="external" target="_blank">equivalent</a>.
@@ -145,9 +145,11 @@ function outsideUK() {
                   </tr>
                   <tr>
                     <td>
-                      <ul class="">
-                        <li>Project delivery</li>
-                      </ul>
+                        <ul class="">
+                        @availableSchemes.filter(scheme => scheme.requiresALevel && !scheme.requiresALevelInStem).map { scheme =>
+                            <li>@scheme.name</li>
+                        }
+                        </ul>
                     </td>
                     <td>
                       2 A levels, grade D or above in addition to your GCSEs, <a href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" rel="external" target="_blank">or equivalent</a>.
@@ -156,7 +158,9 @@ function outsideUK() {
                   <tr>
                     <td>
                       <ul class="">
-                        <li>Digital and technology</li>
+                      @availableSchemes.filter(_.requiresALevelInStem).map { scheme =>
+                          <li>@scheme.name</li>
+                      }
                       </ul>
                     </td>
                     <td>
