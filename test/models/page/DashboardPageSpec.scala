@@ -49,6 +49,7 @@ class DashboardPageSpec extends PlaySpec with TableDrivenPropertyChecks {
     (ALLOCATION_CONFIRMED,                     ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
     (ALLOCATION_UNCONFIRMED,                   ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
     (AWAITING_ALLOCATION,                      ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
+    (AWAITING_ALLOCATION_NOTIFIED,             ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
     (ONLINE_TEST_FAILED,                       ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
     (ONLINE_TEST_FAILED_NOTIFIED,              ProgressActive, ProgressActive, ProgressInactiveDisabled, ProgressInactiveDisabled),
     (AWAITING_ONLINE_TEST_RE_EVALUATION,       ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
@@ -102,9 +103,8 @@ class DashboardPageSpec extends PlaySpec with TableDrivenPropertyChecks {
 
     "be tested for all statuses" in {
       val statusesTested = Applications.toList.map { case (status, _, _, _, _) => status }
-      // For any new status DashboardPage.Step1/2/3 or 4 needs to have this status
-      // Add this new status to isReached method and increase this value
-      statusesTested.length must be(23)
+      val allStatuses = ApplicationStatus.values.toList
+      statusesTested must contain theSameElementsAs allStatuses
     }
   }
 }
