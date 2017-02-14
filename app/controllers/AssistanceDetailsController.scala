@@ -51,21 +51,19 @@ abstract class AssistanceDetailsController(applicationClient: ApplicationClient,
         invalidForm =>
           Future.successful(Ok(views.html.application.assistanceDetails(invalidForm))),
         data => {
-          applicationClient.updateAssistanceDetails(user.application.applicationId, user.user.userID, data.sanitizeData).flatMap { _ =>
-              updateProgress()(_ => {
-                if (!user.application.progress.startedQuestionnaire) {
-                  Redirect(routes.QuestionnaireController.start())
-                } else if (user.application.progress.occupationQuestionnaire) {
-                  Redirect(routes.ReviewApplicationController.present())
-                } else {
-                  Redirect(routes.QuestionnaireController.submitContinue())
-                }
-              })
-            }.recover {
-              case e: AssistanceDetailsNotFound =>
-                Redirect(routes.HomeController.present()).flashing(danger("account.error"))
-            }
-          }
+          applicationClient.updateAssistanceDetails(user.application.applicationId, user.user.userID,
+            data.sanitizeData).flatMap { _ =>
+            updateProgress()(_ => {
+              if (RoleUtils.hasParentalOccupationQuestionnaire(CachedData(user.user, Some(user.application)))) {
+                Redirect(routes.ReviewApplicationController.present())
+              } else {
+                Redirect(routes.QuestionnaireController.presentStartOrContinue())
+              }
+            })
+          }}.recover {
+          case e: AssistanceDetailsNotFound =>
+            Redirect(routes.HomeController.present()).flashing(danger("account.error"))
+        }
       )
   }
 }
