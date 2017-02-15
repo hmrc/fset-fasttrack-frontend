@@ -61,9 +61,9 @@ class RolesSpec extends PlaySpec with MustMatchers with TableDrivenPropertyCheck
           ProgressExamples.InitialProgress -> routes.FastTrackApplication.generalDetails(None),
           ProgressExamples.PersonalDetailsProgress -> routes.SchemeController.schemes,
           ProgressExamples.SchemePreferencesProgress -> routes.AssistanceDetailsController.present,
-          ProgressExamples.AssistanceDetailsProgress -> routes.QuestionnaireController.start,
-          ProgressExamples.StartedDiversityQuestionnaireProgress -> routes.QuestionnaireController.presentFirstPage,
-          ProgressExamples.DiversityQuestionnaireProgress -> routes.QuestionnaireController.presentSecondPage
+          ProgressExamples.AssistanceDetailsProgress -> routes.QuestionnaireController.presentStartOrContinue,
+          ProgressExamples.StartedDiversityQuestionnaireProgress -> routes.QuestionnaireController.presentStartOrContinue,
+          ProgressExamples.DiversityQuestionnaireProgress -> routes.QuestionnaireController.presentStartOrContinue
         )
         val uid = UniqueIdentifier(UUID.randomUUID)
         val applicationData =  ApplicationData(uid, uid, ApplicationStatus.IN_PROGRESS,

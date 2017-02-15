@@ -83,7 +83,7 @@ class AssistanceDetailsControllerSpec extends BaseControllerSpec {
       val result = controller(ProgressResponseExamples.InAssistanceDetails)(actualCurrentCandidateWithApp).submit()(Request)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some(routes.QuestionnaireController.start().url))
+      redirectLocation(result) must be(Some(routes.QuestionnaireController.presentStartOrContinue().url))
     }
 
     "update assistance details and redirect to questionnaire if questionnaire is started and diversity page " +

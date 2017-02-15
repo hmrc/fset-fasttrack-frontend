@@ -22,7 +22,7 @@ import connectors.SchoolsClient.SchoolsNotFound
 import models.view.SchoolView
 import models.view.SchoolView.{ SchoolImplicits, _ }
 import play.api.libs.json.Json
-import security.Roles.EducationQuestionnaireRole
+import security.QuestionnaireRoles.EducationQuestionnaireRole
 
 import scala.concurrent.Future
 import scala.language.reflectiveCalls

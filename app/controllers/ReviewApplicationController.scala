@@ -16,12 +16,12 @@
 
 package controllers
 
-import config.{CSRCache, CSRHttp}
+import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient._
 import connectors.ApplicationClient
 import helpers.NotificationType._
 import play.api.Logger
-import security.Roles.{QuestionnaireInProgressRole, ReviewRole, StartQuestionnaireRole}
+import security.Roles.ReviewRole
 
 object ReviewApplicationController extends ReviewApplicationController(ApplicationClient, CSRCache) {
   override val http: CSRHttp = ApplicationClient.http
@@ -50,13 +50,22 @@ abstract class ReviewApplicationController(applicationClient: ApplicationClient,
   def submit = CSRSecureAppAction(ReviewRole) { implicit request =>
     implicit user =>
       applicationClient.updateReview(user.application.applicationId).flatMap { _ =>
-        updateProgress() { u =>
-          if (StartQuestionnaireRole.isAuthorized(u) || QuestionnaireInProgressRole.isAuthorized(u)) {
-            Redirect(routes.QuestionnaireController.start())
-          } else {
-            Redirect(routes.SubmitApplicationController.present())
-          }
+        updateProgress() { usr =>
+          Redirect(routes.SubmitApplicationController.present())
         }
       }
   }
+
+//  def submit = CSRSecureAppAction(ReviewRole) { implicit request =>
+//    implicit user =>
+//      applicationClient.updateReview(user.application.applicationId).flatMap { _ =>
+//        updateProgress() { u =>
+//          if (StartQuestionnaireRole.isAuthorized(u) || QuestionnaireInProgressRole.isAuthorized(u)) {
+//            Redirect(routes.QuestionnaireController.start())
+//          } else {
+//            Redirect(routes.SubmitApplicationController.present())
+//          }
+//        }
+//      }
+//  }
 }

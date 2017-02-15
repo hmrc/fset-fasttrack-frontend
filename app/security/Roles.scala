@@ -21,6 +21,7 @@ import models.ApplicationData.ApplicationStatus._
 import models.{ CachedData, CachedDataWithApp, Progress }
 import play.api.i18n.Lang
 import play.api.mvc.{ Call, RequestHeader }
+import security.QuestionnaireRoles._
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 object Roles {
@@ -77,38 +78,6 @@ object Roles {
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasSchemesAndLocations(user)
   }
 
-  object StartQuestionnaireRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasAssistanceDetails(user) &&
-        !(hasDiversityQuestionnaire(user) && hasEducationQuestionnaire(user) && hasParentalOccupationQuestionnaire(user))
-  }
-
-  object QuestionnaireInProgressRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) &&
-        ((hasDiversityQuestionnaire(user) || hasEducationQuestionnaire(user) || hasParentalOccupationQuestionnaire(user)) &&
-          !(hasDiversityQuestionnaire(user) && hasEducationQuestionnaire(user) && hasParentalOccupationQuestionnaire(user)))
-  }
-
-  object DiversityQuestionnaireRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasStartedQuestionnaire(user) && !hasDiversityQuestionnaire(user)
-  }
-
-  object EducationQuestionnaireRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasDiversityQuestionnaire(user) && !hasEducationQuestionnaire(user)
-  }
-
-  object ParentalOccupationQuestionnaireRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasEducationQuestionnaire(user) && !hasParentalOccupationQuestionnaire(user)
-  }
-
-  object QuestionnaireFinishedRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasParentalOccupationQuestionnaire(user)
-  }
 
   object ReviewRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
@@ -189,10 +158,7 @@ object Roles {
     PersonalDetailsRole -> routes.FastTrackApplication.generalDetails(None),
     SchemesRole -> routes.SchemeController.schemes(),
     AssistanceDetailsRole -> routes.AssistanceDetailsController.present,
-    StartQuestionnaireRole -> routes.QuestionnaireController.start,
-    DiversityQuestionnaireRole -> routes.QuestionnaireController.presentFirstPage,
-    EducationQuestionnaireRole -> routes.QuestionnaireController.presentSecondPage,
-    ParentalOccupationQuestionnaireRole -> routes.QuestionnaireController.presentThirdPage,
+    QuestionnaireInProgressRole -> routes.QuestionnaireController.presentStartOrContinue,
     ReviewRole -> routes.ReviewApplicationController.present,
     SubmitApplicationRole -> routes.SubmitApplicationController.present,
     DisplayOnlineTestSectionRole -> routes.HomeController.present,
