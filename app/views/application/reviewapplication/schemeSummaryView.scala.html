@@ -12,7 +12,7 @@
 
 @renderPosition(position: Int) = @{
     position match {
-        case 10 | 11 | 12 => s"${position}th"
+        case 10 | 11 | 12 | 13 => s"${position}th"
         case _ => (position).toString.takeRight(1) match {
             case "1" => s"${position}st"
             case "2" => s"${position}nd"
