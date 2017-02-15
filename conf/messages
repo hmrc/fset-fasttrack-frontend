@@ -40,8 +40,8 @@ error.dateOfBirth = Enter your date of birth
 error.dateOfBirthInFuture = Enter a valid date of birth
 error.recentSchool = Give the name of your most recent school
 
-aleveld.required = Select whether or not you have 2 A levels at grade D or above
-alevel.required = Select whether or not you have 2 A levels in STEM subjects at grade C or above
+aleveld.required = Tell us whether or not you have 2 A levels at grade D or above
+alevel.required = Tell us whether or not you have 2 A levels at grade C or above
 
 # Activation form
 expired.activation-code = This activation code has expired
