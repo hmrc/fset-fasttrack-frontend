@@ -96,7 +96,18 @@
             has been a mistake.</p>
     }
 
-    case ONLINE_TEST_COMPLETED | AWAITING_ONLINE_TEST_RE_EVALUATION | ONLINE_TEST_FAILED | ONLINE_TEST_FAILED_NOTIFIED | AWAITING_ALLOCATION => {
+    case AWAITING_ALLOCATION_NOTIFIED if onlineTest.exists(_.pdfReportAvailable) => {
+        <p><i class="fa fa-check the-icon"></i>Congratulations, we've
+            assessed your test results and you've passed the online tests.</p>
+
+        @onlineTest.map { test =>
+            @if(test.pdfReportAvailable) {
+                <p><a href="@routes.OnlineTestController.downloadPDFReport()">View your online test feedback (Less than 100kb)</a></p>
+            }
+        }
+    }
+
+    case ONLINE_TEST_COMPLETED | AWAITING_ONLINE_TEST_RE_EVALUATION | ONLINE_TEST_FAILED | ONLINE_TEST_FAILED_NOTIFIED | AWAITING_ALLOCATION | AWAITING_ALLOCATION_NOTIFIED => {
             <p><i class="fa fa-check the-icon"></i>You've completed the online
                 tests</p>
             <p>We'll send you an email to let you know when your results are

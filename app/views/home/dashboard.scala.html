@@ -70,6 +70,10 @@
     }
 }
 
+@applicationStatus = @{
+    usr.application.map(_.applicationStatus).getOrElse(REGISTERED)
+}
+
 @main_template(title = "Home") {
 
     <div class="hgroup">
@@ -222,7 +226,11 @@
                                                 @if(AssessmentCentreFailedToAttendRole.isAuthorized(usr)) {
                                                     <p>You did not attend your assessment. <a href="@routes.ApplicationController.helpdesk()">Contact us</a> to discuss your options if you're still interested in applying.</p>
                                                 } else {
-                                                    <p>If you pass the online tests, you'll be invited to attend an assessment centre.</p>
+                                                    @if(applicationStatus == AWAITING_ALLOCATION_NOTIFIED) {
+                                                        <p>We'll send you an email once we've arranged a date for your assessment.</p>
+                                                    } else {
+                                                        <p>If you pass the online tests, you'll be invited to attend an assessment centre.</p>
+                                                    }
                                                     <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#assessment-day" rel="external" target="_blank">
                                                         Find out more about the assessment day</a></p>
                                                 }
