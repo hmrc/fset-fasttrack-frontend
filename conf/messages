@@ -151,7 +151,7 @@ university.question = Did any of your parent(s) or guardian(s) complete a univer
 postcode.question = What was your home postcode when you were 14?
 schoolName14to16.question = Aged 14 to 16 what was the name of your school?
 schoolType14to16.question = Which type of school was this?
-schoolName16to18.question = Aged 16 to 18 what was the name of your school or college?
+schoolName16to18.question = Aged 16 to 18 what was the name of your school or college? (if applicable)
 freeSchoolMeals.question = Were you at any time eligible for free school meals?
 
 parentsDegree.question = Do you have a parent or guardian that has completed a university degree course or equivalent?
