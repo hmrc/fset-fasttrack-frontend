@@ -82,7 +82,7 @@
     </div>
     <section class="section-border">
         <ol class="step-by-step-coloured" id="sixSteps">
-            <li class="first-step @setVisibility(dashboardPage.firstStepVisibility)">
+            <li id="firstStep" class="first-step @setVisibility(dashboardPage.firstStepVisibility)">
                 <div class="grid-wrapper">
                     <div class="grid grid-2-3">
                         <div class="inner-block-padr">
@@ -132,7 +132,7 @@
                 </div>
             </li>
 
-            <li class="second-step @setVisibility(dashboardPage.secondStepVisibility)">
+            <li id="secondStep" class="second-step @setVisibility(dashboardPage.secondStepVisibility)">
                 <div class="grid-wrapper">
                     <div class="grid grid-2-3">
                         <div class="inner-block-padr">
@@ -153,7 +153,7 @@
                 </div>
             </li>
 
-            <li class="third-step @setVisibility(dashboardPage.thirdStepVisibility)">
+            <li id="thirdStep" class="third-step @setVisibility(dashboardPage.thirdStepVisibility)">
                 <div class="grid-wrapper">
                     <div class="grid grid-2-3">
                         <div class="inner-block-padr">
@@ -168,7 +168,7 @@
                                         <p>
                                             If you're unable to attend, <a href="@routes.ApplicationController.helpdesk()" class="">let us know</a>.
                                         </p>
-                                        <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#assessment-day" rel="external" target="_blank">
+                                        <p><a id="assessmentDayInfoLink" href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#assessment-day" rel="external" target="_blank">
                                             Find out more about the assessment day</a></p>
                                     }
                                 } else {
@@ -178,7 +178,7 @@
                                                 <p>
                                                     <i class="fa fa-exclamation-triangle"></i>You failed to confirm your assessment centre in time.</p>
                                                 <p>
-                                                    <a href="@routes.ApplicationController.helpdesk()">Contact us</a> to discuss your options if you're still interested in attending an assessment centre.
+                                                    <a id="assessmentDayInfoLink" href="@routes.ApplicationController.helpdesk()">Contact us</a> to discuss your options if you're still interested in attending an assessment centre.
                                                 </p>
                                             } else {
                                                 <p>Your assessment is booked for </p>
@@ -231,7 +231,7 @@
                                                     } else {
                                                         <p>If you pass the online tests, you'll be invited to attend an assessment centre.</p>
                                                     }
-                                                    <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#assessment-day" rel="external" target="_blank">
+                                                    <p><a id="assessmentDayInfoLink" href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#assessment-day" rel="external" target="_blank">
                                                         Find out more about the assessment day</a></p>
                                                 }
                                             }
@@ -245,8 +245,7 @@
                 </div>
             </li>
 
-
-            <li class="fourth-step @setVisibility(dashboardPage.fourthStepVisibility)">
+            <li id="fourthStep" class="fourth-step @setVisibility(dashboardPage.fourthStepVisibility)">
                 <div class="grid-wrapper">
                     <div class="grid grid-2-3">
                         <div class="inner-block-padr">
@@ -262,12 +261,12 @@
                                     <p>We'll contact you soon to tell you about your role, scheme,
                                         department and location. Make sure to regularly check your
                                         email inbox for messages from us.</p>
-                                    <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#after-assessment" rel="external" target="_blank">
+                                    <p><a id="onBoardingProcessInfoLink" href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#after-assessment" rel="external" target="_blank">
                                         Find out more about the on boarding process</a>
                                     </p>
                                 } else {
                                     <p>We aim to make your results available as soon as possible.</p>
-                                    <p><a href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#after-assessment" rel="external" target="_blank">
+                                    <p><a id="onBoardingProcessInfoLink" href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#after-assessment" rel="external" target="_blank">
                                         Find out more about what happens after you've been accepted for the Fast Track</a></p>
                                 }
                             }
