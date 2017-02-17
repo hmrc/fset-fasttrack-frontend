@@ -25,7 +25,7 @@
 }
 
 @dateTime(date: DateTime) = @{
-    DateTimeFormat.forPattern("d MMMM yyyy, h:mma")
+    DateTimeFormat.forPattern("d MMMM yyyy 'at' h:mma")
             .print(date.toLocalDateTime)
             .replace("AM", "am").replace("PM","pm")
 }
@@ -162,7 +162,7 @@
                                     @allocationDetails.map { aDetails =>
                                         <p>Your assessment is booked for</p>
                                         <p>
-                                            @dateTime(aDetails.attendanceDateTime) at @aDetails.location @aDetails.venueDescription
+                                            @aDetails.location @aDetails.venueDescription on @dateTime(aDetails.attendanceDateTime)
                                             <br><a href="https://www.gov.uk/government/publications/fast-track-assessment-centre-locations" class="font-small" rel="external" target="_blank">See the locations</a>
                                         </p>
                                         <p>
@@ -183,14 +183,14 @@
                                             } else {
                                                 <p>Your assessment is booked for </p>
                                                 <p>
-                                                    @dateTime(aDetails.attendanceDateTime) at @aDetails.location @aDetails.venueDescription
+                                                    @aDetails.location @aDetails.venueDescription on @dateTime(aDetails.attendanceDateTime)
                                                     <br /><a href="https://www.gov.uk/government/publications/fast-track-assessment-centre-locations" class="font-small" rel="external" target="_blank">See the locations</a>
                                                 </p>
 
                                                     @helper.form(controllers.routes.HomeController.confirmAlloc) {
                                                         @helper.CSRF.formField
                                                         <div id="attendQuestion">
-                                                            <p class="small-btm-margin">Can you attend on this date and time?</p>
+                                                            <p class="small-btm-margin">Can you attend this assessment date?</p>
                                                             <button type="submit" class="button" id="canAttendBtn">I can attend</button>
                                                         </div>
                                                     }
@@ -198,7 +198,7 @@
                                                 <p>
                                                     @aDetails.expirationDate.map{ expirationDate =>
                                                         <span id="confirmByText">
-                                                            Confirm by 11:59pm on @date(expirationDate) or you'll lose your booking.<br>
+                                                            Confirm by 11:59pm on @date(expirationDate)  or you'll lose your slot.<br>
                                                         </span>
                                                     }
 
