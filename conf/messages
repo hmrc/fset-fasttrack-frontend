@@ -166,6 +166,9 @@ answer.unknown = I don''t know/prefer not to say
 answer.yes = Yes
 answer.no = No
 
+#PDF Report
+error.pdf.report.notAvailable = Your online test result is not available
+
 success.allocation.confirmed = You''ve successfully confirmed your assessment date.
 
 global.error.badRequest400.title=Bad request - 400

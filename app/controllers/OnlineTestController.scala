@@ -18,8 +18,10 @@ package controllers
 
 import config.{ CSRCache, CSRHttp }
 import connectors.OnlineTestClient
-import models.ApplicationData.ApplicationStatus
+import connectors.OnlineTestClient.PdfReportNotFoundException
+import helpers.NotificationType.warning
 import models.UniqueIdentifier
+import play.api.Logger
 import play.api.mvc.{ Action, AnyContent }
 import security.Roles.{ DisplayOnlineTestSectionRole, OnlineTestInvitedRole }
 
@@ -57,6 +59,10 @@ trait OnlineTestController extends BaseController {
       onlineTestClient.getPDFReport(user.application.applicationId).map { pdfBinary =>
         Ok(pdfBinary).as("application/pdf")
           .withHeaders(("Content-Disposition", s"""attachment;filename="report-${user.application.applicationId}.pdf" """))
+      } recover {
+        case _: PdfReportNotFoundException =>
+          Logger.warn(s"PDF not found for user: ${user.user.userID}")
+          Redirect(routes.HomeController.present()).flashing(warning("error.pdf.report.notAvailable"))
       }
   }
 
