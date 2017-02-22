@@ -22,6 +22,8 @@ import connectors.ApplicationClient
 import helpers.NotificationType._
 import play.api.Logger
 import security.Roles.ReviewRole
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 object ReviewApplicationController extends ReviewApplicationController(ApplicationClient, CSRCache) {
   override val http: CSRHttp = ApplicationClient.http

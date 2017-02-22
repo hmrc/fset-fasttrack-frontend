@@ -26,6 +26,8 @@ import forms.SignInForm.Data
 import helpers.NotificationType._
 import models.{ ApplicationData, CachedData, CachedUser, SecurityUser }
 import play.api.mvc.{ Request, Result }
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 

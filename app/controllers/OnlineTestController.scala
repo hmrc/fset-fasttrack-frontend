@@ -24,6 +24,8 @@ import models.UniqueIdentifier
 import play.api.Logger
 import play.api.mvc.{ Action, AnyContent }
 import security.Roles.{ DisplayOnlineTestSectionRole, OnlineTestInvitedRole }
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 

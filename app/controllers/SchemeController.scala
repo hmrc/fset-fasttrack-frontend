@@ -28,6 +28,8 @@ import security.Roles.SchemesRole
 import uk.gov.hmrc.play.http.HeaderCarrier
 import viewmodels.application.scheme.{ SchemeLocationsViewModel, SchemePreferenceViewModel }
 
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import scala.concurrent.Future
 
 object SchemeController extends SchemeController {

@@ -23,6 +23,8 @@ import helpers.NotificationType._
 import models.ApplicationData.ApplicationStatus.SUBMITTED
 import models.CachedData
 import security.Roles.{SubmitApplicationRole, WithdrawApplicationRole}
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 

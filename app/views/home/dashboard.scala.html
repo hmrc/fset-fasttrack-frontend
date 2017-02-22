@@ -2,7 +2,7 @@
 @import models.page.DashboardPage
 @import models.page.DashboardPage._
 @(usr: CachedData, dashboardPage: DashboardPage, onlineTest: Option[OnlineTest] = None,
-  allocationDetails: Option[connectors.AllocationExchangeObjects.AllocationDetails] = None)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+  allocationDetails: Option[connectors.AllocationExchangeObjects.AllocationDetails] = None)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, messages: Messages)
 
 @import connectors.AllocationExchangeObjects._
 @import models.ApplicationData.ApplicationStatus._

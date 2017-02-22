@@ -1,4 +1,4 @@
-@(messages: Seq[String])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+@(messages: Seq[String])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, msgs: Messages)
 
 @main_template(title = "Hello from fset-fasttrack-frontend") {
     <h1>Hello from fset-fasttrack-frontend !</h1>

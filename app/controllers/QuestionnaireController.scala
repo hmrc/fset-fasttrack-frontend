@@ -26,6 +26,8 @@ import play.api.mvc.{ Request, RequestHeader, Result }
 import security.QuestionnaireRoles._
 import security.Roles._
 import uk.gov.hmrc.play.http.HeaderCarrier
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 import scala.language.reflectiveCalls

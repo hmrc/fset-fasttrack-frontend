@@ -24,6 +24,8 @@ import helpers.NotificationType._
 import models.CachedData
 import security.RoleUtils
 import security.Roles.AssistanceDetailsRole
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 

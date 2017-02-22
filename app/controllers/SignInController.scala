@@ -23,7 +23,8 @@ import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import helpers.NotificationType._
 import security._
-
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import scala.concurrent.Future
 
 object SignInController extends SignInController {

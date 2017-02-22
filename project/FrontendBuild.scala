@@ -28,33 +28,45 @@ object FrontendBuild extends Build with MicroService {
 private object Versions {
 
   val ficus         = "1.1.2"
-  val cacheClient   = "5.6.0"
-  val frontend      = "6.7.0"
-  val playConfig    = "2.0.1"
-  val playHealth    = "1.1.0"
+  //val cacheClient   = "5.6.0"
+  val cacheClient   = "6.1.0"
+  //val frontend      = "6.7.0"
+  val frontend      = "7.12.0"
+  //val playConfig    = "2.0.1"
+  val playConfig    = "4.1.0"
+  //val playHealth    = "1.1.0"
+  val playHealth    = "2.1.0"
   val urlBuilder    = "1.0.0"
-  val httpclient    = "4.3.6"
-  val jsonLogger    = "2.1.1"
-  val scalatest     = "2.2.2"
+  //val httpclient    = "4.3.6"
+  val httpclient    = "4.5.2" // kjh decided to change this
+  //val jsonLogger    = "2.1.1"
+  val logbackJsonLoggerVersion = "3.1.0"
+  //val scalatest     = "2.2.2"
+  val scalatest     = "2.2.6"
   val pegdown       = "1.4.2"
   val jsoup         = "1.7.3"
   val wiremock      = "1.57"
-  val hmrctest      = "1.4.0"
+  //val hmrctest      = "1.4.0"
+  val hmrctest      = "2.3.0"
   val scalatestplus = "1.2.0"
   val silhouette    = "2.0.2"
+  //val silhouette    = "3.0.4" - kjh tried this
   val playWhitelist = "1.2.0"
 }
 
 private object AppDependencies {
 
   import Versions._
+  import play.sbt.PlayImport._
+
 
   val compile = Seq(
     "net.ceedubs"               %% "ficus"                    % ficus,
     "uk.gov.hmrc"               %% "http-caching-client"      % cacheClient,
     "uk.gov.hmrc"               %% "frontend-bootstrap"       % frontend,
     "uk.gov.hmrc"               %% "play-config"              % playConfig,
-    "uk.gov.hmrc"               %% "play-json-logger"         % jsonLogger,
+    //"uk.gov.hmrc"               %% "play-json-logger"         % jsonLogger,
+    "uk.gov.hmrc"               %% "logback-json-logger"      % logbackJsonLoggerVersion,
     "uk.gov.hmrc"               %% "play-health"              % playHealth,
     "uk.gov.hmrc"               %% "play-whitelist-filter"    % playWhitelist,
     "uk.gov.hmrc"               %% "url-builder"              % urlBuilder,

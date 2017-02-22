@@ -24,6 +24,8 @@ import connectors.UserManagementClient.{InvalidEmailException, TokenEmailPairInv
 import helpers.NotificationType._
 import models.CachedData
 import security.{InvalidRole, SignInUtils}
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 
