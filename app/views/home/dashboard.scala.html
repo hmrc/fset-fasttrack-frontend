@@ -212,7 +212,6 @@
                                         @if(AssessmentCentreFailedNotifiedRole.isAuthorized(usr)  && onlineTest.exists(_.pdfReportAvailable)) {
                                             <p>Thank you for attending the Fast Track assessment centre.</p>
                                             <p>Unfortunately on this occasion you didn't reach the pass mark for the Fast Track scheme and we won't be taking your application further.</p>
-                                            <p>From December 2017, after we've finished allocating placements, we can give you feedback on your performance at the assessment centre. Please contact us if you'd like feedback.</p>
                                             <p>Thank you for your interest in the Fast Track programme and we wish you every success for the future.</p>
                                         } else {
                                             @if(AssessmentCentrePassedNotifiedRole.isAuthorized(usr) && onlineTest.exists(_.pdfReportAvailable)) {
@@ -220,7 +219,6 @@
                                                 <p>As soon as we’ve matched you to a role, we'll confirm your allocated scheme, department and location.</p>
                                                 <p>We'll also ask you to give us the information we need to complete a pre-appointment security check. Your offer depends upon successful completion of the checks. If you give information you know is false, or you withhold any relevant information, your application may be rejected. Or, if you've already been appointed, you may be dismissed.</p>
                                                 <p>We aim to match you to a role on your preferred scheme and in your preferred location. If we can't do this, we'll always aim to offer an alternative role or location. In the very few cases this isn't possible, we'll hold you on a reserve list.</p>
-                                                <p>From December 2017, after we've finished allocating placements, we can give you feedback on your performance at the assessment centre. Please contact us if you'd like feedback.</p>
                                                 <p>We recommend you don't resign from any employment until you've received a formal offer of appointment. If you withdraw your application, it won't be possible to re-instate your application at a later date.</p>
                                             } else {
                                                 @if(AssessmentCentreFailedToAttendRole.isAuthorized(usr)) {
