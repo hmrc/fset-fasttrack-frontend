@@ -16,7 +16,11 @@
 
 package config
 
-import com.mohiva.play.silhouette.api.{ Environment, SecuredSettings, Silhouette }
+import javax.inject.Inject
+
+import com.mohiva.play.silhouette
+import com.mohiva.play.silhouette.api.actions.{ SecuredErrorHandler, SecuredRequest, UnsecuredErrorHandler }
+import com.mohiva.play.silhouette.api.{ Env, Environment, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.typesafe.config.Config
 import controllers.routes
@@ -25,11 +29,13 @@ import forms.{ SignInForm, SignUpForm }
 import helpers.NotificationType._
 import models.{ CachedData, SecurityUser }
 import net.ceedubs.ficus.Ficus._
-import play.api.i18n.Lang
+import play.api.i18n.{ I18nSupport, Lang, MessagesApi }
 import play.api.mvc.Results._
 import play.api.mvc.{ RequestHeader, Result, _ }
 import play.api._
+import play.api.inject.guice.GuiceApplicationLoader
 import play.twirl.api.Html
+import security.SecurityEnvironment
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.audit.filters.FrontendAuditFilter
 import uk.gov.hmrc.play.config.{ AppName, ControllerConfig, RunMode }
@@ -40,6 +46,27 @@ import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+class CustomSecuredErrorHandler @Inject() (val messagesApi: MessagesApi) extends SecuredErrorHandler with I18nSupport {
+  override def onNotAuthorized(implicit request: RequestHeader): Option[Future[Result]] = {
+    import models.SecurityUser._
+    class Internal @Inject() (val silhouette: Silhouette[SecurityEnvironment], val messagesApi: MessagesApi)
+      extends FrontendController with I18nSupport {
+      def env: Environment[SecurityEnvironment] = silhouette.env
+
+      def whereTo: Some[Future[Result]] = {
+        val sec = request.asInstanceOf[SecuredRequest[SecurityEnvironment, SecurityUser]]
+        Some(
+          sec.identity.toUserFuture(hc(sec)).map {
+            case Some(user: CachedData) if user.user.isActive => Redirect(routes.HomeController.present).flashing(danger("access.denied"))
+            case _ => Redirect(routes.ActivationController.present).flashing(danger("access.denied"))
+          }
+        )
+      }
+    }
+    injector.getInstance(Internal.class).whereTo
+  }
+}
 
 abstract class DevelopmentFrontendGlobal
   extends DefaultFrontendGlobal with SecuredSettings {
@@ -64,25 +91,6 @@ abstract class DevelopmentFrontendGlobal
 
   override def onNotAuthenticated(request: RequestHeader, lang: Lang): Option[Future[Result]] =
     Some(Future.successful(Redirect(routes.SignInController.present)))
-
-  override def onNotAuthorized(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
-    import models.SecurityUser._
-    object Internal extends Silhouette[SecurityUser, SessionAuthenticator] with FrontendController {
-      override protected def env: Environment[SecurityUser, SessionAuthenticator] = SecurityEnvironmentImpl
-
-      def whereTo: Some[Future[Result]] = {
-        val sec = request.asInstanceOf[SecuredRequest[AnyContent]]
-        Some(
-          sec.identity.toUserFuture(hc(sec)).map {
-            case Some(user: CachedData) if user.user.isActive => Redirect(routes.HomeController.present).flashing(danger("access.denied"))
-            case _ => Redirect(routes.ActivationController.present).flashing(danger("access.denied"))
-          }
-        )
-      }
-    }
-    Internal.whereTo
-  }
-
 }
 
 object ControllerConfiguration extends ControllerConfig {

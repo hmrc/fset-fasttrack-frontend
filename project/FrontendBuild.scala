@@ -50,7 +50,7 @@ private object Versions {
   //val hmrctest      = "1.4.0"
   val hmrctest      = "2.3.0"
   val scalatestplus = "1.2.0"
-  val silhouette    = "2.0.2"
+  val silhouette    = "4.0.0"
   //val silhouette    = "3.0.4" - kjh tried this
   val playWhitelist = "1.2.0"
   val playFilters   = "5.9.0"
@@ -63,28 +63,31 @@ private object AppDependencies {
 
 
   val compile = Seq(
-    "net.ceedubs"               %% "ficus"                    % ficus,
-    "uk.gov.hmrc"               %% "http-caching-client"      % cacheClient,
-    "uk.gov.hmrc"               %% "frontend-bootstrap"       % frontend,
-    "uk.gov.hmrc"               %% "play-config"              % playConfig,
-    //"uk.gov.hmrc"               %% "play-json-logger"         % jsonLogger,
-    "uk.gov.hmrc"               %% "logback-json-logger"      % logbackJsonLoggerVersion,
-    "uk.gov.hmrc"               %% "play-health"              % playHealth,
-    "uk.gov.hmrc"               %% "play-whitelist-filter"    % playWhitelist,
-    "uk.gov.hmrc"               %% "url-builder"              % urlBuilder,
-    "org.apache.httpcomponents" %  "httpclient"               % httpclient,
-    "com.mohiva"                %% "play-silhouette"          % silhouette,
-    "uk.gov.hmrc"               %% "play-filters"             % playFilters
+    "net.ceedubs"               %% "ficus"                                    % ficus,
+    "uk.gov.hmrc"               %% "http-caching-client"                      % cacheClient,
+    "uk.gov.hmrc"               %% "frontend-bootstrap"                       % frontend,
+    "uk.gov.hmrc"               %% "play-config"                              % playConfig,
+    //"uk.gov.hmrc"               %% "play-json-logger"                         % jsonLogger,
+    "uk.gov.hmrc"               %% "logback-json-logger"                      % logbackJsonLoggerVersion,
+    "uk.gov.hmrc"               %% "play-health"                              % playHealth,
+    "uk.gov.hmrc"               %% "play-whitelist-filter"                    % playWhitelist,
+    "uk.gov.hmrc"               %% "url-builder"                              % urlBuilder,
+    "org.apache.httpcomponents" %  "httpclient"                               % httpclient,
+    "com.mohiva"                %% "play-silhouette"                          % silhouette,
+    "com.mohiva"                %% "play-silhouette-password-bcrypt"          % silhouette,
+    "com.mohiva"                %% "play-silhouette-crypto-jca"               % silhouette,
+    "com.mohiva"                %% "play-silhouette-persistence"              % silhouette,
+    "uk.gov.hmrc"               %% "play-filters"                             % playFilters
   )
 
   val test = Seq(
-    "org.scalatest"             %% "scalatest"                % scalatest     % "test",
-    "org.scalatestplus"         %% "play"                     % scalatestplus % "test",
-    "org.pegdown"               %  "pegdown"                  % pegdown       % "test",
-    "org.jsoup"                 %  "jsoup"                    % jsoup         % "test",
-    "com.github.tomakehurst"    %  "wiremock"                 % wiremock      % "test",
-    "uk.gov.hmrc"               %% "hmrctest"                 % hmrctest      % "test",
-    "com.mohiva"                %% "play-silhouette-testkit"  % silhouette    % "test"
+    "org.scalatest"             %% "scalatest"                    % scalatest     % "test",
+    "org.scalatestplus"         %% "play"                         % scalatestplus % "test",
+    "org.pegdown"               %  "pegdown"                      % pegdown       % "test",
+    "org.jsoup"                 %  "jsoup"                        % jsoup         % "test",
+    "com.github.tomakehurst"    %  "wiremock"                     % wiremock      % "test",
+    "uk.gov.hmrc"               %% "hmrctest"                     % hmrctest      % "test",
+    "com.mohiva"                %% "play-silhouette-testkit"      % silhouette    % "test"
   )
 
   def apply() = compile ++ test

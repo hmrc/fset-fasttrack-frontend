@@ -39,6 +39,7 @@ import uk.gov.hmrc.play.http.ws._
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
 import scala.concurrent.Future
+import scala.concurrent.duration._
 
 object FrontendAuditConnector extends AuditConnector {
   override lazy val auditingConfig = LoadAuditingConfig("auditing")
@@ -63,7 +64,7 @@ object CSRCache extends CSRCache {
   )
 }
 
-object SecurityEnvironmentImpl extends security.SecurityEnvironment {
+class SecurityEnvironmentImpl extends security.SecurityEnvironment {
 
   override lazy val eventBus: EventBus = EventBus()
 
@@ -72,11 +73,10 @@ object SecurityEnvironmentImpl extends security.SecurityEnvironment {
 
   override lazy val authenticatorService = new SessionAuthenticatorService(SessionAuthenticatorSettings(
     sessionKey = Play.configuration.getString("silhouette.authenticator.sessionKey").get,
-    encryptAuthenticator = Play.configuration.getBoolean("silhouette.authenticator.encryptAuthenticator").get,
     useFingerprinting = Play.configuration.getBoolean("silhouette.authenticator.useFingerprinting").get,
-    authenticatorIdleTimeout = Play.configuration.getInt("silhouette.authenticator.authenticatorIdleTimeout"),
-    authenticatorExpiry = Play.configuration.getInt("silhouette.authenticator.authenticatorExpiry").get
-  ), new DefaultFingerprintGenerator(false), Clock())
+    authenticatorIdleTimeout = Play.configuration.getInt("silhouette.authenticator.authenticatorIdleTimeout").map(x => x seconds),
+    authenticatorExpiry = Play.configuration.getInt("silhouette.authenticator.authenticatorExpiry").get seconds
+  ), new DefaultFingerprintGenerator(false), , Clock())
 
   override lazy val credentialsProvider = new CsrCredentialsProvider {
     val http: CSRHttp = CSRHttp
