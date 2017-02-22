@@ -34,6 +34,7 @@ import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.config.{ AppName, RunMode, ServicesConfig }
+import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.play.http.ws._
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
@@ -85,7 +86,7 @@ object SecurityEnvironmentImpl extends security.SecurityEnvironment {
   val http: CSRHttp = CSRHttp
 }
 
-object WhitelistFilter extends AkamaiWhitelistFilter with RunMode {
+object WhitelistFilter extends AkamaiWhitelistFilter with RunMode with MicroserviceFilterSupport{
 
   // Whitelist Configuration
   private def whitelistConfig(key: String): Seq[String] =

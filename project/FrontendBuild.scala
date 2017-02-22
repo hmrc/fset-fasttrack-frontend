@@ -33,7 +33,8 @@ private object Versions {
   //val frontend      = "6.7.0"
   val frontend      = "7.12.0"
   //val playConfig    = "2.0.1"
-  val playConfig    = "4.1.0"
+  //val playConfig    = "4.1.0"
+  val playConfig    = "3.1.0"
   //val playHealth    = "1.1.0"
   val playHealth    = "2.1.0"
   val urlBuilder    = "1.0.0"
@@ -52,6 +53,7 @@ private object Versions {
   val silhouette    = "2.0.2"
   //val silhouette    = "3.0.4" - kjh tried this
   val playWhitelist = "1.2.0"
+  val playFilters   = "5.9.0"
 }
 
 private object AppDependencies {
@@ -71,7 +73,8 @@ private object AppDependencies {
     "uk.gov.hmrc"               %% "play-whitelist-filter"    % playWhitelist,
     "uk.gov.hmrc"               %% "url-builder"              % urlBuilder,
     "org.apache.httpcomponents" %  "httpclient"               % httpclient,
-    "com.mohiva"                %% "play-silhouette"          % silhouette
+    "com.mohiva"                %% "play-silhouette"          % silhouette,
+    "uk.gov.hmrc"               %% "play-filters"             % playFilters
   )
 
   val test = Seq(
