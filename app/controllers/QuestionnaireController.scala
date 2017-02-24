@@ -90,7 +90,7 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
   }
 
   private def presentPageIfNotFilledInPreviously(pageFilledPreviously: CsrAuthorization, presentPage: => Result)
-                                                (implicit user: CachedDataWithApp, requestHeader: RequestHeader) = {
+                                                (implicit user: CachedDataWithApp, request: Request[_]) = {
     Future.successful {
       (pageFilledPreviously.isAuthorized(user), ReviewRole.isAuthorized(user)) match {
         case (_, true) => Redirect(routes.HomeController.present()).flashing(QuestionnaireCompletedBanner)

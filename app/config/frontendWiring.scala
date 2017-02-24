@@ -18,13 +18,14 @@ package config
 
 import java.util.Base64
 
-import com.mohiva.play.silhouette.api.EventBus
+import com.mohiva.play.silhouette.api.{ Environment, EventBus }
 import com.mohiva.play.silhouette.api.crypto.Base64AuthenticatorEncoder
+import com.mohiva.play.silhouette.api.services.AuthenticatorService
 import com.mohiva.play.silhouette.api.util.Clock
-import com.mohiva.play.silhouette.impl.authenticators.{ SessionAuthenticatorService, SessionAuthenticatorSettings }
+import com.mohiva.play.silhouette.impl.authenticators.{ SessionAuthenticator, SessionAuthenticatorService, SessionAuthenticatorSettings }
 import com.mohiva.play.silhouette.impl.util.DefaultFingerprintGenerator
 import connectors.{ ApplicationClient, UserManagementClient }
-import models.services.UserCacheService
+import models.services.{ UserCacheService, UserService }
 import play.api.Play
 import play.api.Play.current
 import play.api.libs.ws.WS
@@ -38,8 +39,9 @@ import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.play.http.ws._
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import language.postfixOps
 
 object FrontendAuditConnector extends AuditConnector {
   override lazy val auditingConfig = LoadAuditingConfig("auditing")
@@ -64,14 +66,26 @@ object CSRCache extends CSRCache {
   )
 }
 
-class SecurityEnvironmentImpl extends security.SecurityEnvironment {
+trait CSRSecurityEnvironment {
+  def userService: UserService
 
-  lazy val eventBus: EventBus = EventBus()
+  def credentialsProvider: CsrCredentialsProvider
+
+  val eventBus: EventBus
+
+  val authenticatorService: AuthenticatorService[SessionAuthenticator]
+}
+
+object SecurityEnvironmentImpl extends SecurityEnvironmentImpl
+
+trait SecurityEnvironmentImpl extends Environment[security.SecurityEnvironment] with CSRSecurityEnvironment {
+
+  override lazy val eventBus: EventBus = EventBus()
 
   override val userService = new UserCacheService(ApplicationClient, UserManagementClient)
   val identityService = userService
 
-  lazy val authenticatorService = new SessionAuthenticatorService(SessionAuthenticatorSettings(
+  override lazy val authenticatorService = new SessionAuthenticatorService(SessionAuthenticatorSettings(
     sessionKey = Play.configuration.getString("silhouette.authenticator.sessionKey").get,
     useFingerprinting = Play.configuration.getBoolean("silhouette.authenticator.useFingerprinting").get,
     authenticatorIdleTimeout = Play.configuration.getInt("silhouette.authenticator.authenticatorIdleTimeout").map(x => x seconds),
@@ -83,6 +97,11 @@ class SecurityEnvironmentImpl extends security.SecurityEnvironment {
   }
 
   def providers = Map(credentialsProvider.id -> credentialsProvider)
+
+  override def requestProviders = Nil
+
+  override val executionContext = global
+
   val http: CSRHttp = CSRHttp
 }
 

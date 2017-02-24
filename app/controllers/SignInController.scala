@@ -66,12 +66,12 @@ trait SignInController extends BaseController with SignInUtils with ApplicationC
 
   val signOut = CSRUserAwareAction { implicit request =>
     implicit user =>
-      request.identity.map(identity => env.eventBus.publish(LogoutEvent(identity, request, request2lang)))
+      request.identity.foreach(identity => env.eventBus.publish(LogoutEvent(identity, request)))
       env.authenticatorService.retrieve.flatMap {
         case Some(authenticator) =>
           CSRCache.remove()
-          authenticator.discard(Future.successful(Redirect(routes.SignInController.present()).
-            flashing(success("feedback", config.FrontendAppConfig.feedbackUrl)).withNewSession))
+          env.authenticatorService.discard(authenticator, Redirect(routes.SignInController.present()).
+            flashing(success("feedback", config.FrontendAppConfig.feedbackUrl)).withNewSession)
         case None => Future.successful(Redirect(routes.SignInController.present()).
           flashing(danger("You have already signed out")).withNewSession)
       }

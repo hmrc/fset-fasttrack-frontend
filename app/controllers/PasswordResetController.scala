@@ -16,14 +16,15 @@
 
 package controllers
 
-import _root_.forms.{RequestResetPasswordForm, ResetPasswordForm, SignInForm}
+import _root_.forms.{ RequestResetPasswordForm, ResetPasswordForm, SignInForm }
+import com.mohiva.play.silhouette.api.actions.UserAwareRequest
 import com.mohiva.play.silhouette.api.util.Credentials
-import config.{CSRCache, CSRHttp}
-import connectors.ApplicationClient
-import connectors.UserManagementClient.{InvalidEmailException, TokenEmailPairInvalidException, TokenExpiredException}
+import config.{ CSRCache, CSRHttp }
+import connectors.{ ApplicationClient, UserManagementClient }
+import connectors.UserManagementClient.{ InvalidEmailException, TokenEmailPairInvalidException, TokenExpiredException }
 import helpers.NotificationType._
 import models.CachedData
-import security.{InvalidRole, SignInUtils}
+import security.{ InvalidRole, SignInUtils }
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
@@ -32,9 +33,12 @@ import scala.concurrent.Future
 object PasswordResetController extends PasswordResetController {
   val http = CSRHttp
   val cacheClient = CSRCache
+  val userManagementClient = UserManagementClient
 }
 
 trait PasswordResetController extends BaseController with ApplicationClient with SignInUtils {
+
+  val userManagementClient: UserManagementClient
 
   def presentCode(email: Option[String]) = CSRUserAwareAction { implicit request =>
     implicit user =>
@@ -76,9 +80,9 @@ trait PasswordResetController extends BaseController with ApplicationClient with
 
   private def sendCode(email: String, isResend: Boolean)(
     implicit
-    request: UserAwareRequest[_], user: Option[CachedData]
+    request: UserAwareRequest[_, _], user: Option[CachedData]
   ) = {
-    env.sendResetPwdCode(email).map { _ =>
+    userManagementClient.sendResetPwdCode(email).map { _ =>
       Redirect(routes.PasswordResetController.presentReset(Some(email))).
         flashing(success(if (isResend) "resetpwd.code-resent" else "resetpwd.code-sent"), "email" -> email)
     }.recover {
@@ -92,7 +96,7 @@ trait PasswordResetController extends BaseController with ApplicationClient with
 
   private def resetPassword(email: String, code: String, newPassword: String)(
     implicit
-    request: UserAwareRequest[_], user: Option[CachedData]
+    request: UserAwareRequest[_, _], user: Option[CachedData]
   ) = {
     def renderError(error: String) = {
       Future.successful(Future.successful(Ok(views.html.registration.reset_password(
@@ -103,7 +107,7 @@ trait PasswordResetController extends BaseController with ApplicationClient with
       ))))
     }
 
-    env.resetPasswd(email, code, newPassword).map { _ =>
+    userManagementClient.resetPasswd(email, code, newPassword).map { _ =>
       env.credentialsProvider.authenticate(Credentials(email, newPassword)).map {
         case Right(usr) if usr.lockStatus == "LOCKED" => Future.successful(
           Redirect(routes.LockAccountController.present()).flashing("email" -> usr.email)

@@ -18,8 +18,8 @@ package controllers
 
 import _root_.forms.SignUpForm
 import com.mohiva.play.silhouette.api.SignUpEvent
-import config.{CSRCache, CSRHttp}
-import connectors.ApplicationClient
+import config.{ CSRCache, CSRHttp }
+import connectors.{ ApplicationClient, UserManagementClient }
 import connectors.ExchangeObjects.Implicits._
 import connectors.UserManagementClient.EmailTakenException
 import helpers.NotificationType._
@@ -33,9 +33,12 @@ import scala.concurrent.Future
 object SignUpController extends SignUpController {
   val http = CSRHttp
   val cacheClient = CSRCache
+  val userManagementClient = UserManagementClient
 }
 
 trait SignUpController extends BaseController with SignInUtils with ApplicationClient {
+
+  val userManagementClient: UserManagementClient
 
   def present = CSRUserAwareAction { implicit request =>
     implicit user =>
@@ -52,13 +55,13 @@ trait SignUpController extends BaseController with SignInUtils with ApplicationC
       SignUpForm.form.bindFromRequest.fold(
         invalidForm => Future.successful(Ok(views.html.registration.signup(invalidForm))),
         data => {
-          env.register(data.email.toLowerCase, data.password, data.firstName, data.lastName).flatMap { u =>
+          userManagementClient.register(data.email.toLowerCase, data.password, data.firstName, data.lastName).flatMap { u =>
             addMedia(u.userId, extractMediaReferrer(data)).flatMap { _ =>
               signInUser(
                 u.toCached,
                 redirect = Redirect(routes.ActivationController.present()).flashing(success("account.successful"))
               ).map { r =>
-                env.eventBus.publish(SignUpEvent(SecurityUser(u.userId.toString), request, request2lang))
+                env.eventBus.publish(SignUpEvent(SecurityUser(u.userId.toString), request))
                 r
               }
             }

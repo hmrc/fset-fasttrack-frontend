@@ -47,7 +47,6 @@ import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-@Singleton
 class CustomSecuredErrorHandler @Inject() (val messagesApi: MessagesApi) extends SecuredErrorHandler with I18nSupport {
 
   override def onNotAuthorized(implicit request: RequestHeader): Future[Result] = {

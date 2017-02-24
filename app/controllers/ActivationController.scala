@@ -17,9 +17,9 @@
 package controllers
 
 import _root_.forms.ActivateAccountForm
-import config.{CSRCache, CSRHttp}
-import connectors.ApplicationClient
-import connectors.UserManagementClient.{TokenEmailPairInvalidException, TokenExpiredException}
+import config.{ CSRCache, CSRHttp }
+import connectors.{ ApplicationClient, UserManagementClient }
+import connectors.UserManagementClient.{ TokenEmailPairInvalidException, TokenExpiredException }
 import helpers.NotificationType._
 import security.Roles._
 import security.SignInUtils
@@ -31,9 +31,12 @@ import scala.concurrent.Future
 object ActivationController extends ActivationController {
   val http = CSRHttp
   val cacheClient = CSRCache
+  val userManagementClient = UserManagementClient
 }
 
 trait ActivationController extends BaseController with SignInUtils with ApplicationClient {
+
+  val userManagementClient: UserManagementClient
 
   def present = CSRSecureAction(NoRole) { implicit request =>
     implicit user => user.user.isActive match {
@@ -48,7 +51,7 @@ trait ActivationController extends BaseController with SignInUtils with Applicat
         invalidForm =>
           Future.successful(Ok(views.html.registration.activation(user.user.email, invalidForm))),
         data => {
-          env.activate(user.user.email, data.activationCode).flatMap { _ =>
+          userManagementClient.activate(user.user.email, data.activationCode).flatMap { _ =>
             signInUser(user.user.copy(isActive = true))
           }.recover {
             case e: TokenExpiredException =>
@@ -70,7 +73,7 @@ trait ActivationController extends BaseController with SignInUtils with Applicat
 
   def resendCode = CSRSecureAction(ActivationRole) { implicit request =>
     implicit user =>
-      env.resendActivationCode(user.user.email).map { _ =>
+      userManagementClient.resendActivationCode(user.user.email).map { _ =>
         Redirect(routes.ActivationController.present()).flashing(success("activation.code-resent"))
       }
   }
