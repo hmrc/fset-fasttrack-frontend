@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette
 import com.mohiva.play.silhouette.api.actions.{ SecuredErrorHandler, SecuredRequest, UnsecuredErrorHandler }
-import com.mohiva.play.silhouette.api.{ Env, Environment, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.typesafe.config.Config
 import controllers.routes
@@ -42,34 +41,30 @@ import uk.gov.hmrc.play.config.{ AppName, ControllerConfig, RunMode }
 import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.play.frontend.bootstrap.DefaultFrontendGlobal
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class CustomSecuredErrorHandler @Inject() (val messagesApi: MessagesApi) extends SecuredErrorHandler with I18nSupport {
-  override def onNotAuthorized(implicit request: RequestHeader): Option[Future[Result]] = {
-    import models.SecurityUser._
-    class Internal @Inject() (val silhouette: Silhouette[SecurityEnvironment], val messagesApi: MessagesApi)
-      extends FrontendController with I18nSupport {
-      def env: Environment[SecurityEnvironment] = silhouette.env
 
-      def whereTo: Some[Future[Result]] = {
-        val sec = request.asInstanceOf[SecuredRequest[SecurityEnvironment, SecurityUser]]
-        Some(
-          sec.identity.toUserFuture(hc(sec)).map {
-            case Some(user: CachedData) if user.user.isActive => Redirect(routes.HomeController.present).flashing(danger("access.denied"))
-            case _ => Redirect(routes.ActivationController.present).flashing(danger("access.denied"))
-          }
-        )
-      }
+  override def onNotAuthorized(implicit request: RequestHeader): Future[Result] = {
+    val sec = request.asInstanceOf[SecuredRequest[SecurityEnvironment, SecurityUser]]
+    val headerCarrier = HeaderCarrier.fromHeadersAndSession(sec.headers, Some(sec.session))
+    sec.identity.toUserFuture(headerCarrier).map {
+      case Some(user: CachedData) if user.user.isActive => Redirect(routes.HomeController.present).flashing(danger("access.denied"))
+      case _ => Redirect(routes.ActivationController.present).flashing(danger("access.denied"))
     }
-    injector.getInstance(Internal.class).whereTo
   }
+
+  override def onNotAuthenticated(implicit request: RequestHeader): Future[Result] =
+    Future.successful(Redirect(routes.SignInController.present))
 }
 
 abstract class DevelopmentFrontendGlobal
-  extends DefaultFrontendGlobal with SecuredSettings {
+  extends DefaultFrontendGlobal {
 
   import FrontendAppConfig.feedbackUrl
 
@@ -88,9 +83,6 @@ abstract class DevelopmentFrontendGlobal
     views.html.error_template(pageTitle, heading, message)(rh, feedbackUrl)
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig("microservice.metrics")
-
-  override def onNotAuthenticated(request: RequestHeader, lang: Lang): Option[Future[Result]] =
-    Some(Future.successful(Redirect(routes.SignInController.present)))
 }
 
 object ControllerConfiguration extends ControllerConfig {

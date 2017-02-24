@@ -19,6 +19,7 @@ package config
 import java.util.Base64
 
 import com.mohiva.play.silhouette.api.EventBus
+import com.mohiva.play.silhouette.api.crypto.Base64AuthenticatorEncoder
 import com.mohiva.play.silhouette.api.util.Clock
 import com.mohiva.play.silhouette.impl.authenticators.{ SessionAuthenticatorService, SessionAuthenticatorSettings }
 import com.mohiva.play.silhouette.impl.util.DefaultFingerprintGenerator
@@ -27,8 +28,7 @@ import models.services.UserCacheService
 import play.api.Play
 import play.api.Play.current
 import play.api.libs.ws.WS
-import play.api.mvc.Results.NotImplemented
-import play.api.mvc.{ Call, RequestHeader, Result }
+import play.api.mvc.Call
 import security.CsrCredentialsProvider
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
@@ -66,23 +66,23 @@ object CSRCache extends CSRCache {
 
 class SecurityEnvironmentImpl extends security.SecurityEnvironment {
 
-  override lazy val eventBus: EventBus = EventBus()
+  lazy val eventBus: EventBus = EventBus()
 
   override val userService = new UserCacheService(ApplicationClient, UserManagementClient)
-  override val identityService = userService
+  val identityService = userService
 
-  override lazy val authenticatorService = new SessionAuthenticatorService(SessionAuthenticatorSettings(
+  lazy val authenticatorService = new SessionAuthenticatorService(SessionAuthenticatorSettings(
     sessionKey = Play.configuration.getString("silhouette.authenticator.sessionKey").get,
     useFingerprinting = Play.configuration.getBoolean("silhouette.authenticator.useFingerprinting").get,
     authenticatorIdleTimeout = Play.configuration.getInt("silhouette.authenticator.authenticatorIdleTimeout").map(x => x seconds),
     authenticatorExpiry = Play.configuration.getInt("silhouette.authenticator.authenticatorExpiry").get seconds
-  ), new DefaultFingerprintGenerator(false), , Clock())
+  ), new DefaultFingerprintGenerator(false), new Base64AuthenticatorEncoder, Clock())
 
   override lazy val credentialsProvider = new CsrCredentialsProvider {
     val http: CSRHttp = CSRHttp
   }
 
-  override def providers = Map(credentialsProvider.id -> credentialsProvider)
+  def providers = Map(credentialsProvider.id -> credentialsProvider)
   val http: CSRHttp = CSRHttp
 }
 
