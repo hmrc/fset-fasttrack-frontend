@@ -17,19 +17,22 @@
 package controllers
 
 import _root_.forms.{ SchemeLocationPreferenceForm, SchemePreferenceForm }
+import com.mohiva.play.silhouette.api.Silhouette
 import config.{ CSRCache, CSRHttp, FrontendAppConfig }
 import connectors.ApplicationClient
 import connectors.ApplicationClient.{ SchemeChoicesNotFound, SchemeLocationChoicesNotFound }
 import connectors.exchange.SchemeInfo
 import models.CachedDataWithApp
+import play.api.Play
 import play.api.data.Form
 import play.api.mvc.Request
 import security.Roles.SchemesRole
 import uk.gov.hmrc.play.http.HeaderCarrier
 import viewmodels.application.scheme.{ SchemeLocationsViewModel, SchemePreferenceViewModel }
-
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import security.{ SecurityEnvironment, SilhouetteComponent }
+
 import scala.concurrent.Future
 
 object SchemeController extends SchemeController {
@@ -37,6 +40,7 @@ object SchemeController extends SchemeController {
   val config = FrontendAppConfig
   val cacheClient = CSRCache
   val applicationClient = ApplicationClient
+  val silhouette = SilhouetteComponent.silhouette
 }
 
 trait SchemeController extends BaseController {

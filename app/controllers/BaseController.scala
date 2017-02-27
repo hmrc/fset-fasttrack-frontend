@@ -27,7 +27,7 @@ import helpers.NotificationType._
 import models.{ CachedData, CachedDataWithApp }
 import play.api.mvc.{ Action, AnyContent, Request, Result }
 import security.Roles.CsrAuthorization
-import security.SecureActions
+import security.{ SecureActions, SecurityEnvironment }
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 
@@ -47,16 +47,7 @@ object FasttrackConfig {
 /**
  * should be extended by all controllers
  */
-trait BaseController extends FrontendController with ApplicationClient {
-
-  def silhouette: SecureActions
-  def env: SecurityEnvironmentImpl = silhouette.env
-
-  // scalastyle:off
-  def CSRSecureAppAction: (CsrAuthorization) => ((SecuredRequest[_, _]) => (CachedDataWithApp) => Future[Result]) => Action[AnyContent] = silhouette.CSRSecureAppAction _
-  def CSRUserAwareAction: ((UserAwareRequest[_, _]) => (Option[CachedData]) => Future[Result]) => Action[AnyContent] = silhouette.CSRUserAwareAction _
-  def CSRSecureAction: (CsrAuthorization) => ((SecuredRequest[_, _]) => (CachedData) => Future[Result]) => Action[AnyContent] = silhouette.CSRSecureAction _
-  // scalastyle:on
+trait BaseController extends FrontendController with ApplicationClient with SecureActions {
 
   implicit val feedbackUrl = config.FrontendAppConfig.feedbackUrl
   implicit def fasttrackConfig = FasttrackConfig(config.FrontendAppConfig.fasttrackFrontendConfig)

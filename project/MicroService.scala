@@ -41,7 +41,7 @@ trait MicroService {
   val appName: String
   val appDependencies : Seq[ModuleID]
 
-  lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala/*play.PlayScala*/,
+  lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala,
     SbtWeb, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   lazy val playSettings : Seq[Setting[_]] = Seq(routesImport ++= Seq("binders.CustomBinders._", "models._"))
 

@@ -17,15 +17,19 @@
 package controllers
 
 import _root_.forms.LockAccountForm
-import config.{CSRCache, CSRHttp}
+import com.mohiva.play.silhouette.api.Silhouette
+import config.{ CSRCache, CSRHttp }
+import play.api.Play
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import security.{ SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
 
 object LockAccountController extends LockAccountController {
   val http = CSRHttp
   val cacheClient = CSRCache
+  val silhouette = SilhouetteComponent.silhouette
 }
 
 trait LockAccountController extends BaseController {

@@ -17,6 +17,7 @@
 package controllers
 
 import _root_.forms.GeneralDetailsForm
+import com.mohiva.play.silhouette.api.Silhouette
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient.PersonalDetailsNotFound
 import connectors.ExchangeObjects.PersonalDetails
@@ -27,16 +28,19 @@ import mappings.{ Address, DayMonthYear }
 import models.ApplicationData.ApplicationStatus._
 import models.CachedDataWithApp
 import org.joda.time.LocalDate
+import play.api.Play
 import security.Roles.PersonalDetailsRole
 import uk.gov.hmrc.play.http.HeaderCarrier
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import security.{ SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
 
 object FastTrackApplication extends FastTrackApplication {
   val http = CSRHttp
   val cacheClient = CSRCache
+  val silhouette = SilhouetteComponent.silhouette
 }
 
 trait FastTrackApplication extends BaseController with ApplicationClient with UserManagementClient {

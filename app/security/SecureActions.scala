@@ -50,8 +50,9 @@ import scala.concurrent.Future
 // so in this instance, ignore the scalastyle method rule
 // scalastyle:off method.name
 
-class SecureActions extends Silhouette[SecurityEnvironment] {
+trait SecureActions {
 
+  val silhouette: Silhouette[SecurityEnvironment]
   val cacheClient: CSRCache
 
   protected[security] def getCachedData(securityUser: SecurityUser)(implicit hc: HeaderCarrier,
@@ -74,7 +75,7 @@ class SecureActions extends Silhouette[SecurityEnvironment] {
    * If the user is inactive then the onNotAuthorized method on global will be called.
    */
   def CSRSecureAction(role: CsrAuthorization)(block: SecuredRequest[_, _] => CachedData => Future[Result]): Action[AnyContent] = {
-    SecuredAction.async { secondRequest =>
+    silhouette.SecuredAction.async { secondRequest =>
       implicit val carrier = hc(secondRequest.request)
       secondRequest.identity.toUserFuture.flatMap {
         case Some(data) => SecuredActionWithCSRAuthorisation(secondRequest, block, role, data, data)
@@ -84,7 +85,7 @@ class SecureActions extends Silhouette[SecurityEnvironment] {
   }
 
   def CSRSecureAppAction(role: CsrAuthorization)(block: SecuredRequest[_, _] => CachedDataWithApp => Future[Result]): Action[AnyContent] = {
-    SecuredAction.async { secondRequest =>
+    silhouette.SecuredAction.async { secondRequest =>
       implicit val carrier = hc(secondRequest.request)
       secondRequest.identity.toUserFuture.flatMap {
         case Some(CachedData(_, None)) => gotoUnauthorised
@@ -97,7 +98,7 @@ class SecureActions extends Silhouette[SecurityEnvironment] {
 
   def CSRUserAwareAction(block: UserAwareRequest[_, _] => Option[CachedData] => Future[Result]): Action[AnyContent] =
     withSession {
-      UserAwareAction.async { request =>
+      silhouette.UserAwareAction.async { request =>
         request.identity match {
           case Some(securityUser: SecurityUser) => securityUser.toUserFuture(hc(request.request)).flatMap(r => block(request)(r))
           case None => block(request)(None)
@@ -119,12 +120,12 @@ class SecureActions extends Silhouette[SecurityEnvironment] {
         Future.successful(role.isAuthorized(cachedData)(originalRequest.request))
     }
 
-    SecuredAction(authorizer).async { securedRequest =>
+    silhouette.SecuredAction(authorizer).async { securedRequest =>
       block(securedRequest)(valueForActionBlock)
     } apply originalRequest
   }
 
-  override val env: SecurityEnvironmentImpl = SecurityEnvironmentImpl
+  val env: SecurityEnvironmentImpl = SecurityEnvironmentImpl
 
   implicit def hc(implicit request: Request[_]): HeaderCarrier
 

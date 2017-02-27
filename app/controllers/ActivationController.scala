@@ -17,12 +17,14 @@
 package controllers
 
 import _root_.forms.ActivateAccountForm
+import com.mohiva.play.silhouette.api.Silhouette
 import config.{ CSRCache, CSRHttp }
 import connectors.{ ApplicationClient, UserManagementClient }
 import connectors.UserManagementClient.{ TokenEmailPairInvalidException, TokenExpiredException }
 import helpers.NotificationType._
+import play.api.Play
 import security.Roles._
-import security.SignInUtils
+import security.{ SecurityEnvironment, SignInUtils, SilhouetteComponent }
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
@@ -32,6 +34,7 @@ object ActivationController extends ActivationController {
   val http = CSRHttp
   val cacheClient = CSRCache
   val userManagementClient = UserManagementClient
+  val silhouette = SilhouetteComponent.silhouette
 }
 
 trait ActivationController extends BaseController with SignInUtils with ApplicationClient {

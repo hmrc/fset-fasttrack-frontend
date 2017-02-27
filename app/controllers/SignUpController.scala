@@ -17,14 +17,15 @@
 package controllers
 
 import _root_.forms.SignUpForm
-import com.mohiva.play.silhouette.api.SignUpEvent
+import com.mohiva.play.silhouette.api.{ SignUpEvent, Silhouette }
 import config.{ CSRCache, CSRHttp }
 import connectors.{ ApplicationClient, UserManagementClient }
 import connectors.ExchangeObjects.Implicits._
 import connectors.UserManagementClient.EmailTakenException
 import helpers.NotificationType._
 import models.SecurityUser
-import security.SignInUtils
+import play.api.Play
+import security.{ SecurityEnvironment, SignInUtils, SilhouetteComponent }
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
@@ -34,6 +35,7 @@ object SignUpController extends SignUpController {
   val http = CSRHttp
   val cacheClient = CSRCache
   val userManagementClient = UserManagementClient
+  val silhouette = SilhouetteComponent.silhouette
 }
 
 trait SignUpController extends BaseController with SignInUtils with ApplicationClient {

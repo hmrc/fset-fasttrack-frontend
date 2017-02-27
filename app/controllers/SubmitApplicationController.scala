@@ -19,6 +19,7 @@ package controllers
 import javax.inject.Inject
 
 import com.google.inject.Guice
+import com.mohiva.play.silhouette.api.Silhouette
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import connectors.ApplicationClient.CannotSubmit
@@ -29,14 +30,14 @@ import play.api.Play
 import security.Roles.{ SubmitApplicationRole, WithdrawApplicationRole }
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
-import security.SecureActions
+import security.{ SecureActions, SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
 
 object SubmitApplicationController extends SubmitApplicationController {
   val http = CSRHttp
   val cacheClient = CSRCache
-  val silhouette = Play.current.injector.instanceOf[SecureActions]
+  val silhouette = SilhouetteComponent.silhouette
 }
 
 trait SubmitApplicationController extends BaseController with ApplicationClient {

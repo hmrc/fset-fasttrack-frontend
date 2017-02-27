@@ -27,7 +27,7 @@ object FrontendBuild extends Build with MicroService {
 
 private object Versions {
 
-  val ficus         = "1.1.2"
+  val ficus         = "1.2.6"
   //val cacheClient   = "5.6.0"
   val cacheClient   = "6.1.0"
   //val frontend      = "6.7.0"
@@ -51,9 +51,9 @@ private object Versions {
   val hmrctest      = "2.3.0"
   val scalatestplus = "1.2.0"
   val silhouette    = "4.0.0"
-  //val silhouette    = "3.0.4" - kjh tried this
   val playWhitelist = "1.2.0"
   val playFilters   = "5.9.0"
+  val codingWellScalaGuice = "4.1.0"
 }
 
 private object AppDependencies {
@@ -63,7 +63,7 @@ private object AppDependencies {
 
 
   val compile = Seq(
-    "net.ceedubs"               %% "ficus"                                    % ficus,
+    "com.iheart"                %% "ficus"                                    % ficus,
     "uk.gov.hmrc"               %% "http-caching-client"                      % cacheClient,
     "uk.gov.hmrc"               %% "frontend-bootstrap"                       % frontend,
     "uk.gov.hmrc"               %% "play-config"                              % playConfig,
@@ -77,7 +77,8 @@ private object AppDependencies {
     "com.mohiva"                %% "play-silhouette-password-bcrypt"          % silhouette,
     "com.mohiva"                %% "play-silhouette-crypto-jca"               % silhouette,
     "com.mohiva"                %% "play-silhouette-persistence"              % silhouette,
-    "uk.gov.hmrc"               %% "play-filters"                             % playFilters
+    "uk.gov.hmrc"               %% "play-filters"                             % playFilters,
+    "net.codingwell"            %% "scala-guice"                              % codingWellScalaGuice
   )
 
   val test = Seq(

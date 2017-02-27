@@ -16,10 +16,12 @@
 
 package controllers
 
-import config.{CSRCache, CSRHttp}
+import com.mohiva.play.silhouette.api.SilhouetteProvider
+import config.{ CSRCache, CSRHttp, SecurityEnvironmentImpl }
 import play.api.mvc.Action
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import security.{ SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
 
@@ -30,6 +32,7 @@ import scala.concurrent.Future
 object ApplicationController extends ApplicationController {
   val http = CSRHttp
   val cacheClient = CSRCache
+  val silhouette = SilhouetteComponent.silhouette
 }
 
 trait ApplicationController extends BaseController {

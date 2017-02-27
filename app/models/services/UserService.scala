@@ -16,13 +16,15 @@
 
 package models.services
 
+import com.google.inject.ImplementedBy
 import com.mohiva.play.silhouette.api.services.IdentityService
-import models.{CachedData, SecurityUser, UniqueIdentifier}
+import models.{ CachedData, SecurityUser, UniqueIdentifier }
 import play.api.mvc.Request
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
+@ImplementedBy(classOf[UserCacheService])
 trait UserService extends IdentityService[SecurityUser] {
 
   def save(user: CachedData)(implicit hc: HeaderCarrier): Future[CachedData]

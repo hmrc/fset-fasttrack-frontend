@@ -82,7 +82,7 @@ trait SecurityEnvironmentImpl extends Environment[security.SecurityEnvironment] 
 
   override lazy val eventBus: EventBus = EventBus()
 
-  override val userService = new UserCacheService(ApplicationClient, UserManagementClient)
+  override val userService = new UserCacheService
   val identityService = userService
 
   override lazy val authenticatorService = new SessionAuthenticatorService(SessionAuthenticatorSettings(

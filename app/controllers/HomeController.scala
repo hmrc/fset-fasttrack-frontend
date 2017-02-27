@@ -17,6 +17,7 @@
 package controllers
 
 import _root_.forms.WithdrawApplicationForm
+import com.mohiva.play.silhouette.api.Silhouette
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient.CannotWithdraw
 import connectors.ExchangeObjects.WithdrawApplicationRequest
@@ -26,11 +27,12 @@ import helpers.NotificationType._
 import models.ApplicationData.ApplicationStatus
 import models.page.DashboardPage
 import models.{ CachedData, CachedDataWithApp }
-import security.Roles
+import play.api.Play
+import security.{ Roles, SecurityEnvironment, SilhouetteComponent }
 import security.Roles._
-
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+
 import scala.concurrent.Future
 
 object HomeController extends HomeController {
@@ -39,6 +41,7 @@ object HomeController extends HomeController {
 
   val onlineTestClient = OnlineTestClient
   val applicationClient = ApplicationClient
+  val silhouette = SilhouetteComponent.silhouette
 }
 
 trait HomeController extends BaseController {
