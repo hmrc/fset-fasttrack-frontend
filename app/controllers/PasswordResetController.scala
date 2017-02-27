@@ -36,7 +36,7 @@ object PasswordResetController extends PasswordResetController {
   val http = CSRHttp
   val cacheClient = CSRCache
   val userManagementClient = UserManagementClient
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait PasswordResetController extends BaseController with ApplicationClient with SignInUtils {

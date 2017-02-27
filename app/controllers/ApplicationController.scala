@@ -32,7 +32,7 @@ import scala.concurrent.Future
 object ApplicationController extends ApplicationController {
   val http = CSRHttp
   val cacheClient = CSRCache
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait ApplicationController extends BaseController {

@@ -40,7 +40,7 @@ object SchemeController extends SchemeController {
   val config = FrontendAppConfig
   val cacheClient = CSRCache
   val applicationClient = ApplicationClient
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait SchemeController extends BaseController {

@@ -35,11 +35,15 @@ trait SilhouetteComponent
 object SilhouetteComponent extends SilhouetteComponent {
   def messagesApi: MessagesApi = Play.current.injector.instanceOf(classOf[MessagesApi])
 
-  def silhouette: Silhouette[SecurityEnvironment] =
-    new SilhouetteProvider[SecurityEnvironment](
+  def silhouette: Silhouette[SecurityEnvironment] = {
+    print("========= Initting silhouette" + "\n\n")
+    val res = new SilhouetteProvider[SecurityEnvironment](
       environment,
       securedAction,
       unsecuredAction,
       userAwareAction
     )
+    print("========= Silhouette Res = " + res + "\n\n")
+    res
+  }
 }

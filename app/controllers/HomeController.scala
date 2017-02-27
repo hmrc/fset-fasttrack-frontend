@@ -41,7 +41,7 @@ object HomeController extends HomeController {
 
   val onlineTestClient = OnlineTestClient
   val applicationClient = ApplicationClient
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait HomeController extends BaseController {

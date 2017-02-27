@@ -40,7 +40,7 @@ import scala.concurrent.Future
 object FastTrackApplication extends FastTrackApplication {
   val http = CSRHttp
   val cacheClient = CSRCache
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait FastTrackApplication extends BaseController with ApplicationClient with UserManagementClient {

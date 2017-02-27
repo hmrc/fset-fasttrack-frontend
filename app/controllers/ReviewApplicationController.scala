@@ -30,7 +30,7 @@ import security.{ SecurityEnvironment, SilhouetteComponent }
 object ReviewApplicationController extends ReviewApplicationController(ApplicationClient, CSRCache) {
   override val http: CSRHttp = ApplicationClient.http
   val cacheClient = CSRCache
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 abstract class ReviewApplicationController(applicationClient: ApplicationClient, cacheClient: CSRCache)

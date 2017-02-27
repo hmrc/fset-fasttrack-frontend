@@ -34,7 +34,7 @@ import scala.concurrent.Future
 object OnlineTestController extends OnlineTestController {
   val http = CSRHttp
   val cacheClient = CSRCache
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
   val onlineTestClient = OnlineTestClient
 }
 

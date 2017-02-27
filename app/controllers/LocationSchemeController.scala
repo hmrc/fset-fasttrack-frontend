@@ -41,5 +41,5 @@ object LocationSchemeController extends LocationSchemeController {
   val http = CSRHttp
   val applicationClient = ApplicationClient
   override val cacheClient: CSRCache = CSRCache
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }

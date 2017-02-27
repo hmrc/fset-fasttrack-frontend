@@ -34,7 +34,7 @@ import scala.concurrent.Future
 object AssistanceDetailsController extends AssistanceDetailsController(ApplicationClient, CSRCache) {
   override val http: CSRHttp = ApplicationClient.http
   val cacheClient = CSRCache
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 abstract class AssistanceDetailsController(applicationClient: ApplicationClient, cacheClient: CSRCache)

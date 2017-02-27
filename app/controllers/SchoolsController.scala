@@ -33,7 +33,7 @@ import scala.language.reflectiveCalls
 object SchoolsController extends SchoolsController {
   val http = CSRHttp
   val cacheClient = CSRCache
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait SchoolsController extends BaseController with SchoolsClient {

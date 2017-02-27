@@ -38,7 +38,7 @@ import scala.language.reflectiveCalls
 object QuestionnaireController extends QuestionnaireController {
   val http = CSRHttp
   val cacheClient = CSRCache
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait QuestionnaireController extends BaseController with ApplicationClient {

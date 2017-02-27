@@ -32,7 +32,7 @@ import scala.concurrent.Future
 object SignInController extends SignInController {
   val http = CSRHttp
   val cacheClient = CSRCache
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette: Silhouette[SecurityEnvironment] = SilhouetteComponent.silhouette
 }
 
 trait SignInController extends BaseController with SignInUtils with ApplicationClient {

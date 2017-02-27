@@ -29,7 +29,7 @@ import scala.concurrent.Future
 object LockAccountController extends LockAccountController {
   val http = CSRHttp
   val cacheClient = CSRCache
-  val silhouette = SilhouetteComponent.silhouette
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait LockAccountController extends BaseController {
