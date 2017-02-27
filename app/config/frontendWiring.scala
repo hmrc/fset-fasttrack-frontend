@@ -105,7 +105,7 @@ trait SecurityEnvironmentImpl extends Environment[security.SecurityEnvironment] 
   val http: CSRHttp = CSRHttp
 }
 
-object WhitelistFilter extends AkamaiWhitelistFilter with RunMode with MicroserviceFilterSupport{
+object WhitelistFilter extends AkamaiWhitelistFilter with RunMode with MicroserviceFilterSupport {
 
   // Whitelist Configuration
   private def whitelistConfig(key: String): Seq[String] =

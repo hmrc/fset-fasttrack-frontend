@@ -22,19 +22,7 @@ import config.SecurityEnvironmentImpl
 import play.api.Play
 import play.api.i18n.MessagesApi
 
-trait SilhouetteComponent
-  extends SecuredActionComponents
-    with SecuredErrorHandlerComponents
-    with UnsecuredActionComponents
-    with UnsecuredErrorHandlerComponents
-    with UserAwareActionComponents {
-
-  val environment: Environment[SecurityEnvironment] = SecurityEnvironmentImpl
-}
-
 object SilhouetteComponent extends SilhouetteComponent {
-  def messagesApi: MessagesApi = Play.current.injector.instanceOf(classOf[MessagesApi])
-
   def silhouette: Silhouette[SecurityEnvironment] = {
     print("========= Initting silhouette" + "\n\n")
     val res = new SilhouetteProvider[SecurityEnvironment](
@@ -46,4 +34,17 @@ object SilhouetteComponent extends SilhouetteComponent {
     print("========= Silhouette Res = " + res + "\n\n")
     res
   }
+}
+
+trait SilhouetteComponent
+  extends SecuredActionComponents
+    with SecuredErrorHandlerComponents
+    with UnsecuredActionComponents
+    with UnsecuredErrorHandlerComponents
+    with UserAwareActionComponents {
+
+  def messagesApi: MessagesApi = Play.current.injector.instanceOf(classOf[MessagesApi])
+
+  override lazy val securedErrorHandler = new CustomSecuredErrorHandler(messagesApi)
+  val environment: Environment[SecurityEnvironment] = SecurityEnvironmentImpl
 }

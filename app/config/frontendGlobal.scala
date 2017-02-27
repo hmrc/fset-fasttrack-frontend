@@ -47,21 +47,6 @@ import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CustomSecuredErrorHandler @Inject() (val messagesApi: MessagesApi) extends SecuredErrorHandler with I18nSupport {
-
-  override def onNotAuthorized(implicit request: RequestHeader): Future[Result] = {
-    val sec = request.asInstanceOf[SecuredRequest[SecurityEnvironment, SecurityUser]]
-    val headerCarrier = HeaderCarrier.fromHeadersAndSession(sec.headers, Some(sec.session))
-    sec.identity.toUserFuture(headerCarrier).map {
-      case Some(user: CachedData) if user.user.isActive => Redirect(routes.HomeController.present).flashing(danger("access.denied"))
-      case _ => Redirect(routes.ActivationController.present).flashing(danger("access.denied"))
-    }
-  }
-
-  override def onNotAuthenticated(implicit request: RequestHeader): Future[Result] =
-    Future.successful(Redirect(routes.SignInController.present))
-}
-
 abstract class DevelopmentFrontendGlobal
   extends DefaultFrontendGlobal {
 
@@ -92,7 +77,7 @@ object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSuppor
   override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging
 }
 
-object AuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport{
+object AuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport {
 
   override lazy val maskedFormFields = Seq(
     SignInForm.passwordField,
