@@ -26,34 +26,7 @@ object FrontendBuild extends Build with MicroService {
 }
 
 private object Versions {
-
-  val ficus         = "1.2.6"
-  //val cacheClient   = "5.6.0"
-  val cacheClient   = "6.1.0"
-  //val frontend      = "6.7.0"
-  val frontend      = "7.12.0"
-  //val playConfig    = "2.0.1"
-  //val playConfig    = "4.1.0"
-  val playConfig    = "3.1.0"
-  //val playHealth    = "1.1.0"
-  val playHealth    = "2.1.0"
-  val urlBuilder    = "1.0.0"
-  //val httpclient    = "4.3.6"
-  val httpclient    = "4.5.2" // kjh decided to change this
-  //val jsonLogger    = "2.1.1"
-  val logbackJsonLoggerVersion = "3.1.0"
-  //val scalatest     = "2.2.2"
-  val scalatest     = "2.2.6"
-  val pegdown       = "1.4.2"
-  val jsoup         = "1.7.3"
-  val wiremock      = "1.57"
-  //val hmrctest      = "1.4.0"
-  val hmrctest      = "2.3.0"
-  val scalatestplus = "1.2.0"
   val silhouette    = "4.0.0"
-  val playWhitelist = "1.2.0"
-  val playFilters   = "5.9.0"
-  val codingWellScalaGuice = "4.1.0"
 }
 
 private object AppDependencies {
@@ -63,31 +36,30 @@ private object AppDependencies {
 
 
   val compile = Seq(
-    "com.iheart"                %% "ficus"                                    % ficus,
-    "uk.gov.hmrc"               %% "http-caching-client"                      % cacheClient,
-    "uk.gov.hmrc"               %% "frontend-bootstrap"                       % frontend,
-    "uk.gov.hmrc"               %% "play-config"                              % playConfig,
-    //"uk.gov.hmrc"               %% "play-json-logger"                         % jsonLogger,
-    "uk.gov.hmrc"               %% "logback-json-logger"                      % logbackJsonLoggerVersion,
-    "uk.gov.hmrc"               %% "play-health"                              % playHealth,
-    "uk.gov.hmrc"               %% "play-whitelist-filter"                    % playWhitelist,
-    "uk.gov.hmrc"               %% "url-builder"                              % urlBuilder,
-    "org.apache.httpcomponents" %  "httpclient"                               % httpclient,
+    "com.iheart"                %% "ficus"                                    % "1.2.6",
+    "uk.gov.hmrc"               %% "http-caching-client"                      % "6.1.0",
+    "uk.gov.hmrc"               %% "frontend-bootstrap"                       % "7.12.0",
+    "uk.gov.hmrc"               %% "play-config"                              % "4.2.0",
+    "uk.gov.hmrc"               %% "logback-json-logger"                      % "3.1.0",
+    "uk.gov.hmrc"               %% "play-health"                              % "2.1.0",
+    "uk.gov.hmrc"               %% "play-whitelist-filter"                    % "1.2.0",
+    "uk.gov.hmrc"               %% "url-builder"                              % "1.0.0",
+    "org.apache.httpcomponents" %  "httpclient"                               % "4.5.2",
     "com.mohiva"                %% "play-silhouette"                          % silhouette,
     "com.mohiva"                %% "play-silhouette-password-bcrypt"          % silhouette,
     "com.mohiva"                %% "play-silhouette-crypto-jca"               % silhouette,
     "com.mohiva"                %% "play-silhouette-persistence"              % silhouette,
-    "uk.gov.hmrc"               %% "play-filters"                             % playFilters,
-    "net.codingwell"            %% "scala-guice"                              % codingWellScalaGuice
+    "uk.gov.hmrc"               %% "play-filters"                             % "5.9.0",
+    "net.codingwell"            %% "scala-guice"                              % "4.1.0"
   )
 
   val test = Seq(
-    "org.scalatest"             %% "scalatest"                    % scalatest     % "test",
-    "org.scalatestplus"         %% "play"                         % scalatestplus % "test",
-    "org.pegdown"               %  "pegdown"                      % pegdown       % "test",
-    "org.jsoup"                 %  "jsoup"                        % jsoup         % "test",
-    "com.github.tomakehurst"    %  "wiremock"                     % wiremock      % "test",
-    "uk.gov.hmrc"               %% "hmrctest"                     % hmrctest      % "test",
+    "org.scalatest"             %% "scalatest"                    % "2.2.6"       % "test",
+    "org.scalatestplus"         %% "play"                         % "1.2.0"       % "test",
+    "org.pegdown"               %  "pegdown"                      % "1.4.2"       % "test",
+    "org.jsoup"                 %  "jsoup"                        % "1.7.3"       % "test",
+    "com.github.tomakehurst"    %  "wiremock"                     % "1.57"        % "test",
+    "uk.gov.hmrc"               %% "hmrctest"                     % "2.3.0"       % "test",
     "com.mohiva"                %% "play-silhouette-testkit"      % silhouette    % "test"
   )
 

@@ -22,10 +22,12 @@ import com.mohiva.play.silhouette.api.util.Credentials
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import helpers.NotificationType._
-import play.api.Play
+import play.api.{ Application, Play }
 import security._
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import play.api.mvc._
+import play.filters.csrf._
 
 import scala.concurrent.Future
 
@@ -37,14 +39,18 @@ object SignInController extends SignInController {
 
 trait SignInController extends BaseController with SignInUtils with ApplicationClient {
 
-  val present = CSRUserAwareAction { implicit request =>
-    implicit user =>
-      request.identity match {
-        case None =>
-          Future.successful(Ok(views.html.index.guestwelcome(SignInForm.form)))
-        case Some(u) =>
-          Future.successful(Redirect(routes.HomeController.present()))
-      }
+  def addToken: CSRFAddToken = Play.current.injector.instanceOf(classOf[CSRFAddToken])
+
+  val present = addToken {
+    CSRUserAwareAction { implicit request =>
+      implicit user =>
+        request.identity match {
+          case None =>
+            Future.successful(Ok(views.html.index.guestwelcome(SignInForm.form)))
+          case Some(u) =>
+            Future.successful(Redirect(routes.HomeController.present()))
+        }
+    }
   }
 
   val signIn = CSRUserAwareAction { implicit request =>
