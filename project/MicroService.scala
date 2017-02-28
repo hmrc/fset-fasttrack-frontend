@@ -57,6 +57,7 @@ trait MicroService {
       targetJvm := "jvm-1.8",
       scalaVersion := "2.11.8",
       libraryDependencies ++= appDependencies,
+      libraryDependencies += filters,
       parallelExecution in Test := false,
       fork in Test := true,
       javaOptions in Test += "-Dmicroservice.services.user-management.url.host=http://localhost:11111",
