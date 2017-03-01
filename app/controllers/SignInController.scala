@@ -39,18 +39,14 @@ object SignInController extends SignInController {
 
 trait SignInController extends BaseController with SignInUtils with ApplicationClient {
 
-  def addToken: CSRFAddToken = Play.current.injector.instanceOf(classOf[CSRFAddToken])
-
-  val present = addToken {
-    CSRUserAwareAction { implicit request =>
-      implicit user =>
-        request.identity match {
-          case None =>
-            Future.successful(Ok(views.html.index.guestwelcome(SignInForm.form)))
-          case Some(u) =>
-            Future.successful(Redirect(routes.HomeController.present()))
-        }
-    }
+  val present = CSRUserAwareAction { implicit request =>
+    implicit user =>
+      request.identity match {
+        case None =>
+          Future.successful(Ok(views.html.index.guestwelcome(SignInForm.form)))
+        case Some(u) =>
+          Future.successful(Redirect(routes.HomeController.present()))
+      }
   }
 
   val signIn = CSRUserAwareAction { implicit request =>

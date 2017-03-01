@@ -22,6 +22,10 @@ POST        /activation                                             controllers.
 GET         /signin                                                 controllers.SignInController.present
 POST        /signin                                                 controllers.SignInController.signIn
 GET         /signout                                                controllers.SignInController.signOut
+
+GET         /simple                                                 controllers.SimpleController.present
+POST        /simple                                                 controllers.SimpleController.signIn
+
 GET         /password/forgot                                        controllers.PasswordResetController.presentCode(email: Option[String])
 POST        /password/forgot                                        controllers.PasswordResetController.submitCode
 GET         /password/reset                                         controllers.PasswordResetController.presentReset(email: Option[String])
