@@ -26,6 +26,7 @@ import helpers.NotificationType._
 import models.ApplicationData.ApplicationStatus
 import models.page.DashboardPage
 import models.{ CachedData, CachedDataWithApp }
+import play.api.Logger
 import security.Roles
 import security.Roles._
 
@@ -82,6 +83,10 @@ trait HomeController extends BaseController {
           } else {
             Ok(views.html.home.submit_disabled(user))
           }
+          // FSET-1288 logging
+        case ex: Throwable =>
+          Logger.error("Exception when constructing dashboard. CachedData: " + user, ex)
+          throw ex
       }
 
   }
