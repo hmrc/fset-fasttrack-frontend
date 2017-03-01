@@ -38,10 +38,10 @@ private object AppDependencies {
   val compile = Seq(
     "com.iheart"                %% "ficus"                                    % "1.2.6",
     "uk.gov.hmrc"               %% "http-caching-client"                      % "6.1.0",
-    "uk.gov.hmrc"               %% "frontend-bootstrap"                       % "7.12.0",
-    "uk.gov.hmrc"               %% "play-config"                              % "4.2.0",
+    "uk.gov.hmrc"               %% "frontend-bootstrap"                       % "7.10.0",
+    "uk.gov.hmrc"               %% "play-config"                              % "3.1.0",
     "uk.gov.hmrc"               %% "logback-json-logger"                      % "3.1.0",
-    "uk.gov.hmrc"               %% "play-health"                              % "2.1.0",
+    "uk.gov.hmrc"               %% "play-health"                              % "2.0.0",
     "uk.gov.hmrc"               %% "play-whitelist-filter"                    % "1.2.0",
     "uk.gov.hmrc"               %% "url-builder"                              % "1.0.0",
     "org.apache.httpcomponents" %  "httpclient"                               % "4.5.2",
@@ -49,7 +49,7 @@ private object AppDependencies {
     "com.mohiva"                %% "play-silhouette-password-bcrypt"          % silhouette,
     "com.mohiva"                %% "play-silhouette-crypto-jca"               % silhouette,
     "com.mohiva"                %% "play-silhouette-persistence"              % silhouette,
-    "uk.gov.hmrc"               %% "play-filters"                             % "5.8.0",
+    "uk.gov.hmrc"               %% "play-filters"                             % "5.6.0",
     "net.codingwell"            %% "scala-guice"                              % "4.1.0"
   )
 
