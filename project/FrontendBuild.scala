@@ -49,7 +49,7 @@ private object AppDependencies {
     "com.mohiva"                %% "play-silhouette-password-bcrypt"          % silhouette,
     "com.mohiva"                %% "play-silhouette-crypto-jca"               % silhouette,
     "com.mohiva"                %% "play-silhouette-persistence"              % silhouette,
-    "uk.gov.hmrc"               %% "play-filters"                             % "5.9.0",
+    "uk.gov.hmrc"               %% "play-filters"                             % "5.8.0",
     "net.codingwell"            %% "scala-guice"                              % "4.1.0"
   )
 

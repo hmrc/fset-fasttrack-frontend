@@ -88,7 +88,6 @@ trait HomeController extends BaseController {
             Ok(views.html.home.submit_disabled(user))
           }
       }
-
   }
 
   val resume = CSRSecureAppAction(ActiveUserRole) { implicit request =>

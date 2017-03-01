@@ -23,7 +23,7 @@ import play.api.Play
 import play.api.i18n.MessagesApi
 
 object SilhouetteComponent extends SilhouetteComponent {
-  def silhouette: Silhouette[SecurityEnvironment] = {
+  val silhouette: Silhouette[SecurityEnvironment] = {
     print("========= Initting silhouette" + "\n\n")
     val res = new SilhouetteProvider[SecurityEnvironment](
       environment,
