@@ -20,6 +20,7 @@ import controllers.BaseSpec
 import forms.SignUpForm.Data
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
 
 class SignUpFormSpec extends BaseSpec {
 

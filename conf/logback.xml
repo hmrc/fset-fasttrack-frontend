@@ -67,8 +67,6 @@
     <logger name="play.api.libs.concurrent.ActorSystemProvider" level="INFO"/>
     <logger name="play.core.netty.utils.ServerCookieDecoder" level="INFO"/>
 
-    <logger name="play.filters" level="TRACE"/>
-
     <root level="DEBUG">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>

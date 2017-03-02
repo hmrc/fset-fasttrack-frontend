@@ -88,12 +88,12 @@ object DashboardPage {
     }
   }
 
-  def fromUser(user: CachedData)(implicit request: Request[_], lang: Lang): DashboardPage = status(user) match {
+  def fromUser(user: CachedData)(implicit request: RequestHeader, lang: Lang): DashboardPage = status(user) match {
     case Some(ApplicationStatus.WITHDRAWN) => withdrawn(user)
     case _ => activeApplication(user)
   }
 
-  private def withdrawn(user: CachedData)(implicit request: Request[_], lang: Lang) = {
+  private def withdrawn(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
     val progress = user.application.map(_.progress)
     val latestStepBeforeWithdrawn = Step.determineStep(progress)
 
@@ -105,7 +105,7 @@ object DashboardPage {
     }
   }
 
-  private def activeApplication(user: CachedData)(implicit request: Request[_], lang: Lang): DashboardPage = {
+  private def activeApplication(user: CachedData)(implicit request: RequestHeader, lang: Lang): DashboardPage = {
     val firstStep = if (RoleUtils.activeUserWithApp(user)) ProgressActive else ProgressInactive
     val secondStep = if (DisplayOnlineTestSectionRole.isAuthorized(user)) ProgressActive else ProgressInactive
     val isStatusOnlineTestFailedNotified = user.application.exists(_.applicationStatus == ApplicationStatus.ONLINE_TEST_FAILED_NOTIFIED)

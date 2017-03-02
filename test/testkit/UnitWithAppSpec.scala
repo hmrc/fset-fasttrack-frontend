@@ -16,15 +16,49 @@
 
 package testkit
 
+import akka.stream.Materializer
+import com.google.inject.AbstractModule
+import com.kenshoo.play.metrics.PlayModule
+import com.mohiva.play.silhouette.api.{ Environment, LoginInfo, Silhouette, SilhouetteProvider }
+import com.mohiva.play.silhouette.test.FakeEnvironment
 import controllers.UnitSpec
+import models.SecurityUser
+import net.codingwell.scalaguice.ScalaModule
 import org.scalatestplus.play.OneAppPerSuite
-import play.api.test.FakeApplication
+import play.api.{ Application, Play }
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{ JsValue, Json, Writes }
+import play.api.test.{ FakeApplication, FakeHeaders, FakeRequest }
+import security.{ SecurityEnvironment, SilhouetteComponent }
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 abstract class UnitWithAppSpec extends UnitSpec with OneAppPerSuite {
 
   // Suppress logging during tests
   val additionalConfig = Map("logger.application" -> "ERROR")
 
-  override implicit lazy val app: FakeApplication = new FakeApplication(additionalConfiguration = additionalConfig)
+  val AppId = "AppId"
+  val UserId = "UserId"
 
+  override implicit lazy val app: Application = new GuiceApplicationBuilder()
+    .overrides(new SilhouetteFakeModule())
+    .disable[PlayModule]
+    .build
+
+  implicit def mat: Materializer = Play.materializer(app)
+}
+
+class SilhouetteFakeModule extends AbstractModule with SilhouetteFakeEnv with ScalaModule {
+  def configure(): Unit = {
+    bind[Environment[SecurityEnvironment]].toInstance(env)
+  }
+}
+
+trait SilhouetteFakeEnv {
+  private val identity = SecurityUser("foo")
+
+  implicit val env: Environment[SecurityEnvironment] = FakeEnvironment[SecurityEnvironment](
+    Seq(LoginInfo("foo", "foo") -> identity)
+  )
 }
