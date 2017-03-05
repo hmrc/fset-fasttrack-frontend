@@ -96,7 +96,7 @@ package object forms {
   }
   // scalastyle:on
 
-  def getFormattedAnswer(answerField: Option[String], otherField: Option[String] = None) = {
+  def getFormattedAnswer(answerField: Option[String], otherField: Option[String] = None): Answer = {
     val unknown = Messages("answer.unknown")
     answerField match {
       case None | Some(`unknown`) => Answer(None, otherField, Some(true))

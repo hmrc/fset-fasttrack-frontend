@@ -18,7 +18,7 @@ package testkit
 
 import akka.stream.Materializer
 import com.google.inject.AbstractModule
-import com.kenshoo.play.metrics.PlayModule
+import com.kenshoo.play.metrics.{ MetricsFilter, PlayModule }
 import com.mohiva.play.silhouette.api.{ Environment, LoginInfo, Silhouette, SilhouetteProvider }
 import com.mohiva.play.silhouette.test.FakeEnvironment
 import controllers.UnitSpec

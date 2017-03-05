@@ -16,9 +16,11 @@
 
 package forms
 
+import play.api.i18n.Messages
+
 object EducationQuestionnaireFormExamples {
 
-  final val UnknownText = "answer.unknown" // workaround for i18n messages not available
+  final val UnknownText = "I don't know/prefer not to say" // workaround for i18n messages not available
 
   val FullValidForm = EducationQuestionnaireForm.Data(
     liveInUKBetween14and18 = "Yes",
