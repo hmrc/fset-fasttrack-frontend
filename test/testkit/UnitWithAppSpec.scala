@@ -31,8 +31,6 @@ import play.api.libs.json.{ JsValue, Json, Writes }
 import play.api.test.{ FakeApplication, FakeHeaders, FakeRequest }
 import security.{ SecurityEnvironment, SilhouetteComponent }
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 abstract class UnitWithAppSpec extends UnitSpec with OneAppPerSuite {
 
   // Suppress logging during tests
@@ -47,18 +45,4 @@ abstract class UnitWithAppSpec extends UnitSpec with OneAppPerSuite {
     .build
 
   implicit def mat: Materializer = Play.materializer(app)
-}
-
-class SilhouetteFakeModule extends AbstractModule with SilhouetteFakeEnv with ScalaModule {
-  def configure(): Unit = {
-    bind[Environment[SecurityEnvironment]].toInstance(env)
-  }
-}
-
-trait SilhouetteFakeEnv {
-  private val identity = SecurityUser("foo")
-
-  implicit val env: Environment[SecurityEnvironment] = FakeEnvironment[SecurityEnvironment](
-    Seq(LoginInfo("foo", "foo") -> identity)
-  )
 }
