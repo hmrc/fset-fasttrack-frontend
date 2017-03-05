@@ -24,15 +24,12 @@ import play.api.i18n.MessagesApi
 
 object SilhouetteComponent extends SilhouetteComponent {
   lazy val silhouette: Silhouette[SecurityEnvironment] = {
-    print("========= Initting silhouette" + "\n\n")
-    val res = new SilhouetteProvider[SecurityEnvironment](
+    new SilhouetteProvider[SecurityEnvironment](
       environment,
       securedAction,
       unsecuredAction,
       userAwareAction
     )
-    print("========= Silhouette Res = " + res + "\n\n")
-    res
   }
 }
 
