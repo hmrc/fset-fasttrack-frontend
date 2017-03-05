@@ -28,7 +28,8 @@ import models.ApplicationData.ApplicationStatus
 import models.page.DashboardPage
 import models.{ CachedData, CachedDataWithApp }
 import play.api.Play
-import security.{ Roles, SecurityEnvironment, SilhouetteComponent }
+import security.{ Roles, SilhouetteComponent }
+import play.api.Logger
 import security.Roles._
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
@@ -87,6 +88,10 @@ trait HomeController extends BaseController {
           } else {
             Ok(views.html.home.submit_disabled(user))
           }
+          // FSET-1288 logging
+        case ex: Throwable =>
+          Logger.error("Exception when constructing dashboard. CachedData: " + user, ex)
+          throw ex
       }
   }
 

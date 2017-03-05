@@ -25,6 +25,9 @@ import com.mohiva.play.silhouette.api.services.AuthenticatorService
 import com.mohiva.play.silhouette.api.util.{ Clock, FingerprintGenerator }
 import com.mohiva.play.silhouette.impl.authenticators.{ SessionAuthenticator, SessionAuthenticatorService, SessionAuthenticatorSettings }
 import com.mohiva.play.silhouette.impl.util.DefaultFingerprintGenerator
+import com.mohiva.play.silhouette.api.EventBus
+import com.mohiva.play.silhouette.api.util.{ Clock, FingerprintGenerator }
+import com.mohiva.play.silhouette.impl.authenticators.{ SessionAuthenticatorService, SessionAuthenticatorSettings }
 import connectors.{ ApplicationClient, UserManagementClient }
 import models.services.{ UserCacheService, UserService }
 import play.api.Play
