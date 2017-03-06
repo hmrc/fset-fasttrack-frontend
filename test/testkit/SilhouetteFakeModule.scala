@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package testkit
 
-import play.api.mvc.{ Action, Controller }
+import com.google.inject.AbstractModule
+import com.mohiva.play.silhouette.api.Environment
+import net.codingwell.scalaguice.ScalaModule
+import security.SecurityEnvironment
 
-object LandingPageController extends LandingPageController
-
-trait LandingPageController extends Controller {
-  def index = Action {
-    Redirect(routes.SignInController.signIn)
+class SilhouetteFakeModule extends AbstractModule with SilhouetteFakeEnv with ScalaModule {
+  def configure(): Unit = {
+    bind[Environment[SecurityEnvironment]].toInstance(env)
   }
 }

@@ -1,5 +1,5 @@
 @import models.view.SimpleAnswerOptions
-@(questionnaireForm: Form[_root_.forms.ParentalOccupationQuestionnaireForm.Data])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+@(questionnaireForm: Form[_root_.forms.ParentalOccupationQuestionnaireForm.Data])(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, messages: Messages)
 
 @import views.html.widgets.{pageProgress, radioBoxHorizontal, radioBoxVertical, radioBoxOccupation, radioBoxOccupationFirst}
 

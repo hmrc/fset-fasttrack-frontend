@@ -5,7 +5,7 @@
         assistanceDetails: connectors.exchange.AssistanceDetails,
         schemeLocations: List[LocationSchemes],
         schemes: List[SchemeInfo],
-        applicationData: models.ApplicationData)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+        applicationData: models.ApplicationData)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, messages: Messages)
 
 @import models.ApplicationData.ApplicationStatus._
 @import security.Roles._

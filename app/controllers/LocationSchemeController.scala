@@ -16,11 +16,14 @@
 
 package controllers
 
-import config.{CSRCache, CSRHttp}
+import com.mohiva.play.silhouette.api.Silhouette
+import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
+import play.api.Play
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{ Action, AnyContent }
 import security.Roles.SchemesRole
+import security.{ SecurityEnvironment, SilhouetteComponent }
 
 trait LocationSchemeController extends BaseController {
   val applicationClient: ApplicationClient
@@ -38,4 +41,5 @@ object LocationSchemeController extends LocationSchemeController {
   val http = CSRHttp
   val applicationClient = ApplicationClient
   override val cacheClient: CSRCache = CSRCache
+  lazy val silhouette = SilhouetteComponent.silhouette
 }

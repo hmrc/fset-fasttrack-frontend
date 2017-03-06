@@ -16,21 +16,25 @@
 
 package controllers
 
+import com.mohiva.play.silhouette.api.Silhouette
 import config.{ CSRCache, CSRHttp }
 import connectors.OnlineTestClient
 import connectors.OnlineTestClient.PdfReportNotFoundException
 import helpers.NotificationType.warning
 import models.UniqueIdentifier
-import play.api.Logger
+import play.api.{ Logger, Play }
 import play.api.mvc.{ Action, AnyContent }
 import security.Roles.{ DisplayOnlineTestSectionRole, OnlineTestInvitedRole }
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
+import security.{ SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
 
 object OnlineTestController extends OnlineTestController {
   val http = CSRHttp
   val cacheClient = CSRCache
-
+  lazy val silhouette = SilhouetteComponent.silhouette
   val onlineTestClient = OnlineTestClient
 }
 
