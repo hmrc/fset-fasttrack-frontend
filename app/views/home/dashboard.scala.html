@@ -216,10 +216,6 @@
                                         } else {
                                             @if(AssessmentCentrePassedNotifiedRole.isAuthorized(usr) && onlineTest.exists(_.pdfReportAvailable)) {
                                                 <p><i class="fa fa-check the-icon"></i>Congratulations! We're pleased to let you know you've successfully passed the Fast Track assessment.</p>
-                                                <p>As soon as we’ve matched you to a role, we'll confirm your allocated scheme, department and location.</p>
-                                                <p>We'll also ask you to give us the information we need to complete a pre-appointment security check. Your offer depends upon successful completion of the checks. If you give information you know is false, or you withhold any relevant information, your application may be rejected. Or, if you've already been appointed, you may be dismissed.</p>
-                                                <p>We aim to match you to a role on your preferred scheme and in your preferred location. If we can't do this, we'll always aim to offer an alternative role or location. In the very few cases this isn't possible, we'll hold you on a reserve list.</p>
-                                                <p>We recommend you don't resign from any employment until you've received a formal offer of appointment. If you withdraw your application, it won't be possible to re-instate your application at a later date.</p>
                                             } else {
                                                 @if(AssessmentCentreFailedToAttendRole.isAuthorized(usr)) {
                                                     <p>You did not attend your assessment. <a href="@routes.ApplicationController.helpdesk()">Contact us</a> to discuss your options if you're still interested in applying.</p>
@@ -248,20 +244,33 @@
                     <div class="grid grid-2-3">
                         <div class="inner-block-padr">
                             @if(AssessmentCentreFailedNotifiedRole.isAuthorized(usr) || AssessmentCentreFailedToAttendRole.isAuthorized(usr)) {
-                                <h2 class="heading-medium">4. What happens next?</h2>
+                                <h2 class="heading-large">4. What happens next?</h2>
                                 <p>We appreciate this may be disappointing, however the Civil Service does offer other career opportunities. You can find details at: <a href="http://www.civilservice.gov.uk/jobs">www.civilservice.gov.uk/jobs</a>.</p>
                                 <p>You'll be able to reapply for Fast Track next year, alternatively
                                     use the <a href="https://www.gov.uk/apply-apprenticeship" rel="external">find an apprenticeship</a> service to search
                                     for other apprenticeships in England.</p>
                             } else {
-                                <h2 class="heading-medium">4. What happens next?</h2>
+                                <h2 class="heading-large">4. What happens next?</h2>
                                 @if(AssessmentCentrePassedNotifiedRole.isAuthorized(usr)) {
-                                    <p>We'll contact you soon to tell you about your role, scheme,
-                                        department and location. Make sure to regularly check your
-                                        email inbox for messages from us.</p>
+                                    <p>First, we'll match you to a role. Next, we'll contact you:</p>
+                                    <ul class="list-bullet">
+                                        <li>to confirm your allocated department and location</li>
+                                        <li>for some information for your pre-appointment security
+                                            check</li>
+                                    </ul>
+                                    <div class="panel-indent">
+                                        <h3 class="heading-small">Important</h3>
+                                        <p>Keep an eye on your email inbox, including your junk mail.</p>
+                                        <p>Giving false information or withholding any information
+                                            may lead to a rejected application. If we've already
+                                            appointed you, we may dismiss you for this.</p>
+                                        <p>Don't resign from any employment until you've received
+                                            a formal offer of appointment.</p>
+                                        <p>If you withdraw your application, we cannot reinstate your
+                                            application.</p>
+                                    </div>
                                     <p><a id="onBoardingProcessInfoLink" href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#after-assessment" rel="external" target="_blank">
-                                        Find out more about the on boarding process</a>
-                                    </p>
+                                        Find out more about what happens after you've been accepted for the Fast Track</a></p>
                                 } else {
                                     <p>We aim to make your results available as soon as possible.</p>
                                     <p><a id="onBoardingProcessInfoLink" href="https://www.gov.uk/guidance/civil-service-fast-track-apprenticeship-how-to-apply#after-assessment" rel="external" target="_blank">
