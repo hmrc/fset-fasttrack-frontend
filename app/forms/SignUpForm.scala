@@ -33,7 +33,7 @@ object SignUpForm {
   val passwordMinLength = 9
   val passwordMaxLength = 128
 
-  val passwordFormatter = new Formatter[String] {
+  lazy val passwordFormatter = new Formatter[String] {
     // scalastyle:off cyclomatic.complexity
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
       val passwd = data.get("password").get.trim
