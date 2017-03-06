@@ -81,7 +81,7 @@
 
             @onlineTest.map { test =>
                 @if(test.pdfReportAvailable) {
-                    <p><a id="onlineTestPDFLink" href="@routes.OnlineTestController.downloadPDFReport()">View your online test feedback (Less than 100kb)</a></p>
+                    <p><a id="onlineTestPDFLink" href="@routes.OnlineTestController.downloadPDFReport()">View your online test feedback (PDF, less than 100kb)</a></p>
                 }
             }
 
@@ -102,7 +102,7 @@
 
         @onlineTest.map { test =>
             @if(test.pdfReportAvailable) {
-                <p><a id="onlineTestPDFLink" href="@routes.OnlineTestController.downloadPDFReport()">View your online test feedback (Less than 100kb)</a></p>
+                <p><a id="onlineTestPDFLink" href="@routes.OnlineTestController.downloadPDFReport()">View your online test feedback (PDF, less than 100kb)</a></p>
             }
         }
     }
@@ -123,7 +123,7 @@
 
         @onlineTest.map { test =>
             @if(test.pdfReportAvailable) {
-                <p><a id="onlineTestPDFLink" href="@routes.OnlineTestController.downloadPDFReport()">View your online test feedback (Less than 100kb)</a></p>
+                <p><a id="onlineTestPDFLink" href="@routes.OnlineTestController.downloadPDFReport()">View your online test feedback (PDF, less than 100kb)</a></p>
             }
         }
     }
