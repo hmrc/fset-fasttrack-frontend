@@ -55,8 +55,6 @@ trait SecureActions {
   val silhouette: Silhouette[SecurityEnvironment]
   val cacheClient: CSRCache
 
-  print("Init silhouette = " + silhouette + "\n\n")
-
   protected[security] def getCachedData(securityUser: SecurityUser)(implicit hc: HeaderCarrier,
                                                                     request: Request[_]): Future[Option[CachedData]] = {
     cacheClient.fetchAndGetEntry[CachedData](securityUser.userID).recoverWith {
