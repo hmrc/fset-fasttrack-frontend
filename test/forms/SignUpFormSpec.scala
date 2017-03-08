@@ -26,61 +26,61 @@ class SignUpFormSpec extends BaseSpec {
 
   "the sign up form" should {
     "be valid when all the data are correct" in {
-      val (data, signUpForm) = SignupFormGenerator().get
+      lazy val (data, signUpForm) = SignupFormGenerator().get
       signUpForm.get must be(data)
     }
 
     "throw an error if email is invalid" in {
-      val (_, signUpForm) = SignupFormGenerator(email = "some_wrong_email").get
+      lazy val (_, signUpForm) = SignupFormGenerator(email = "some_wrong_email").get
       signUpForm.hasErrors must be(true)
       signUpForm.errors.length must be(2)
       signUpForm.errors("email").head.messages must be(Seq("error.email"))
     }
 
     "throw an error if password is less than 9 characters" in {
-      val (_, signUpForm) = SignupFormGenerator(password = "Small1", confirm = "Small1").get
+      lazy val (_, signUpForm) = SignupFormGenerator(password = "Small1", confirm = "Small1").get
       signUpForm.hasErrors must be(true)
       signUpForm.errors.length must be(1)
       signUpForm.errors("password").head.messages must be(Seq(Messages("error.password")))
     }
 
     "throw an error if passwords don't match" in {
-      val (_, signUpForm) = SignupFormGenerator(confirm = "wrong_password").get
+      lazy val (_, signUpForm) = SignupFormGenerator(confirm = "wrong_password").get
       signUpForm.hasErrors must be(true)
       signUpForm.errors.length must be(1)
       signUpForm.errors("password").head.messages must be(Seq(Messages("error.password.dontmatch")))
     }
 
     "throw an error if password doesn't have an uppercase letter" in {
-      val (_, signUpForm) = SignupFormGenerator(password = "lowercasepassword", confirm = "lowercasepassword").get
+      lazy val (_, signUpForm) = SignupFormGenerator(password = "lowercasepassword", confirm = "lowercasepassword").get
       signUpForm.hasErrors must be(true)
       signUpForm.errors.length must be(1)
       signUpForm.errors("password").head.messages must be(Seq(Messages("error.password")))
     }
 
     "throw an error if password doesn't have an lowercase letter" in {
-      val (_, signUpForm) = SignupFormGenerator(password = "ALLCAPITAL", confirm = "ALLCAPITAL").get
+      lazy val (_, signUpForm) = SignupFormGenerator(password = "ALLCAPITAL", confirm = "ALLCAPITAL").get
       signUpForm.hasErrors must be(true)
       signUpForm.errors.length must be(1)
       signUpForm.errors("password").head.messages must be(Seq(Messages("error.password")))
     }
 
     "throw an error if password doesn't have a number" in {
-      val (_, signUpForm) = SignupFormGenerator(password = "noNumbers", confirm = "noNumbers").get
+      lazy val (_, signUpForm) = SignupFormGenerator(password = "noNumbers", confirm = "noNumbers").get
       signUpForm.hasErrors must be(true)
       signUpForm.errors.length must be(1)
       signUpForm.errors("password").head.messages must be(Seq(Messages("error.password")))
     }
 
     "throw an error if I haven't clicked on the I am eligible" in {
-      val (_, signUpForm) = SignupFormGenerator(agreeEligibleToApply = false).get
+      lazy val (_, signUpForm) = SignupFormGenerator(agreeEligibleToApply = false).get
       signUpForm.hasErrors must be(true)
       signUpForm.errors.length must be(1)
       signUpForm.errors("agreeEligibleToApply").head.messages must be(Seq(Messages("agree.eligible")))
     }
 
     "throw an error if I haven't clicked on the I agree" in {
-      val (_, signUpForm) = SignupFormGenerator(agree = false).get
+      lazy val (_, signUpForm) = SignupFormGenerator(agree = false).get
       signUpForm.hasErrors must be(true)
       signUpForm.errors.length must be(1)
       signUpForm.errors("agree").head.messages must be(Seq(Messages("agree.accept")))
