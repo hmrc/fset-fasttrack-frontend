@@ -35,5 +35,4 @@ trait SecurityEnvironment extends Env with UserManagementClient {
   val eventBus: EventBus
 
   val authenticatorService: AuthenticatorService[SessionAuthenticator]
-
 }

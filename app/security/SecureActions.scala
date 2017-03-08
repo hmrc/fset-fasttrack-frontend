@@ -116,7 +116,7 @@ trait SecureActions {
 
     // Create an ad hoc authorization for silhouette, to allow us to use a future to resolve the user's cached data from keystore
     val authorizer = new Authorization[SecurityUser, SessionAuthenticator] {
-      override def isAuthorized[B](identity: SecurityUser, authenticator: SessionAuthenticator)(implicit request: Request[B]) =
+      override def isAuthorized[B](identity: SecurityUser, authenticator: SessionAuthenticator)(implicit request: Request[B]): Future[Boolean] =
         Future.successful(role.isAuthorized(cachedData)(originalRequest.request))
     }
 
