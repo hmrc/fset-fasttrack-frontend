@@ -69,7 +69,7 @@
 
     <logger name="org.apache.http" level="INFO"/>
     <logger name="org.apache.http.wire" level="INFO"/>
-    
+
     <root level="DEBUG">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
