@@ -19,13 +19,18 @@ package controllers
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import _root_.forms._
+import com.mohiva.play.silhouette.api.Silhouette
 import connectors.exchange.Questionnaire
 import helpers.NotificationType._
 import models.CachedDataWithApp
+import play.api.Play
 import play.api.mvc.{ Request, RequestHeader, Result }
 import security.QuestionnaireRoles._
 import security.Roles._
 import uk.gov.hmrc.play.http.HeaderCarrier
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
+import security.{ SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
 import scala.language.reflectiveCalls
@@ -33,6 +38,7 @@ import scala.language.reflectiveCalls
 object QuestionnaireController extends QuestionnaireController {
   val http = CSRHttp
   val cacheClient = CSRCache
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait QuestionnaireController extends BaseController with ApplicationClient {
@@ -88,7 +94,7 @@ trait QuestionnaireController extends BaseController with ApplicationClient {
   }
 
   private def presentPageIfNotFilledInPreviously(pageFilledPreviously: CsrAuthorization, presentPage: => Result)
-                                                (implicit user: CachedDataWithApp, requestHeader: RequestHeader) = {
+                                                (implicit user: CachedDataWithApp, request: Request[_]) = {
     Future.successful {
       (pageFilledPreviously.isAuthorized(user), ReviewRole.isAuthorized(user)) match {
         case (_, true) => Redirect(routes.HomeController.present()).flashing(QuestionnaireCompletedBanner)

@@ -16,20 +16,21 @@
 
 package models.services
 
+import javax.inject.Inject
+
 import com.mohiva.play.silhouette.api.LoginInfo
 import config.CSRCache
 import connectors.FrameworkId
 import connectors.ApplicationClient.ApplicationNotFound
-import connectors.{ApplicationClient, UserManagementClient}
-import models.{CachedData, SecurityUser, UniqueIdentifier}
+import connectors.{ ApplicationClient, UserManagementClient }
+import models.{ CachedData, SecurityUser, UniqueIdentifier }
 import play.api.mvc.Request
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserCacheService(applicationClient: ApplicationClient, userManagementClient: UserManagementClient)
-  extends UserService {
+class UserCacheService extends UserService {
 
   override def retrieve(loginInfo: LoginInfo): Future[Option[SecurityUser]] =
     Future.successful(Some(SecurityUser(userID = loginInfo.providerKey)))
@@ -38,8 +39,8 @@ class UserCacheService(applicationClient: ApplicationClient, userManagementClien
     CSRCache.cache[CachedData](user.user.userID.toString, user).map(_ => user)
 
   override def refreshCachedUser(userId: UniqueIdentifier)(implicit hc: HeaderCarrier, request: Request[_]): Future[CachedData] = {
-    userManagementClient.findByUserId(userId).flatMap { userData =>
-      applicationClient.getApplication(userId, FrameworkId).flatMap { appData =>
+    UserManagementClient.findByUserId(userId).flatMap { userData =>
+      ApplicationClient.getApplication(userId, FrameworkId).flatMap { appData =>
         val cd = CachedData(userData.toCached, Some(appData))
         save(cd)
       }.recover {

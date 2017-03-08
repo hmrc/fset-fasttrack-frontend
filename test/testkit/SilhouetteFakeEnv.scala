@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package testkit
 
-import org.scalatestplus.play.PlaySpec
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import com.mohiva.play.silhouette.api.{ Environment, LoginInfo }
+import com.mohiva.play.silhouette.test.FakeEnvironment
+import models.SecurityUser
+import security.SecurityEnvironment
 
-class LandingPageControllerSpec extends PlaySpec {
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  "Landing page controller" should {
+trait SilhouetteFakeEnv {
+  private val identity = SecurityUser("foo")
 
-    "redirect to sign-in" in {
-      val request = FakeRequest(GET, controllers.routes.ApplicationController.index().url)
-
-      val result = call(LandingPageController.index, request)
-
-      status(result) must be(303)
-      redirectLocation(result).get must be(controllers.routes.SignInController.signIn().url)
-    }
-
-  }
+  implicit val env: Environment[SecurityEnvironment] = FakeEnvironment[SecurityEnvironment](
+    Seq(LoginInfo("foo", "foo") -> identity)
+  )
 }

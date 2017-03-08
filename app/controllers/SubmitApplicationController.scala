@@ -16,29 +16,38 @@
 
 package controllers
 
-import config.{CSRCache, CSRHttp}
+import javax.inject.Inject
+
+import com.google.inject.Guice
+import com.mohiva.play.silhouette.api.Silhouette
+import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import connectors.ApplicationClient.CannotSubmit
 import helpers.NotificationType._
 import models.ApplicationData.ApplicationStatus.SUBMITTED
 import models.CachedData
-import security.Roles.{SubmitApplicationRole, WithdrawApplicationRole}
+import play.api.Play
+import security.Roles.{ SubmitApplicationRole, WithdrawApplicationRole }
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
+import security.{ SecureActions, SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
 
 object SubmitApplicationController extends SubmitApplicationController {
   val http = CSRHttp
   val cacheClient = CSRCache
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait SubmitApplicationController extends BaseController with ApplicationClient {
 
   def present = CSRSecureAppAction(SubmitApplicationRole) { implicit request =>
-    implicit user =>
+    implicit cachedDataWithApp =>
       if (fasttrackConfig.applicationsSubmitEnabled) {
         Future.successful(Ok(views.html.application.submit()))
       } else {
-        Future.successful(Ok(views.html.home.submit_disabled(CachedData(user.user, Some(user.application)))))
+        Future.successful(Ok(views.html.home.submit_disabled(CachedData(cachedDataWithApp.user, Some(cachedDataWithApp.application)))))
       }
   }
 

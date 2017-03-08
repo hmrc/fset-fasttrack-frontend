@@ -28,8 +28,13 @@ import testkit.BaseControllerSpec
 import uk.gov.hmrc.play.http.HeaderCarrier
 import connectors.exchange.{ AssistanceDetailsExamples, ProgressResponse }
 import _root_.forms.AssistanceDetailsFormExamples
-import models.services.UserService
+import com.mohiva.play.silhouette.api.{ LoginInfo, Silhouette }
+import com.mohiva.play.silhouette.impl.User
+import models.services.UserCacheService
+import com.mohiva.play.silhouette.test._
+import security.{ SecurityEnvironment, SilhouetteComponent }
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AssistanceDetailsControllerSpec extends BaseControllerSpec {
@@ -127,7 +132,7 @@ class AssistanceDetailsControllerSpec extends BaseControllerSpec {
   trait TestFixture {
     val mockApplicationClient = mock[ApplicationClient]
     val mockCacheClient = mock[CSRCache]
-    val mockUserService = mock[UserService]
+    val mockUserService = mock[UserCacheService]
     val mockCSRHttp = mock[CSRHttp]
 
     abstract class TestableAssistanceDetailsController extends AssistanceDetailsController(mockApplicationClient, mockCacheClient)
@@ -141,7 +146,9 @@ class AssistanceDetailsControllerSpec extends BaseControllerSpec {
         override val http: CSRHttp = mockCSRHttp
         override val cacheClient = mockCacheClient
 
-        override protected def env = mockSecurityEnvironment
+        override lazy val silhouette = SilhouetteComponent.silhouette
+
+        override val env = mockSecurityEnvironment
 
         when(mockSecurityEnvironment.userService).thenReturn(mockUserService)
 

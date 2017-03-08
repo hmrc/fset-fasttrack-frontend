@@ -18,6 +18,10 @@ import connectors.exchange.Answer
 import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
+
+
 
 /*
  * Copyright 2017 HM Revenue & Customs
@@ -92,7 +96,7 @@ package object forms {
   }
   // scalastyle:on
 
-  def getFormattedAnswer(answerField: Option[String], otherField: Option[String] = None) = {
+  def getFormattedAnswer(answerField: Option[String], otherField: Option[String] = None): Answer = {
     val unknown = Messages("answer.unknown")
     answerField match {
       case None | Some(`unknown`) => Answer(None, otherField, Some(true))

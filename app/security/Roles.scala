@@ -20,7 +20,7 @@ import controllers.routes
 import models.ApplicationData.ApplicationStatus._
 import models.{ CachedData, CachedDataWithApp, Progress }
 import play.api.i18n.Lang
-import play.api.mvc.{ Call, RequestHeader }
+import play.api.mvc.{ Call, Request, RequestHeader }
 import security.QuestionnaireRoles._
 import uk.gov.hmrc.play.http.HeaderCarrier
 
@@ -29,89 +29,89 @@ object Roles {
   import RoleUtils._
 
   trait CsrAuthorization {
-    def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang): Boolean
+    def isAuthorized(user: CachedData)(implicit request: RequestHeader): Boolean
 
-    def isAuthorized(user: CachedDataWithApp)(implicit request: RequestHeader, lang: Lang): Boolean =
+    def isAuthorized(user: CachedDataWithApp)(implicit request: RequestHeader): Boolean =
       isAuthorized(CachedData(user.user, Some(user.application)))
   }
 
   trait AuthorisedUser extends CsrAuthorization {
     def isEnabled(user: CachedData)(implicit request: RequestHeader, lang: Lang): Boolean
 
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && isEnabled(user)
   }
 
   //all the roles
 
   object NoRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = true
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) = true
   }
 
   object ActivationRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       !user.user.isActive
   }
 
   object ActiveUserRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       user.user.isActive
   }
 
   object ApplicationStartRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       user.user.isActive && user.application.isEmpty
   }
 
   object PersonalDetailsRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(CREATED, IN_PROGRESS)
   }
 
   object SchemesRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasPersonalDetails(user)
   }
 
   object AssistanceDetailsRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasSchemesAndLocations(user)
   }
 
 
   object ReviewRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && !statusIn(user)(CREATED) && hasParentalOccupationQuestionnaire(user)
   }
 
   object SubmitApplicationRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS) && hasReview(user)
   }
 
   object InProgressRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(IN_PROGRESS)
   }
 
   object WithdrawApplicationRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && !statusIn(user)(IN_PROGRESS, WITHDRAWN, CREATED)
   }
 
   object WithdrawnApplicationRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(WITHDRAWN)
   }
 
   object OnlineTestInvitedRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(ONLINE_TEST_INVITED, ONLINE_TEST_STARTED)
   }
 
   object DisplayOnlineTestSectionRole extends CsrAuthorization {
     // format: OFF
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(ONLINE_TEST_INVITED,
         ONLINE_TEST_STARTED, ONLINE_TEST_COMPLETED, ONLINE_TEST_EXPIRED,
         ALLOCATION_CONFIRMED, ALLOCATION_UNCONFIRMED, AWAITING_ALLOCATION, AWAITING_ALLOCATION_NOTIFIED,
@@ -122,23 +122,23 @@ object Roles {
   }
 
   object ConfirmedAllocatedCandidateRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(ALLOCATION_CONFIRMED, ASSESSMENT_SCORES_ACCEPTED,
         ASSESSMENT_SCORES_ENTERED, AWAITING_ASSESSMENT_CENTRE_RE_EVALUATION)
   }
 
   object UnconfirmedAllocatedCandidateRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(ALLOCATION_UNCONFIRMED)
   }
 
   object AssessmentCentreFailedNotifiedRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(ASSESSMENT_CENTRE_FAILED_NOTIFIED)
   }
 
   object AssessmentCentrePassedNotifiedRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
       activeUserWithApp(user) && statusIn(user)(ASSESSMENT_CENTRE_PASSED_NOTIFIED)
   }
 

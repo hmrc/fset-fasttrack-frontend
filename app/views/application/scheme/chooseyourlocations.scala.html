@@ -8,7 +8,7 @@
         viewModel: SchemeLocationsViewModel,
         personalDetails: PersonalDetails,
         schemeLocations: List[GeoLocationSchemeResult]
-)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String)
+)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, messages: Messages)
 
 @import helpers.CSRFieldConstructor._
 @import views.html.widgets.{pageProgress, guard, guardWithLabel, inputCheckboxGroup, radioBox, select_guard}

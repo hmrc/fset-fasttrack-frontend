@@ -16,7 +16,10 @@
 
 package config
 
-import com.mohiva.play.silhouette.api.{ Environment, SecuredSettings, Silhouette }
+import javax.inject.Inject
+
+import com.mohiva.play.silhouette
+import com.mohiva.play.silhouette.api.actions.{ SecuredErrorHandler, SecuredRequest, UnsecuredErrorHandler }
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.typesafe.config.Config
 import controllers.routes
@@ -25,23 +28,27 @@ import forms.{ SignInForm, SignUpForm }
 import helpers.NotificationType._
 import models.{ CachedData, SecurityUser }
 import net.ceedubs.ficus.Ficus._
-import play.api.i18n.Lang
+import play.api.i18n.{ I18nSupport, Lang, MessagesApi }
 import play.api.mvc.Results._
 import play.api.mvc.{ RequestHeader, Result, _ }
 import play.api._
+import play.api.inject.guice.GuiceApplicationLoader
 import play.twirl.api.Html
+import security.SecurityEnvironment
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.audit.filters.FrontendAuditFilter
 import uk.gov.hmrc.play.config.{ AppName, ControllerConfig, RunMode }
+import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.play.frontend.bootstrap.DefaultFrontendGlobal
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 abstract class DevelopmentFrontendGlobal
-  extends DefaultFrontendGlobal with SecuredSettings {
+  extends DefaultFrontendGlobal {
 
   import FrontendAppConfig.feedbackUrl
 
@@ -60,39 +67,17 @@ abstract class DevelopmentFrontendGlobal
     views.html.error_template(pageTitle, heading, message)(rh, feedbackUrl)
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig("microservice.metrics")
-
-  override def onNotAuthenticated(request: RequestHeader, lang: Lang): Option[Future[Result]] =
-    Some(Future.successful(Redirect(routes.SignInController.present)))
-
-  override def onNotAuthorized(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
-    import models.SecurityUser._
-    object Internal extends Silhouette[SecurityUser, SessionAuthenticator] with FrontendController {
-      override protected def env: Environment[SecurityUser, SessionAuthenticator] = SecurityEnvironmentImpl
-
-      def whereTo: Some[Future[Result]] = {
-        val sec = request.asInstanceOf[SecuredRequest[AnyContent]]
-        Some(
-          sec.identity.toUserFuture(hc(sec)).map {
-            case Some(user: CachedData) if user.user.isActive => Redirect(routes.HomeController.present).flashing(danger("access.denied"))
-            case _ => Redirect(routes.ActivationController.present).flashing(danger("access.denied"))
-          }
-        )
-      }
-    }
-    Internal.whereTo
-  }
-
 }
 
 object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
 }
 
-object LoggingFilter extends FrontendLoggingFilter {
+object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSupport{
   override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging
 }
 
-object AuditFilter extends FrontendAuditFilter with RunMode with AppName {
+object AuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport {
 
   override lazy val maskedFormFields = Seq(
     SignInForm.passwordField,

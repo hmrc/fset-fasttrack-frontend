@@ -22,6 +22,8 @@ import play.api.data.format.Formatter
 import play.api.data.validation.Constraints
 import play.api.data.{ Form, FormError }
 import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 object SignUpForm {
   val passwordField = "password"
@@ -31,7 +33,7 @@ object SignUpForm {
   val passwordMinLength = 9
   val passwordMaxLength = 128
 
-  val passwordFormatter = new Formatter[String] {
+  lazy val passwordFormatter = new Formatter[String] {
     // scalastyle:off cyclomatic.complexity
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
       val passwd = data.get("password").get.trim
@@ -73,7 +75,7 @@ object SignUpForm {
     override def unbind(key: String, value: String): Map[String, String] = Map(key -> value)
   }
 
-  val form = Form(
+  lazy val form = Form(
     mapping(
       "firstName" -> nonEmptyTrimmedText("error.firstName", 256),
       "lastName" -> nonEmptyTrimmedText("error.lastName", 256),

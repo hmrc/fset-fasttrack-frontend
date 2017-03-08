@@ -19,8 +19,9 @@ package forms
 import controllers.UnitSpec
 import forms.EducationQuestionnaireFormExamples._
 import play.api.data.Form
+import testkit.UnitWithAppSpec
 
-class EducationQuestionnaireFormSpec extends UnitSpec {
+class EducationQuestionnaireFormSpec extends UnitWithAppSpec {
 
   "The diversity education form" should {
     "be valid when all values are correct" in new Fixture {

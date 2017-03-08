@@ -18,13 +18,16 @@ package controllers
 
 import java.time.LocalDateTime
 
-import config.{CSRCache, FasttrackFrontendConfig}
+import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.actions.{ SecuredRequest, UserAwareRequest }
+import config.{ CSRCache, FasttrackFrontendConfig, SecurityEnvironmentImpl }
 import connectors.ApplicationClient.ApplicationNotFound
-import connectors.{ApplicationClient, ExchangeObjects}
+import connectors.{ ApplicationClient, ExchangeObjects }
 import helpers.NotificationType._
-import models.{CachedData, CachedDataWithApp}
-import play.api.mvc.Request
-import security.SecureActions
+import models.{ CachedData, CachedDataWithApp }
+import play.api.mvc.{ Action, AnyContent, Request, Result }
+import security.Roles.CsrAuthorization
+import security.{ SecureActions, SecurityEnvironment }
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrier
 
@@ -44,7 +47,7 @@ object FasttrackConfig {
 /**
  * should be extended by all controllers
  */
-trait BaseController extends FrontendController with SecureActions with ApplicationClient {
+trait BaseController extends FrontendController with ApplicationClient with SecureActions {
 
   implicit val feedbackUrl = config.FrontendAppConfig.feedbackUrl
   implicit def fasttrackConfig = FasttrackConfig(config.FrontendAppConfig.fasttrackFrontendConfig)
@@ -58,8 +61,7 @@ trait BaseController extends FrontendController with SecureActions with Applicat
   }
 
   def updateProgress[A](additionalChanges: CachedData => CachedData = { d => d })(onUpdate: CachedData => A)(
-    implicit
-    user: CachedDataWithApp, hc: HeaderCarrier, request: Request[_]
+    implicit user: CachedDataWithApp, hc: HeaderCarrier, request: Request[_]
   ): Future[A] =
     getApplicationProgress(user.application.applicationId).flatMap { prog =>
       val cd = CachedData(user.user, Some(user.application)).copy(application = Some(user.application.copy(progress = prog)))

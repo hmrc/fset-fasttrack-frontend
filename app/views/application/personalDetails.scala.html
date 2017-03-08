@@ -1,6 +1,6 @@
 @import connectors.exchange.SchemeInfo
 
-@(form: Form[_root_.forms.GeneralDetailsForm.Data], availableSchemes: List[SchemeInfo])(implicit request: Request[_], lang: play.api.i18n.Lang, flash: Flash, user: Option[CachedData], feedbackUrl: String)
+@(form: Form[_root_.forms.GeneralDetailsForm.Data], availableSchemes: List[SchemeInfo])(implicit request: Request[_], messages: Messages, flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
 @import views.html.widgets.{ pageProgress, checkbox, date, radioBox, radioBoxHorizontal }
