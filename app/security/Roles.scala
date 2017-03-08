@@ -121,6 +121,12 @@ object Roles {
     // format: ON
   }
 
+  object DisplayAssessmentCentreTestScoresAndFeedbackRole extends CsrAuthorization {
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
+      activeUserWithApp(user) && (hasAssessmentCentrePassedNotified(user) || hasAssessmentCentreFailedNotified(user))
+    }
+  }
+
   object ConfirmedAllocatedCandidateRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       activeUserWithApp(user) && statusIn(user)(ALLOCATION_CONFIRMED, ASSESSMENT_SCORES_ACCEPTED,
@@ -198,4 +204,11 @@ object RoleUtils {
   def hasParentalOccupationQuestionnaire(implicit user: CachedData) = progress.occupationQuestionnaire
 
   def hasReview(implicit user: CachedData) = progress.review
+
+  def hasAllocationConfirmed(implicit user: CachedData) = progress.onlineTest.onlineTestAllocationConfirmed
+
+  def hasAssessmentCentrePassedNotified(implicit user: CachedData) = progress.assessmentCentre.passedNotified
+
+  def hasAssessmentCentreFailedNotified(implicit user: CachedData) = progress.assessmentCentre.failedNotified
+
 }

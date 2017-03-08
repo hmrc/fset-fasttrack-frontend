@@ -18,6 +18,7 @@ package connectors
 
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
+import connectors.CandidateScoresExchangeObject.ApplicationScores
 import connectors.ExchangeObjects._
 import connectors.exchange.{ LocationSchemes, ProgressResponse, Questionnaire, SchemeInfo, _ }
 import forms.GeneralDetailsForm
@@ -30,6 +31,7 @@ import play.api.http.Status._
 import play.api.libs.iteratee.Iteratee
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.http._
+import connectors.CandidateScoresExchangeObject.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -242,6 +244,16 @@ trait ApplicationClient {
   def getAvailableSchemes(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
     http.GET(s"$hostBase/schemes/available").map { response =>
       response.json.as[List[SchemeInfo]]
+    }
+  }
+
+  def getCandidateScores(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[ApplicationScores] = {
+    http.GET(s"$hostBase/test-scores/application/$applicationId").map { response =>
+      if (response.status == OK) {
+        response.json.as[ApplicationScores]
+      } else {
+        throw new NotFoundException(s"Error retrieving candidate scores for $applicationId")
+      }
     }
   }
 }

@@ -72,6 +72,9 @@ PUT         /online-tests/by-token/:token/complete                  controllers.
 GET         /online-tests/by-token/:token/complete                  controllers.OnlineTestController.completeTestByToken(token: UniqueIdentifier)
 GET         /online-tests/pdf-report/download                       controllers.OnlineTestController.downloadPDFReport
 
+# Assessment Centre
+GET         /assessment-centre-test-scores/feedback                 controllers.AssessmentCentreTestScoresController.feedback
+
 # Assets controller
 GET         /assets/*file                                           controllers.Assets.versioned(path="/public", file: Asset)
 
