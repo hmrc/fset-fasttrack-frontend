@@ -23,7 +23,7 @@ import play.api.{ Logger, Play }
 import play.api.libs.json.Json
 import play.api.mvc.{ Action, AnyContent }
 import security.Roles.SchemesRole
-import security.SecurityEnvironment
+import security.{ SecurityEnvironment, SilhouetteComponent }
 import uk.gov.hmrc.play.http.BadRequestException
 
 trait AddressLookupController extends BaseController {
@@ -48,5 +48,5 @@ object AddressLookupController extends AddressLookupController {
   val addressLookupClient = AddressLookupClient
   val http = CSRHttp
   val cacheClient = CSRCache
-  val silhouette = Play.current.injector.instanceOf[Silhouette[SecurityEnvironment]]
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
