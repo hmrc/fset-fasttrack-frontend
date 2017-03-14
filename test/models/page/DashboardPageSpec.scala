@@ -129,12 +129,13 @@ object DashboardPageSpec {
   }
 
   val EmptyProgress = Progress(false, false, false, false, false, false, false, false, false, false, false,
-    OnlineTestProgress(false, false, false, false, false, false, false, false, false, false),
+    OnlineTestProgress(false, false, false, false, false, false, false, false, false, false, false),
     false, AssessmentScores(false, false), AssessmentCentre(false, false))
 
   val OnlineTestProgressAwaitingAllocation = OnlineTestProgress(onlineTestInvited = true, onlineTestStarted = true,
     onlineTestCompleted = true, onlineTestExpired = false, onlineTestAwaitingReevaluation = false,
     onlineTestFailed = false, onlineTestFailedNotified = false, onlineTestAwaitingAllocation = true,
+    onlineTestAwaitingAllocationNotified = false,
     onlineTestAllocationConfirmed = false, onlineTestAllocationUnconfirmed = false)
 
   val OnlineTestProgressFailed = OnlineTestProgressAwaitingAllocation.copy(onlineTestFailed = true)

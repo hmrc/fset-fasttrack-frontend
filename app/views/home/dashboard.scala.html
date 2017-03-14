@@ -93,12 +93,17 @@
                     View your withdrawn application</a>
             </p>
             <p>
-                @if(hasAllocationConfirmed(usr)) {
+                @if(DisplayDownloadOnlineTestPDFReportRole.isAuthorized(usr)) {
                     @onlineTest.map { test =>
                         @if(test.pdfReportAvailable) {
                             <p><a id="onlineTestPDFLink" href="@routes.OnlineTestController.downloadPDFReport()">View your online tests feedback (PDF, less than 100kb)</a></p>
                         }
                     }
+                }
+            </p>
+            <p>
+                @if(DisplayAssessmentCentreTestScoresAndFeedbackRole.isAuthorized(usr)) {
+                    <a href="@routes.AssessmentCentreTestScoresController.feedback()">View your assessment feedback</a>
                 }
             </p>
         </div>

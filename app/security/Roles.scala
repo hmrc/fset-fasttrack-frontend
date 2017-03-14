@@ -121,10 +121,9 @@ object Roles {
     // format: ON
   }
 
-  object DisplayAssessmentCentreTestScoresAndFeedbackRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) = {
-      activeUserWithApp(user) && (hasAssessmentCentrePassedNotified(user) || hasAssessmentCentreFailedNotified(user))
-    }
+  object DisplayDownloadOnlineTestPDFReportRole extends CsrAuthorization {
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
+      activeUserWithApp(user) && (hasOnlineTestFailedNotified(user) || hasAwaitingAllocationNotified(user))
   }
 
   object ConfirmedAllocatedCandidateRole extends CsrAuthorization {
@@ -148,15 +147,22 @@ object Roles {
       activeUserWithApp(user) && statusIn(user)(ASSESSMENT_CENTRE_PASSED_NOTIFIED)
   }
 
+  object DisplayAssessmentCentreTestScoresAndFeedbackRole extends CsrAuthorization {
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
+      activeUserWithApp(user) && (hasAssessmentCentrePassedNotified(user) || hasAssessmentCentreFailedNotified(user))
+  }
+
   object AssessmentCentreFailedToAttendRole extends AuthorisedUser {
     override def isEnabled(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       statusIn(user)(FAILED_TO_ATTEND)
   }
 
+
   object WithdrawComponent extends AuthorisedUser {
     override def isEnabled(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       !statusIn(user)(IN_PROGRESS, WITHDRAWN, CREATED, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
         ASSESSMENT_CENTRE_FAILED, ASSESSMENT_CENTRE_FAILED_NOTIFIED)
+    // TODO MIGUEL: Think if we want to attend FAILED_TO_ATTEND
   }
 
   val userJourneySequence: List[(CsrAuthorization, Call)] = List(
@@ -205,10 +211,15 @@ object RoleUtils {
 
   def hasReview(implicit user: CachedData) = progress.review
 
+  def hasOnlineTestFailedNotified(implicit user: CachedData) = progress.onlineTest.onlineTestFailedNotified
+
+  def hasAwaitingAllocation(implicit user: CachedData) = progress.onlineTest.onlineTestAwaitingAllocation
+
+  def hasAwaitingAllocationNotified(implicit user: CachedData) = progress.onlineTest.onlineTestAwaitingAllocationNotified
+
   def hasAllocationConfirmed(implicit user: CachedData) = progress.onlineTest.onlineTestAllocationConfirmed
 
   def hasAssessmentCentrePassedNotified(implicit user: CachedData) = progress.assessmentCentre.passedNotified
 
   def hasAssessmentCentreFailedNotified(implicit user: CachedData) = progress.assessmentCentre.failedNotified
-
 }

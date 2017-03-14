@@ -24,7 +24,7 @@ import helpers.NotificationType.warning
 import models.UniqueIdentifier
 import play.api.{ Logger, Play }
 import play.api.mvc.{ Action, AnyContent }
-import security.Roles.{ DisplayOnlineTestSectionRole, OnlineTestInvitedRole }
+import security.Roles.{ DisplayDownloadOnlineTestPDFReportRole, DisplayOnlineTestSectionRole, OnlineTestInvitedRole }
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import security.{ SecurityEnvironment, SilhouetteComponent }
@@ -58,7 +58,7 @@ trait OnlineTestController extends BaseController {
       }
   }
 
-  def downloadPDFReport: Action[AnyContent] = CSRSecureAppAction(DisplayOnlineTestSectionRole) { implicit request =>
+  def downloadPDFReport: Action[AnyContent] = CSRSecureAppAction(DisplayDownloadOnlineTestPDFReportRole) { implicit request =>
     implicit user =>
       onlineTestClient.getPDFReport(user.application.applicationId).map { pdfBinary =>
         Ok(pdfBinary).as("application/pdf")
