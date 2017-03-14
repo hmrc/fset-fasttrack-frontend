@@ -17,27 +17,30 @@
 package controllers
 
 import config.{ CSRCache, CSRHttp }
-import connectors.{ ApplicationClient }
-import helpers.NotificationType.warning
+import connectors.ApplicationClient
+import helpers.NotificationType._
 import play.api.Logger
-import play.api.mvc.{ Action, AnyContent }
-import security.Roles.{ DisplayAssessmentCentreTestScoresAndFeedbackRole }
+import security.Roles.DisplayAssessmentCentreTestScoresAndFeedbackRole
+import security.SilhouetteComponent
 import uk.gov.hmrc.play.http.NotFoundException
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 object AssessmentCentreTestScoresController extends AssessmentCentreTestScoresController {
   val http = CSRHttp
   val cacheClient = CSRCache
   val applicationClient = ApplicationClient
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait AssessmentCentreTestScoresController extends BaseController{
   val applicationClient: ApplicationClient
 
-  def feedback: Action[AnyContent] = CSRSecureAppAction(DisplayAssessmentCentreTestScoresAndFeedbackRole) { implicit request =>
+  def feedback = CSRSecureAppAction(DisplayAssessmentCentreTestScoresAndFeedbackRole) { implicit request =>
     implicit user =>
       applicationClient.getCandidateScores(user.application.applicationId).map { applicationScores =>
         applicationScores.scoresAndFeedback.map { scoresAndFeedback =>
-          Ok(views.html.application.assessmentCentreTestScoresAndFeedback(scoresAndFeedback))
+          Ok(views.html.application.assessmentCentreTestScoresAndFeedback.apply(scoresAndFeedback))
         }.getOrElse {
           Logger.warn(s"Assessment centre test scores and feedback not found for user: ${user.user.userID}")
           Redirect(routes.HomeController.present()).flashing(warning("error.assessmentcentre.testfeedback.notAvailable"))

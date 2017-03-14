@@ -122,7 +122,7 @@ object Roles {
   }
 
   object DisplayAssessmentCentreTestScoresAndFeedbackRole extends CsrAuthorization {
-    override def isAuthorized(user: CachedData)(implicit request: RequestHeader, lang: Lang) = {
+    override def isAuthorized(user: CachedData)(implicit request: RequestHeader) = {
       activeUserWithApp(user) && (hasAssessmentCentrePassedNotified(user) || hasAssessmentCentreFailedNotified(user))
     }
   }
