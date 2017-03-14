@@ -28,7 +28,7 @@ object ResetPasswordForm {
     case _ => false
   }
 
-  val form = Form(
+  lazy val form = Form(
     mapping(
       "email" -> email,
       "code" -> (nonEmptyTrimmedText("passwordreset.required", 7, "passwordreset.wrong-format") verifying

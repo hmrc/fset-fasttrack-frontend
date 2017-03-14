@@ -22,13 +22,19 @@ import com.mohiva.play.silhouette.api.util.Credentials
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import helpers.NotificationType._
+import play.api.{ Application, Play }
 import security._
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
+import play.api.mvc._
+import play.filters.csrf._
 
 import scala.concurrent.Future
 
 object SignInController extends SignInController {
   val http = CSRHttp
   val cacheClient = CSRCache
+  lazy val silhouette: Silhouette[SecurityEnvironment] = SilhouetteComponent.silhouette
 }
 
 trait SignInController extends BaseController with SignInUtils with ApplicationClient {
@@ -65,12 +71,12 @@ trait SignInController extends BaseController with SignInUtils with ApplicationC
 
   val signOut = CSRUserAwareAction { implicit request =>
     implicit user =>
-      request.identity.map(identity => env.eventBus.publish(LogoutEvent(identity, request, request2lang)))
+      request.identity.foreach(identity => env.eventBus.publish(LogoutEvent(identity, request)))
       env.authenticatorService.retrieve.flatMap {
         case Some(authenticator) =>
           CSRCache.remove()
-          authenticator.discard(Future.successful(Redirect(routes.SignInController.present()).
-            flashing(success("feedback", config.FrontendAppConfig.feedbackUrl)).withNewSession))
+          env.authenticatorService.discard(authenticator, Redirect(routes.SignInController.present()).
+            flashing(success("feedback", config.FrontendAppConfig.feedbackUrl)).withNewSession)
         case None => Future.successful(Redirect(routes.SignInController.present()).
           flashing(danger("You have already signed out")).withNewSession)
       }

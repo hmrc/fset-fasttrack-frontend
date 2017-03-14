@@ -19,16 +19,19 @@ package testkit
 import java.util.UUID
 
 import com.mohiva.play.silhouette.api.LoginInfo
+import com.mohiva.play.silhouette.api.actions.{ SecuredRequest, UserAwareRequest }
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import config.SecurityEnvironmentImpl
 import models.SecurityUserExamples._
 import models._
 import org.joda.time.DateTime
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.filters.csrf.CSRF
+import play.filters.csrf.CSRF.Token
+import play.filters.csrf.{ CSRF, CSRFConfig, CSRFConfigProvider, CSRFFilter }
 import security.Roles.CsrAuthorization
-import security.SecureActions
+import security.{ SecureActions, SecurityEnvironment }
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -39,7 +42,7 @@ import scala.concurrent.Future
 abstract class BaseControllerSpec extends UnitWithAppSpec {
   implicit val hc: HeaderCarrier = HeaderCarrier()
   implicit val rh: RequestHeader = FakeRequest()
-  val mockSecurityEnvironment = mock[security.SecurityEnvironment]
+  val mockSecurityEnvironment = mock[SecurityEnvironmentImpl]
 
   def currentCandidate: CachedData = ActiveCandidate
 
@@ -59,7 +62,17 @@ abstract class BaseControllerSpec extends UnitWithAppSpec {
 
   def randomUUID = UniqueIdentifier(UUID.randomUUID().toString)
 
-  def fakeRequest = FakeRequest().withSession(CSRF.TokenName -> CSRF.SignedTokenProvider.generateToken)
+  private val csrfConfig     = app.injector.instanceOf[CSRFConfigProvider].get
+  private val csrfFilter     = app.injector.instanceOf[CSRFFilter]
+  private val token          = csrfFilter.tokenProvider.generateToken
+
+  def fakeRequest = {
+    val fakeRequest = FakeRequest()
+      fakeRequest.copyFakeRequest(tags = fakeRequest.tags ++ Map(
+      Token.NameRequestTag  -> csrfConfig.tokenName,
+      Token.RequestTag      -> token
+    )).withHeaders((csrfConfig.headerName, token))
+  }
 
   def assertPageTitle(result: Future[Result], expectedTitle: String) = {
     status(result) must be(OK)
@@ -78,20 +91,20 @@ abstract class BaseControllerSpec extends UnitWithAppSpec {
     val Candidate: CachedData = currentCandidate
     val CandidateWithApp: CachedDataWithApp = currentCandidateWithApp
 
-    override def CSRSecureAction(role: CsrAuthorization)(block: SecuredRequest[_] => CachedData => Future[Result]): Action[AnyContent] =
+    override def CSRSecureAction(role: CsrAuthorization)(block: SecuredRequest[_, _] => CachedData => Future[Result]): Action[AnyContent] =
       execute(Candidate)(block)
 
-    override def CSRSecureAppAction(role: CsrAuthorization)(block: (SecuredRequest[_]) => (CachedDataWithApp) =>
+    override def CSRSecureAppAction(role: CsrAuthorization)(block: (SecuredRequest[_, _]) => (CachedDataWithApp) =>
       Future[Result]): Action[AnyContent] = execute(CandidateWithApp)(block)
 
-    override def CSRUserAwareAction(block: UserAwareRequest[_] => Option[CachedData] => Future[Result]): Action[AnyContent] =
+    override def CSRUserAwareAction(block: UserAwareRequest[_, _] => Option[CachedData] => Future[Result]): Action[AnyContent] =
       Action.async { request =>
         val secReq = UserAwareRequest(None, None, request)
         implicit val carrier = hc(request)
         block(secReq)(None)
       }
 
-    private def execute[T](result: T)(block: (SecuredRequest[_]) => (T) => Future[Result]): Action[AnyContent] = {
+    private def execute[T](result: T)(block: (SecuredRequest[_, _]) => (T) => Future[Result]): Action[AnyContent] = {
       Action.async { request =>
         val secReq = defaultAction(request)
         implicit val carrier = hc(request)
@@ -100,7 +113,7 @@ abstract class BaseControllerSpec extends UnitWithAppSpec {
     }
 
     private def defaultAction[T](request: Request[AnyContent]) =
-      SecuredRequest(
+      SecuredRequest[SecurityEnvironment, AnyContent](
         SecurityUser(UUID.randomUUID.toString),
         SessionAuthenticator(
           LoginInfo("fakeProvider", "fakeKey"),

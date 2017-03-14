@@ -19,11 +19,17 @@ package config
 import java.util.Base64
 
 import akka.util.Crypt
+import com.mohiva.play.silhouette.api.{ Environment, EventBus }
+import com.mohiva.play.silhouette.api.crypto.Base64AuthenticatorEncoder
+import com.mohiva.play.silhouette.api.services.AuthenticatorService
+import com.mohiva.play.silhouette.api.util.{ Clock, FingerprintGenerator }
+import com.mohiva.play.silhouette.impl.authenticators.{ SessionAuthenticator, SessionAuthenticatorService, SessionAuthenticatorSettings }
+import com.mohiva.play.silhouette.impl.util.DefaultFingerprintGenerator
 import com.mohiva.play.silhouette.api.EventBus
 import com.mohiva.play.silhouette.api.util.{ Clock, FingerprintGenerator }
 import com.mohiva.play.silhouette.impl.authenticators.{ SessionAuthenticatorService, SessionAuthenticatorSettings }
 import connectors.{ ApplicationClient, UserManagementClient }
-import models.services.UserCacheService
+import models.services.{ UserCacheService, UserService }
 import play.api.Play
 import play.api.Play.current
 import play.api.libs.ws.WS
@@ -33,13 +39,28 @@ import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.config.{ AppName, RunMode, ServicesConfig }
+import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.play.http.ws._
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import language.postfixOps
 
 object FrontendAuditConnector extends AuditConnector {
   override lazy val auditingConfig = LoadAuditingConfig("auditing")
+}
+
+object CaseInSensitiveFingerPrintGenerator extends FingerprintGenerator {
+    import play.api.http.HeaderNames._
+    def generate(implicit request: RequestHeader) = {
+        Crypt.sha1(new StringBuilder()
+        .append(request.headers.get(USER_AGENT).map(_.toLowerCase).getOrElse("")).append(":")
+        .append(request.headers.get(ACCEPT_LANGUAGE).map(_.toLowerCase).getOrElse("")).append(":")
+        .append(request.headers.get(ACCEPT_CHARSET).map(_.toLowerCase).getOrElse("")).append(":")
+        .toString()
+        )
+    }
 }
 
 object CSRHttp extends CSRHttp
@@ -61,42 +82,46 @@ object CSRCache extends CSRCache {
   )
 }
 
-object CaseInSensitiveFingerPrintGenerator extends  FingerprintGenerator {
-    import play.api.http.HeaderNames._
-    def generate(implicit request: RequestHeader) = {
-        Crypt.sha1(new StringBuilder()
-        .append(request.headers.get(USER_AGENT).map(_.toLowerCase).getOrElse("")).append(":")
-        .append(request.headers.get(ACCEPT_LANGUAGE).map(_.toLowerCase).getOrElse("")).append(":")
-        .append(request.headers.get(ACCEPT_CHARSET).map(_.toLowerCase).getOrElse("")).append(":")
-        .toString()
-        )
-    }
+trait CSRSecurityEnvironment {
+  def userService: UserService
+
+  def credentialsProvider: CsrCredentialsProvider
+
+  val eventBus: EventBus
+
+  val authenticatorService: AuthenticatorService[SessionAuthenticator]
 }
 
-object SecurityEnvironmentImpl extends security.SecurityEnvironment {
+object SecurityEnvironmentImpl extends SecurityEnvironmentImpl
+
+trait SecurityEnvironmentImpl extends Environment[security.SecurityEnvironment] with CSRSecurityEnvironment {
 
   override lazy val eventBus: EventBus = EventBus()
 
-  override val userService = new UserCacheService(ApplicationClient, UserManagementClient)
-  override val identityService = userService
+  override val userService = new UserCacheService
+  val identityService = userService
 
   override lazy val authenticatorService = new SessionAuthenticatorService(SessionAuthenticatorSettings(
     sessionKey = Play.configuration.getString("silhouette.authenticator.sessionKey").get,
-    encryptAuthenticator = Play.configuration.getBoolean("silhouette.authenticator.encryptAuthenticator").get,
     useFingerprinting = Play.configuration.getBoolean("silhouette.authenticator.useFingerprinting").get,
-    authenticatorIdleTimeout = Play.configuration.getInt("silhouette.authenticator.authenticatorIdleTimeout"),
-    authenticatorExpiry = Play.configuration.getInt("silhouette.authenticator.authenticatorExpiry").get
-  ), CaseInSensitiveFingerPrintGenerator, Clock())
+    authenticatorIdleTimeout = Play.configuration.getInt("silhouette.authenticator.authenticatorIdleTimeout").map(x => x seconds),
+    authenticatorExpiry = Play.configuration.getInt("silhouette.authenticator.authenticatorExpiry").get seconds
+  ), CaseInSensitiveFingerPrintGenerator, new Base64AuthenticatorEncoder, Clock())
 
   override lazy val credentialsProvider = new CsrCredentialsProvider {
     val http: CSRHttp = CSRHttp
   }
 
-  override def providers = Map(credentialsProvider.id -> credentialsProvider)
+  def providers = Map(credentialsProvider.id -> credentialsProvider)
+
+  override def requestProviders = Nil
+
+  override val executionContext = global
+
   val http: CSRHttp = CSRHttp
 }
 
-object WhitelistFilter extends AkamaiWhitelistFilter with RunMode {
+object WhitelistFilter extends AkamaiWhitelistFilter with RunMode with MicroserviceFilterSupport {
 
   // Whitelist Configuration
   private def whitelistConfig(key: String): Seq[String] =

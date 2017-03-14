@@ -89,13 +89,13 @@ class RolesSpec extends PlaySpec with MustMatchers with TableDrivenPropertyCheck
   ) = {
     valid.foreach { validStatus =>
       withClue(s"$validStatus is not accepted by $role") {
-        role.isAuthorized(activeUser(validStatus))(request, Lang("en-GB")) must be(true)
+        role.isAuthorized(activeUser(validStatus))(request) must be(true)
       }
     }
 
     invalid.foreach { invalidStatus =>
       withClue(s"$invalidStatus is accepted by $role") {
-        role.isAuthorized(activeUser(invalidStatus))(request, Lang("en-GB")) must be(false)
+        role.isAuthorized(activeUser(invalidStatus))(request) must be(false)
       }
     }
   }

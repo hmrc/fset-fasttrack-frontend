@@ -1,4 +1,4 @@
-@(field: play.api.data.Field, label: String, labelHint: (String, String), options: String*)(subForm: PartialFunction[String, Html])
+@(field: play.api.data.Field, label: String, labelHint: (String, String), options: String*)(subForm: PartialFunction[String, Html])(implicit message: Messages)
 
 @import helpers.CSRSkinnyFieldConstructor._
 

@@ -18,18 +18,20 @@ package security
 
 import java.util.UUID
 
-import com.mohiva.play.silhouette.api.{Authorization, Silhouette}
+import com.mohiva.play.silhouette.api.actions.{ SecuredAction, SecuredRequest, UserAwareRequest }
+import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import config.{CSRCache, SecurityEnvironmentImpl}
+import config.{ CSRCache, SecurityEnvironmentImpl }
 import controllers.routes
 import helpers.NotificationType._
-import models.{CachedData, CachedDataWithApp, SecurityUser, UniqueIdentifier}
+import models.{ CachedData, CachedDataWithApp, SecurityUser, UniqueIdentifier }
 import play.api.Logger
 import play.api.i18n.Lang
 import play.api.mvc._
+import play.api.mvc.Results.Redirect
 import security.Roles.CsrAuthorization
 import uk.gov.hmrc.http.cache.client.KeyStoreEntryValidationException
-import uk.gov.hmrc.play.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.http.{ HeaderCarrier, SessionKeys }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -48,8 +50,9 @@ import scala.concurrent.Future
 // so in this instance, ignore the scalastyle method rule
 // scalastyle:off method.name
 
-trait SecureActions extends Silhouette[SecurityUser, SessionAuthenticator] {
+trait SecureActions {
 
+  val silhouette: Silhouette[SecurityEnvironment]
   val cacheClient: CSRCache
 
   protected[security] def getCachedData(securityUser: SecurityUser)(implicit hc: HeaderCarrier,
@@ -71,8 +74,8 @@ trait SecureActions extends Silhouette[SecurityUser, SessionAuthenticator] {
    * The Action gets a default role that checks  if the user is active or not. \
    * If the user is inactive then the onNotAuthorized method on global will be called.
    */
-  def CSRSecureAction(role: CsrAuthorization)(block: SecuredRequest[_] => CachedData => Future[Result]): Action[AnyContent] = {
-    SecuredAction.async { secondRequest =>
+  def CSRSecureAction(role: CsrAuthorization)(block: SecuredRequest[_, _] => CachedData => Future[Result]): Action[AnyContent] = {
+    silhouette.SecuredAction.async { secondRequest =>
       implicit val carrier = hc(secondRequest.request)
       secondRequest.identity.toUserFuture.flatMap {
         case Some(data) => SecuredActionWithCSRAuthorisation(secondRequest, block, role, data, data)
@@ -81,8 +84,8 @@ trait SecureActions extends Silhouette[SecurityUser, SessionAuthenticator] {
     }
   }
 
-  def CSRSecureAppAction(role: CsrAuthorization)(block: SecuredRequest[_] => CachedDataWithApp => Future[Result]): Action[AnyContent] = {
-    SecuredAction.async { secondRequest =>
+  def CSRSecureAppAction(role: CsrAuthorization)(block: SecuredRequest[_, _] => CachedDataWithApp => Future[Result]): Action[AnyContent] = {
+    silhouette.SecuredAction.async { secondRequest =>
       implicit val carrier = hc(secondRequest.request)
       secondRequest.identity.toUserFuture.flatMap {
         case Some(CachedData(_, None)) => gotoUnauthorised
@@ -93,9 +96,9 @@ trait SecureActions extends Silhouette[SecurityUser, SessionAuthenticator] {
     }
   }
 
-  def CSRUserAwareAction(block: UserAwareRequest[_] => Option[CachedData] => Future[Result]): Action[AnyContent] =
+  def CSRUserAwareAction(block: UserAwareRequest[_, _] => Option[CachedData] => Future[Result]): Action[AnyContent] =
     withSession {
-      UserAwareAction.async { request =>
+      silhouette.UserAwareAction.async { request =>
         request.identity match {
           case Some(securityUser: SecurityUser) => securityUser.toUserFuture(hc(request.request)).flatMap(r => block(request)(r))
           case None => block(request)(None)
@@ -104,25 +107,25 @@ trait SecureActions extends Silhouette[SecurityUser, SessionAuthenticator] {
     }
 
   private def SecuredActionWithCSRAuthorisation[T](
-    originalRequest: SecuredRequest[AnyContent],
-    block: SecuredRequest[_] => T => Future[Result],
+    originalRequest: SecuredRequest[SecurityEnvironment, AnyContent],
+    block: SecuredRequest[_, _] => T => Future[Result],
     role: CsrAuthorization,
     cachedData: CachedData,
     valueForActionBlock: => T
   ): Future[Result] = {
 
     // Create an ad hoc authorization for silhouette, to allow us to use a future to resolve the user's cached data from keystore
-    val authorizer = new Authorization[SecurityUser] {
-      override def isAuthorized(identity: SecurityUser)(implicit request: RequestHeader, lang: Lang) =
-        role.isAuthorized(cachedData)(originalRequest.request, lang)
+    val authorizer = new Authorization[SecurityUser, SessionAuthenticator] {
+      override def isAuthorized[B](identity: SecurityUser, authenticator: SessionAuthenticator)(implicit request: Request[B]): Future[Boolean] =
+        Future.successful(role.isAuthorized(cachedData)(originalRequest.request))
     }
 
-    SecuredAction(authorizer).async { securedRequest =>
+    silhouette.SecuredAction(authorizer).async { securedRequest =>
       block(securedRequest)(valueForActionBlock)
     } apply originalRequest
   }
 
-  override protected def env: SecurityEnvironment = SecurityEnvironmentImpl
+  val env: SecurityEnvironmentImpl = SecurityEnvironmentImpl
 
   implicit def hc(implicit request: Request[_]): HeaderCarrier
 
@@ -145,5 +148,4 @@ trait SecureActions extends Silhouette[SecurityUser, SessionAuthenticator] {
         block(request).map(_.withSession(session))
     }
   }
-
 }

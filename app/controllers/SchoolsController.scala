@@ -16,13 +16,16 @@
 
 package controllers
 
+import com.mohiva.play.silhouette.api.Silhouette
 import config.{ CSRCache, CSRHttp }
 import connectors.SchoolsClient
 import connectors.SchoolsClient.SchoolsNotFound
 import models.view.SchoolView
 import models.view.SchoolView.{ SchoolImplicits, _ }
+import play.api.Play
 import play.api.libs.json.Json
 import security.QuestionnaireRoles.EducationQuestionnaireRole
+import security.{ SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
 import scala.language.reflectiveCalls
@@ -30,6 +33,7 @@ import scala.language.reflectiveCalls
 object SchoolsController extends SchoolsController {
   val http = CSRHttp
   val cacheClient = CSRCache
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 trait SchoolsController extends BaseController with SchoolsClient {

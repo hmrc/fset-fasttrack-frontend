@@ -17,7 +17,6 @@
 package security
 
 import com.mohiva.play.silhouette.api.{ LoginEvent, LoginInfo }
-import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import connectors.ApplicationClient.ApplicationNotFound
 import connectors.{ ApplicationClient, ExchangeObjects }
 import controllers.{ BaseController, routes }
@@ -26,6 +25,8 @@ import forms.SignInForm.Data
 import helpers.NotificationType._
 import models.{ ApplicationData, CachedData, CachedUser, SecurityUser }
 import play.api.mvc.{ Request, Result }
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 
@@ -43,9 +44,9 @@ trait SignInUtils {
         u <- env.userService.save(CachedData(user, app))
         authenticator <- env.authenticatorService.create(LoginInfo(CredentialsProvider.ID, user.userID.toString))
         value <- env.authenticatorService.init(authenticator)
-        result <- env.authenticatorService.embed(value, Future.successful(redirect))
+        result <- env.authenticatorService.embed(value, redirect)
       } yield {
-        env.eventBus.publish(LoginEvent(SecurityUser(user.userID.toString), request, request2lang))
+        env.eventBus.publish(LoginEvent(SecurityUser(user.userID.toString), request))
         result
       }
 

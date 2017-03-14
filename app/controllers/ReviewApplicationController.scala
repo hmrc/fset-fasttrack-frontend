@@ -16,16 +16,21 @@
 
 package controllers
 
+import com.mohiva.play.silhouette.api.Silhouette
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient._
 import connectors.ApplicationClient
 import helpers.NotificationType._
-import play.api.Logger
+import play.api.{ Logger, Play }
 import security.Roles.ReviewRole
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
+import security.{ SecurityEnvironment, SilhouetteComponent }
 
 object ReviewApplicationController extends ReviewApplicationController(ApplicationClient, CSRCache) {
   override val http: CSRHttp = ApplicationClient.http
   val cacheClient = CSRCache
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 abstract class ReviewApplicationController(applicationClient: ApplicationClient, cacheClient: CSRCache)

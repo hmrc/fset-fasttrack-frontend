@@ -17,19 +17,24 @@
 package controllers
 
 import _root_.forms.AssistanceDetailsForm
+import com.mohiva.play.silhouette.api.Silhouette
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import connectors.ApplicationClient.AssistanceDetailsNotFound
 import helpers.NotificationType._
 import models.CachedData
-import security.RoleUtils
+import play.api.Play
+import security.{ RoleUtils, SecurityEnvironment, SilhouetteComponent }
 import security.Roles.AssistanceDetailsRole
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 
 object AssistanceDetailsController extends AssistanceDetailsController(ApplicationClient, CSRCache) {
   override val http: CSRHttp = ApplicationClient.http
   val cacheClient = CSRCache
+  lazy val silhouette = SilhouetteComponent.silhouette
 }
 
 abstract class AssistanceDetailsController(applicationClient: ApplicationClient, cacheClient: CSRCache)
