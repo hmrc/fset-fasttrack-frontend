@@ -90,65 +90,25 @@
         <h2 class="heading-large">Feedback</h2>
         <h3 class="heading-medium">Interview</h3>
         <article class="text">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia
-                quidem fugiat quasi sapiente voluptatibus alias blanditiis, quas
-                animi vero laborum.</p>
-            <p>Veniam eligendi quae animi. Hic voluptates, rem fugit? Iure eveniet
-                explicabo facilis veritatis nesciunt, praesentium nihil officia odit
-                deserunt id!</p>
-            <p>Et cumque ex, distinctio molestiae voluptatibus voluptates. Sit debitis,
-                veniam provident ex ipsam harum, aperiam, quibusdam reiciendis enim
-                voluptatem sint.</p>
-            <p>Tempore molestias hic nihil sapiente animi perspiciatis aspernatur
-                voluptates nobis saepe. Odio, delectus nostrum deleniti rerum praesentium
-                minus sed suscipit.</p>
-            <p>Vitae, modi, cumque repellendus ex commodi voluptatum placeat reprehenderit
-                saepe totam laudantium, hic cum libero voluptate aspernatur dolores
-                aliquid iusto.</p>
-            <p>Ratione eius assumenda, officia id natus dolorum animi voluptas aliquid
-                quis doloribus est suscipit voluptatum, quibusdam earum veniam alias
-                itaque!</p>
-            <p>Asperiores aperiam eveniet quod deserunt nihil, at reiciendis, voluptate
-                minima totam ut, ipsam quidem inventore reprehenderit nulla illo,
-                illum voluptatem.</p>
+            @scores.interview.map(_.feedback).map { feedback =>
+                @feedback
+            }
         </article>
     </section>
     <section class="section-border">
-        <h3 class="heading-large">Group exercise</h3>
+        <h3 class="heading-medium">Group exercise</h3>
         <article class="text">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur
-                excepturi hic sunt corrupti consectetur, repellendus odio.</p>
-            <p>Molestiae maiores dignissimos commodi sapiente rem, libero dicta inventore!
-                Dolores, at. Incidunt iure architecto illum quidem.</p>
-            <p>Non cumque, voluptate quisquam vitae eveniet magni, sapiente quos labore
-                libero numquam, doloribus molestiae voluptatem optio.</p>
-            <p>Id rerum voluptates commodi magnam, necessitatibus, autem, dolorem
-                eaque quam laborum molestias dolore nemo delectus, tenetur?</p>
-            <p>Libero magni non amet ad, dignissimos, sequi consequuntur quisquam
-                praesentium esse sapiente iste ab pariatur, saepe.</p>
+            @scores.groupExercise.map(_.feedback).map { feedback =>
+                @feedback
+            }
         </article>
     </section>
     <section class="section-border">
-        <h3 class="heading-large">Written exercise</h3>
+        <h3 class="heading-medium">Written exercise</h3>
         <article class="text">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate
-                ipsa culpa fuga.</p>
-            <p>Consequuntur placeat quis asperiores impedit voluptate error quod veritatis
-                laudantium harum. Doloremque.</p>
-            <p>Ut reprehenderit magnam sequi similique recusandae asperiores, eius
-                dolorem delectus architecto nulla!</p>
-            <p>Quidem laboriosam, deleniti. Facere minus pariatur explicabo, doloribus
-                voluptate quod perferendis magnam?</p>
-            <p>Pariatur dicta provident quos quaerat expedita illum mollitia esse
-                odit repellat non!</p>
-            <p>Iure aspernatur doloribus quo! Eos eaque cum inventore, sequi nemo.
-                Accusantium, quia?</p>
-            <p>Quas debitis rerum recusandae perferendis enim optio sit atque ducimus
-                ad consectetur.</p>
-            <p>Praesentium ducimus mollitia esse iure distinctio ipsum ipsa quisquam
-                dolorum aliquid, fugit.</p>
-            <p>Enim nam incidunt nulla, dolores distinctio libero laboriosam eum error
-                nostrum accusamus.</p>
+            @scores.writtenExercise.map(_.feedback).map { feedback =>
+                @feedback
+            }
         </article>
     </section>
 
