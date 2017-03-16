@@ -38,14 +38,17 @@ trait AssessmentCentreTestScoresController extends BaseController{
 
   def feedback = CSRSecureAppAction(DisplayAssessmentCentreTestScoresAndFeedbackRole) { implicit request =>
     implicit user =>
-      applicationClient.getCandidateScores(user.application.applicationId).map { applicationScores =>
-        applicationScores.scoresAndFeedback.map { scoresAndFeedback =>
-          Ok(views.html.application.assessmentCentreTestScoresAndFeedback.apply(scoresAndFeedback))
+      (for {
+        scores <- applicationClient.getCandidateScores(user.application.applicationId)
+        competencyAverageResult <- applicationClient.getAssessmentCentreCompetencyAverageResult(user.application.applicationId)
+      } yield {
+        scores.scoresAndFeedback.map { scoresAndFeedback =>
+          Ok(views.html.application.assessmentCentreTestScoresAndFeedback.apply(scoresAndFeedback, competencyAverageResult))
         }.getOrElse {
           Logger.warn(s"Assessment centre test scores and feedback not found for user: ${user.user.userID}")
           Redirect(routes.HomeController.present()).flashing(warning("error.assessmentcentre.testfeedback.notAvailable"))
         }
-      } recover {
+      }).recover {
         case _: NotFoundException =>
           Logger.warn(s"Assessment centre test scores and feedback not found for user: ${user.user.userID}")
           Redirect(routes.HomeController.present()).flashing(warning("error.assessmentcentre.testfeedback.notAvailable"))

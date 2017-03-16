@@ -256,6 +256,17 @@ trait ApplicationClient {
       }
     }
   }
+
+  def getAssessmentCentreCompetencyAverageResult(applicationId: UniqueIdentifier)(
+    implicit hc: HeaderCarrier): Future[CompetencyAverageResult] = {
+    http.GET(s"$hostBase/test-scores/competency-average/application/$applicationId").map { response =>
+      if (response.status == OK) {
+        response.json.as[CompetencyAverageResult]
+      } else {
+        throw new NotFoundException(s"Error retrieving assessment centre competency average for $applicationId")
+      }
+    }
+  }
 }
 
 object ApplicationClient extends ApplicationClient {

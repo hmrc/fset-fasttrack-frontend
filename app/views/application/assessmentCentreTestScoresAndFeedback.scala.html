@@ -1,4 +1,4 @@
-@(scores: connectors.exchange.CandidateScoresAndFeedback)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, messages: Messages)
+@(scores: connectors.exchange.CandidateScoresAndFeedback, competencyAverageResult: connectors.exchange.CompetencyAverageResult)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, messages: Messages)
 
 @main_template(title = "Your scores and feedback | Apply for a Civil Service apprenticeship") {
     <div class="grid-wrapper">
@@ -31,31 +31,31 @@
                 <table>
                     <tbody><tr>
                         <td>Leading &amp; communicating</td>
-                        <td>2.04</td>
+                        <td>@{f"${competencyAverageResult.leadingAndCommunicatingAverage}%2.2f"}</td>
                     </tr>
                     <tr>
                         <td>Collaborating &amp; partnering</td>
-                        <td>2.03</td>
+                        <td>@{f"${competencyAverageResult.collaboratingAndPartneringAverage}%2.2f"}</td>
                     </tr>
                     <tr>
                         <td>Delivering at pace</td>
-                        <td>3.44</td>
+                        <td>@{f"${competencyAverageResult.deliveringAtPaceAverage}%2.2f"}</td>
                     </tr>
                     <tr>
                         <td>Changing &amp; improving</td>
-                        <td>3.18</td>
+                        <td>@{f"${competencyAverageResult.changingAndImprovingAverage}%2.2f"}</td>
                     </tr>
                     <tr>
                         <td>Making effective decisions</td>
-                        <td>2.55</td>
+                        <td>@{f"${competencyAverageResult.makingEffectiveDecisionsAverage}%2.2f"}</td>
                     </tr>
                     <tr>
                         <td>Building capability for all</td>
-                        <td>3.91</td>
+                        <td>@{f"${competencyAverageResult.buildingCapabilityForAllAverage}%2.2f"}</td>
                     </tr>
                     <tr>
                         <td>Motivational fit</td>
-                        <td>3.03</td>
+                        <td>@{f"${competencyAverageResult.motivationFitAverage}%2.2f"}</td>
                     </tr>
                     </tbody></table>
             </div>
