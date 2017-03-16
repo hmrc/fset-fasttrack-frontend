@@ -163,11 +163,11 @@ object Roles {
     override def isEnabled(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
       !statusIn(user)(WITHDRAWN, REGISTERED, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
         ASSESSMENT_CENTRE_FAILED, ASSESSMENT_CENTRE_FAILED_NOTIFIED)
-    // TODO MIGUEL: Think if we want to attend FAILED_TO_ATTEND
   }
 
   val userJourneySequence: List[(CsrAuthorization, Call)] = List(
     ApplicationStartRole -> routes.HomeController.present,
+    WithdrawApplicationRole -> routes.HomeController.present,
     PersonalDetailsRole -> routes.FastTrackApplication.generalDetails(None),
     SchemesRole -> routes.SchemeController.schemes(),
     AssistanceDetailsRole -> routes.AssistanceDetailsController.present,
@@ -176,8 +176,7 @@ object Roles {
     SubmitApplicationRole -> routes.SubmitApplicationController.present,
     DisplayOnlineTestSectionRole -> routes.HomeController.present,
     ConfirmedAllocatedCandidateRole -> routes.HomeController.present,
-    UnconfirmedAllocatedCandidateRole -> routes.HomeController.present,
-    WithdrawApplicationRole -> routes.HomeController.present
+    UnconfirmedAllocatedCandidateRole -> routes.HomeController.present
   ).reverse
 
 
