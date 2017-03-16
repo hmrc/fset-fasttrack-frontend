@@ -38,7 +38,7 @@ class RolesSpec extends PlaySpec with MustMatchers with TableDrivenPropertyCheck
 
   "Withdraw Component" must {
     "be enable only for specific roles" in {
-      val disabledStatuses = List(IN_PROGRESS, WITHDRAWN, CREATED, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
+      val disabledStatuses = List(WITHDRAWN, REGISTERED, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
         ASSESSMENT_CENTRE_FAILED, ASSESSMENT_CENTRE_FAILED_NOTIFIED)
       val enabledStatuses = ApplicationStatus.values.toList.diff(disabledStatuses)
 
