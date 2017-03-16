@@ -96,7 +96,7 @@ object Roles {
 
   object WithdrawApplicationRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
-      activeUserWithApp(user) && !statusIn(user)(WITHDRAWN, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
+      activeUserWithApp(user) && !statusIn(user)(WITHDRAWN, REGISTERED, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
         ASSESSMENT_CENTRE_FAILED, ASSESSMENT_CENTRE_FAILED_NOTIFIED)
   }
 
@@ -161,7 +161,7 @@ object Roles {
 
   object WithdrawComponent extends AuthorisedUser {
     override def isEnabled(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
-      !statusIn(user)(WITHDRAWN, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
+      !statusIn(user)(WITHDRAWN, REGISTERED, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
         ASSESSMENT_CENTRE_FAILED, ASSESSMENT_CENTRE_FAILED_NOTIFIED)
     // TODO MIGUEL: Think if we want to attend FAILED_TO_ATTEND
   }
