@@ -239,7 +239,7 @@
                                                 <p>Unfortunately on this occasion you didn't reach the pass mark for the Fast Track scheme and we won't be taking your application further.</p>
                                                 <p>Thank you for your interest in the Fast Track programme and we wish you every success for the future.</p>
                                                 @if(DisplayAssessmentCentreTestScoresAndFeedbackRole.isAuthorized(usr)) {
-                                                    <a href="@routes.AssessmentCentreTestScoresController.feedback()">View your assessment feedback</a>
+                                                    <a id="assessmentCentreFeedBackLink" href="@routes.AssessmentCentreTestScoresController.feedback()">View your assessment feedback</a>
                                                 }
                                             } else {
                                                 @if(AssessmentCentrePassedNotifiedRole.isAuthorized(usr) && onlineTest.exists(_.pdfReportAvailable)) {

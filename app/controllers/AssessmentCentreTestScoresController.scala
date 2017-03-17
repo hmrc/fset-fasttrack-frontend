@@ -19,6 +19,7 @@ package controllers
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient
 import helpers.NotificationType._
+import models.UniqueIdentifier
 import play.api.Logger
 import security.Roles.DisplayAssessmentCentreTestScoresAndFeedbackRole
 import security.SilhouetteComponent
@@ -38,20 +39,20 @@ trait AssessmentCentreTestScoresController extends BaseController{
 
   def feedback = CSRSecureAppAction(DisplayAssessmentCentreTestScoresAndFeedbackRole) { implicit request =>
     implicit user =>
+      def notFoundHandler(userId: UniqueIdentifier) = {
+        Logger.warn(s"Assessment centre test scores and feedback not found for user: ${userId}")
+        Redirect(routes.HomeController.present()).flashing(warning("error.assessmentcentre.testfeedback.notAvailable"))
+      }
+
       (for {
         scores <- applicationClient.getCandidateScores(user.application.applicationId)
         competencyAverageResult <- applicationClient.getAssessmentCentreCompetencyAverageResult(user.application.applicationId)
       } yield {
         scores.scoresAndFeedback.map { scoresAndFeedback =>
           Ok(views.html.application.assessmentCentreTestScoresAndFeedback.apply(scoresAndFeedback, competencyAverageResult))
-        }.getOrElse {
-          Logger.warn(s"Assessment centre test scores and feedback not found for user: ${user.user.userID}")
-          Redirect(routes.HomeController.present()).flashing(warning("error.assessmentcentre.testfeedback.notAvailable"))
-        }
+        }.getOrElse(notFoundHandler(user.user.userID))
       }).recover {
-        case _: NotFoundException =>
-          Logger.warn(s"Assessment centre test scores and feedback not found for user: ${user.user.userID}")
-          Redirect(routes.HomeController.present()).flashing(warning("error.assessmentcentre.testfeedback.notAvailable"))
+        case _: NotFoundException => notFoundHandler(user.user.userID)
       }
   }
 }
