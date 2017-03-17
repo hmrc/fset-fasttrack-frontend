@@ -211,6 +211,8 @@ object RoleUtils {
 
   def hasReview(implicit user: CachedData) = progress.review
 
+  def hasSubmitted(implicit user: CachedData) = progress.submitted
+
   def hasOnlineTestFailedNotified(implicit user: CachedData) = progress.onlineTest.onlineTestFailedNotified
 
   def hasAwaitingAllocation(implicit user: CachedData) = progress.onlineTest.onlineTestAwaitingAllocation

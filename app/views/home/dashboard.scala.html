@@ -52,7 +52,6 @@
 @if(!(flag ^ WithdrawnApplicationRole.isAuthorized(usr))) {@body}
 }
 
-
 @renderProgressElement(showLink: Boolean, checked: Boolean, id: String)(link: Call)(body: Html) = {
     <li id="@id"><i id="@id-icon" class='fa @if(checked) { fa-check } else {fa-minus} the-icon'></i> @if(showLink) {
     <a id="@id-link" href="@link">@body</a>
@@ -103,7 +102,7 @@
             </p>
             <p>
                 @if(DisplayAssessmentCentreTestScoresAndFeedbackRole.isAuthorized(usr)) {
-                    <a href="@routes.AssessmentCentreTestScoresController.feedback()">View your assessment feedback</a>
+                    <a id="assessmentCentreFeedbackForWithdrawnApplicationLink" href="@routes.AssessmentCentreTestScoresController.feedback()">View your assessment feedback</a>
                 }
             </p>
         </div>
@@ -120,20 +119,20 @@
                                     1. Fill in your application form</h2>
                                 @withdrawn(flag = false) {
                                     <ul class="list-text list-withicons">
-                                        @withdraw() {
+                                        @if((activeUserWithApp(usr))&&(hasSubmitted(usr))) {
                                             <li><i class='fa fa-check the-icon'></i>Your application has been submitted</li>
                                         }
-                                        @withdraw(flag = false) {
+                                        @if(activeUserWithApp(usr)&&(!hasSubmitted(usr))) {
                                             @renderProgressElement(showLink = PersonalDetailsRole.isAuthorized(usr), checked = SchemesRole.isAuthorized(usr), "personalDetailsStep")(routes.FastTrackApplication.generalDetails(None)) {Add personal details }
                                             @renderProgressElement(showLink = SchemesRole.isAuthorized(usr), checked = AssistanceDetailsRole.isAuthorized(usr), "schemesStep")(routes.SchemeController.schemes()) { Choose your preferred locations and schemes }
                                             @renderProgressElement(showLink = AssistanceDetailsRole.isAuthorized(usr), checked = hasAssistanceDetails(usr), "assistanceDetailsStep")(routes.AssistanceDetailsController.present()) { Disability and health conditions }
                                             @renderProgressElement(showLink = QuestionnaireInProgressRole.isAuthorized(usr), checked = ReviewRole.isAuthorized(usr), "questionnaireStep")(routes.QuestionnaireController.presentStartOrContinue()) { Fill in the diversity questions }
                                             @renderProgressElement(showLink = ReviewRole.isAuthorized(usr), checked = SubmitApplicationRole.isAuthorized(usr), "reviewStep")(routes.ReviewApplicationController.present()) { Check your application }
-                                            @renderProgressElement(showLink = SubmitApplicationRole.isAuthorized(usr), checked = WithdrawApplicationRole.isAuthorized(usr), "submitStep")(routes.SubmitApplicationController.present()) { Submit }
+                                            @renderProgressElement(showLink = SubmitApplicationRole.isAuthorized(usr), checked = hasSubmitted(usr), "submitStep")(routes.SubmitApplicationController.present()) { Submit }
                                         }
                                     </ul>
                                 }
-                                @withdraw() {
+                                @if((activeUserWithApp(usr))&&(hasSubmitted(usr))) {
                                     <a class="" id="view-application" href="@routes.ReviewApplicationController.present()">
                                         View your submitted application</a>
                                 }
@@ -245,7 +244,7 @@
                                                 @if(AssessmentCentrePassedNotifiedRole.isAuthorized(usr) && onlineTest.exists(_.pdfReportAvailable)) {
                                                     <p><i class="fa fa-check the-icon"></i>Congratulations! We're pleased to let you know you've successfully passed the Fast Track assessment.</p>
                                                     @if(DisplayAssessmentCentreTestScoresAndFeedbackRole.isAuthorized(usr)) {
-                                                        <a href="@routes.AssessmentCentreTestScoresController.feedback()">View your assessment feedback</a>
+                                                        <a id="assessmentCentrePassedNotifiedFeedBackLink" href="@routes.AssessmentCentreTestScoresController.feedback()">View your assessment feedback</a>
                                                     }
                                                 } else {
                                                     @if(AssessmentCentreFailedToAttendRole.isAuthorized(usr)) {
