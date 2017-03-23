@@ -86,26 +86,29 @@
             <p>If you believe there's been a mistake, please <a id="contactUsWithdrawn" href="@routes.ApplicationController.helpdesk">contact us</a>.</p>
         </div>
 
-        <div class="panel-indent">
-            <p>
-                <a class="" id="view-withdrawn-application" href="@routes.ReviewApplicationController.present()">
-                    View your withdrawn application</a>
-            </p>
-            <p>
-                @if(DisplayDownloadOnlineTestPDFReportRole.isAuthorized(usr)) {
-                    @onlineTest.map { test =>
-                        @if(test.pdfReportAvailable) {
-                            <p><a id="onlineTestPDFLink" href="@routes.OnlineTestController.downloadPDFReport()">View your online tests feedback (PDF, less than 100kb)</a></p>
+        @if(usr.application.nonEmpty && hasSubmitted(usr)) {
+            <div class="panel-indent">
+                <p>
+                    <a class="" id="view-withdrawn-application" href="@routes.ReviewApplicationController.present()">
+                        View your withdrawn application</a>
+                </p>
+                <p>
+                    @if(DisplayDownloadOnlineTestPDFReportRole.isAuthorized(usr)) {
+                        @onlineTest.map { test =>
+                            @if(test.pdfReportAvailable) {
+                                <p><a id="onlineTestPDFLink" href="@routes.OnlineTestController.downloadPDFReport()">View your online tests feedback (PDF, less than 100kb)</a></p>
+                            }
                         }
                     }
-                }
-            </p>
-            <p>
-                @if(DisplayAssessmentCentreTestScoresAndFeedbackRole.isAuthorized(usr)) {
-                    <a id="assessmentCentreFeedbackForWithdrawnApplicationLink" href="@routes.AssessmentCentreTestScoresController.feedback()">View your assessment feedback</a>
-                }
-            </p>
-        </div>
+                </p>
+                <p>
+                    @if(DisplayAssessmentCentreTestScoresAndFeedbackRole.isAuthorized(usr)) {
+                        <a id="assessmentCentreFeedbackForWithdrawnApplicationLink" href="@routes.AssessmentCentreTestScoresController.feedback()">View your assessment feedback</a>
+                    }
+                </p>
+            </div>
+        }
+
     }
 
     @withdrawn(flag = false) {
@@ -274,13 +277,13 @@
                         <div class="grid grid-2-3">
                             <div class="inner-block-padr">
                                 @if(AssessmentCentreFailedNotifiedRole.isAuthorized(usr) || AssessmentCentreFailedToAttendRole.isAuthorized(usr)) {
-                                    <h2 class="heading-large">4. What happens next?</h2>
+                                    <h2 class="heading-medium">4. What happens next?</h2>
                                     <p>We appreciate this may be disappointing, however the Civil Service does offer other career opportunities. You can find details at: <a href="http://www.civilservice.gov.uk/jobs">www.civilservice.gov.uk/jobs</a>.</p>
                                     <p>You'll be able to reapply for Fast Track next year, alternatively
                                         use the <a href="https://www.gov.uk/apply-apprenticeship" rel="external">find an apprenticeship</a> service to search
                                         for other apprenticeships in England.</p>
                                 } else {
-                                    <h2 class="heading-large">4. What happens next?</h2>
+                                    <h2 class="heading-medium">4. What happens next?</h2>
                                     @if(AssessmentCentrePassedNotifiedRole.isAuthorized(usr)) {
                                         <p>First, we'll match you to a role. Next, we'll contact you:</p>
                                         <ul class="list-bullet">

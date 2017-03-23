@@ -18,20 +18,15 @@ package connectors
 
 import config.CSRHttp
 import connectors.AllocationExchangeObjects._
-import connectors.CandidateScoresExchangeObject.ApplicationScores
 import connectors.ExchangeObjects._
 import connectors.exchange.{ LocationSchemes, ProgressResponse, Questionnaire, SchemeInfo, _ }
 import forms.GeneralDetailsForm
 import mappings.PostCodeMapping
-import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
 import org.joda.time.LocalDate
-import play.api.Play.current
 import play.api.http.Status._
-import play.api.libs.iteratee.Iteratee
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.http._
-import connectors.CandidateScoresExchangeObject.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -247,10 +242,10 @@ trait ApplicationClient {
     }
   }
 
-  def getCandidateScores(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[ApplicationScores] = {
+  def getCandidateScores(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Option[CandidateScoresAndFeedback]] = {
     http.GET(s"$hostBase/test-scores/application/$applicationId").map { response =>
       if (response.status == OK) {
-        response.json.as[ApplicationScores]
+        response.json.asOpt[CandidateScoresAndFeedback]
       } else {
         throw new NotFoundException(s"Error retrieving candidate scores for $applicationId")
       }

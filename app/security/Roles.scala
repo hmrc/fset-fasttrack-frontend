@@ -96,8 +96,14 @@ object Roles {
 
   object WithdrawApplicationRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
-      activeUserWithApp(user) && !statusIn(user)(WITHDRAWN, REGISTERED, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
-        ASSESSMENT_CENTRE_FAILED, ASSESSMENT_CENTRE_FAILED_NOTIFIED)
+      activeUserWithApp(user) && !statusIn(user)(
+        WITHDRAWN,
+        REGISTERED,
+        ONLINE_TEST_FAILED,
+        ONLINE_TEST_FAILED_NOTIFIED,
+        ASSESSMENT_CENTRE_FAILED,
+        ASSESSMENT_CENTRE_FAILED_NOTIFIED
+      )
   }
 
   object WithdrawnApplicationRole extends CsrAuthorization {
