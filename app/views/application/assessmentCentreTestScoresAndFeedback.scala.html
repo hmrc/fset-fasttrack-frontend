@@ -1,0 +1,118 @@
+@(scores: connectors.exchange.CandidateScoresAndFeedback, competencyAverageResult: connectors.exchange.CompetencyAverageResult)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, messages: Messages)
+
+@main_template(title = "Your scores and feedback | Apply for a Civil Service apprenticeship") {
+    <div class="grid-wrapper">
+        <div class="hgroup grid grid-2-3">
+            <h1 class="heading-xlarge">Your scores and feedback</h1>
+            <p class="subtitle">Assessment centre</p>
+        </div>
+        <div class="grid grid-1-3">
+            <div class="page-link">
+                <p>
+                    <a href="@routes.HomeController.present">Return to homepage</a>
+                </p>
+                <p>
+                    <a href="" class="print-trigger" id="printLink"><i class="fa fa-print"></i>Print this page</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <h2 class="heading-large">Scores</h2>
+    <div class="panel-indent text">
+        <p>Your performance is measured against&nbsp;six competencies.&nbsp; Each competency
+            is tested at least twice during the centre. We'll calculate an average
+            score to measure your overall performance in each competency, ranging
+            from 1.00 to 4.00.</p>
+    </div>
+    <div class="grid-wrapper">
+        <div class="grid grid-1-2">
+            <div class="inner-block-padr">
+                <h2 class="heading-small">How you scored</h2>
+                <table>
+                    <tbody><tr>
+                        <td>Leading &amp; communicating</td>
+                        <td>@{f"${competencyAverageResult.leadingAndCommunicatingAverage}%2.2f"}</td>
+                    </tr>
+                    <tr>
+                        <td>Collaborating &amp; partnering</td>
+                        <td>@{f"${competencyAverageResult.collaboratingAndPartneringAverage}%2.2f"}</td>
+                    </tr>
+                    <tr>
+                        <td>Delivering at pace</td>
+                        <td>@{f"${competencyAverageResult.deliveringAtPaceAverage}%2.2f"}</td>
+                    </tr>
+                    <tr>
+                        <td>Changing &amp; improving</td>
+                        <td>@{f"${competencyAverageResult.changingAndImprovingAverage}%2.2f"}</td>
+                    </tr>
+                    <tr>
+                        <td>Making effective decisions</td>
+                        <td>@{f"${competencyAverageResult.makingEffectiveDecisionsAverage}%2.2f"}</td>
+                    </tr>
+                    <tr>
+                        <td>Building capability for all</td>
+                        <td>@{f"${competencyAverageResult.buildingCapabilityForAllAverage}%2.2f"}</td>
+                    </tr>
+                    <tr>
+                        <td>Motivational fit</td>
+                        <td>@{f"${competencyAverageResult.motivationFitAverage}%2.2f"}</td>
+                    </tr>
+                    </tbody></table>
+            </div>
+        </div>
+        <div class="grid grid-1-2">
+            <h2 class="heading-small">What the scores mean</h2>
+            <table class="scores-explanation-table">
+                <tbody><tr class="strong-candidate">
+                    <td><span class="bold-small">4</span></td>
+                    <td>Minor areas for development but&nbsp;provides strong indicators that&nbsp;the
+                        candidate would be&nbsp;suitable for the Fast Track.</td>
+                </tr>
+                <tr class="good-candidate">
+                    <td><span class="bold-small">3</span></td>
+                    <td>Some areas for development but also provides&nbsp;indicators that&nbsp;the
+                        candidate would be&nbsp;suitable for the Fast Track.</td>
+                </tr>
+                <tr class="ok-candidate">
+                    <td><span class="bold-small">2</span></td>
+                    <td>A number of areas for development needed to make&nbsp;the candidate&nbsp;suitable
+                        for the Fast Track.</td>
+                </tr>
+                <tr class="unsuitable-candidate">
+                    <td><span class="bold-small">1</span></td>
+                    <td>Too many&nbsp;areas for development&nbsp;for the candidate to be suitable
+                        for the Fast Track.</td>
+                </tr>
+                </tbody></table>
+        </div>
+    </div>
+    <section class="section-border">
+        <h2 class="heading-large">Feedback</h2>
+        <h3 class="heading-medium">Interview</h3>
+        <article class="text">
+            @scores.interview.map(_.feedback).map { feedback =>
+                @feedback
+            }
+        </article>
+    </section>
+    <section class="section-border">
+        <h3 class="heading-medium">Group exercise</h3>
+        <article class="text">
+            @scores.groupExercise.map(_.feedback).map { feedback =>
+                @feedback
+            }
+        </article>
+    </section>
+    <section class="section-border">
+        <h3 class="heading-medium">Written exercise</h3>
+        <article class="text">
+            @scores.writtenExercise.map(_.feedback).map { feedback =>
+                @feedback
+            }
+        </article>
+    </section>
+
+
+
+    <p><a href="@routes.HomeController.present">Return to homepage</a></p>
+}

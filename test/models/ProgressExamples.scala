@@ -20,7 +20,7 @@ import connectors.exchange.{ AssessmentCentre, AssessmentScores }
 
 object ProgressExamples {
   val InitialProgress = Progress(false, false, false, false, false, false, false, false, false, false, false,
-    OnlineTestProgress(false, false, false, false, false, false, false, false, false, false),
+    OnlineTestProgress(false, false, false, false, false, false, false, false, false, false, false),
     false, AssessmentScores(false, false), AssessmentCentre(false, false, false))
 
   val PersonalDetailsProgress = InitialProgress.copy(personalDetails = true)
@@ -35,13 +35,13 @@ object ProgressExamples {
   val WithdrawnAfterSubmitProgress = SubmitProgress.copy(withdrawn = true)
 
   val OnlineTestsInvitedNotStarted = SubmitProgress.copy(
-    onlineTest = OnlineTestProgress(true, false, false, false, false, false, false, false, false, false),
+    onlineTest = OnlineTestProgress(true, false, false, false, false, false, false, false, false, false, false),
     failedToAttend = false, assessmentScores = AssessmentScores(false, false), assessmentCentre = AssessmentCentre(false, false, false))
 
   val OnlineTestsStarted = OnlineTestsInvitedNotStarted.copy(
-    onlineTest = OnlineTestProgress(true, true, false, false, false, false, false, false, false, false))
+    onlineTest = OnlineTestProgress(true, true, false, false, false, false, false, false, false, false, false))
 
   val FullProgress = Progress(true, true, true, true, true, true, true, true, true, true, false,
-    OnlineTestProgress(true, true, true, false, false, false, false, false, true, false),
+    OnlineTestProgress(true, true, true, false, false, false, false, false, false, true, false),
     false, AssessmentScores(true, true), AssessmentCentre(false, true, false))
 }

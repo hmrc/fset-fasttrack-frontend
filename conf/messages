@@ -169,6 +169,9 @@ answer.no = No
 #PDF Report
 error.pdf.report.notAvailable = Your online test result is not available
 
+# Assessment Centre Test Scores and Feedback
+error.assessmentcentre.testfeedback.notAvailable = Your assessment centre test scores and feedback is not available
+
 success.allocation.confirmed = You''ve successfully confirmed your assessment date.
 
 global.error.badRequest400.title=Bad request - 400

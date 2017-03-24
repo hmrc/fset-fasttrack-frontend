@@ -38,7 +38,7 @@ class RolesSpec extends PlaySpec with MustMatchers with TableDrivenPropertyCheck
 
   "Withdraw Component" must {
     "be enable only for specific roles" in {
-      val disabledStatuses = List(IN_PROGRESS, WITHDRAWN, CREATED, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
+      val disabledStatuses = List(WITHDRAWN, REGISTERED, ONLINE_TEST_FAILED, ONLINE_TEST_FAILED_NOTIFIED,
         ASSESSMENT_CENTRE_FAILED, ASSESSMENT_CENTRE_FAILED_NOTIFIED)
       val enabledStatuses = ApplicationStatus.values.toList.diff(disabledStatuses)
 
@@ -63,8 +63,10 @@ class RolesSpec extends PlaySpec with MustMatchers with TableDrivenPropertyCheck
           ProgressExamples.SchemePreferencesProgress -> routes.AssistanceDetailsController.present,
           ProgressExamples.AssistanceDetailsProgress -> routes.QuestionnaireController.presentStartOrContinue,
           ProgressExamples.StartedDiversityQuestionnaireProgress -> routes.QuestionnaireController.presentStartOrContinue,
-          ProgressExamples.DiversityQuestionnaireProgress -> routes.QuestionnaireController.presentStartOrContinue
-        )
+          ProgressExamples.DiversityQuestionnaireProgress -> routes.QuestionnaireController.presentStartOrContinue,
+          ProgressExamples.ParentalOcuppationQuestionnaireProgress -> routes.ReviewApplicationController.present(),
+          ProgressExamples.ReviewProgress -> routes.SubmitApplicationController.present()
+      )
         val uid = UniqueIdentifier(UUID.randomUUID)
         val applicationData =  ApplicationData(uid, uid, ApplicationStatus.IN_PROGRESS,
           progress = ProgressExamples.InitialProgress
@@ -109,7 +111,7 @@ object RolesSpec {
     "John", "Biggs", None, "aaa@bbb.com", isActive = true, "locked"
   ), Some(ApplicationData(id, id, applicationStatus,
     Progress(true, true, true, true, true, true, true, true, true, true, true,
-      OnlineTestProgress(true, true, true, true, true, true, true, true, true, true),
+      OnlineTestProgress(true, true, true, true, true, true, true, true, true, true, true),
       true, AssessmentScores(true, true), AssessmentCentre(true, true)))))
 
   def registeredUser(applicationStatus: ApplicationStatus) = CachedData(CachedUser(

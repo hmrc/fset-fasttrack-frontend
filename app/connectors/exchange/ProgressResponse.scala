@@ -47,10 +47,12 @@ case class AssessmentScores(
 )
 
 case class AssessmentCentre(
-  awaitingReevaluation: Boolean = false,
-  passed: Boolean = false,
-  failed: Boolean = false
-)
+                             awaitingReevaluation: Boolean = false,
+                             passed: Boolean = false,
+                             failed: Boolean = false,
+                             passedNotified: Boolean = false,
+                             failedNotified: Boolean = false
+                           )
 
 object ProgressResponse {
   implicit val assessmentScoresFormat = Json.format[AssessmentScores]

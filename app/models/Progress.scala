@@ -48,6 +48,7 @@ case class OnlineTestProgress(
   onlineTestFailed: Boolean,
   onlineTestFailedNotified: Boolean,
   onlineTestAwaitingAllocation: Boolean,
+  onlineTestAwaitingAllocationNotified: Boolean,
   onlineTestAllocationConfirmed: Boolean,
   onlineTestAllocationUnconfirmed: Boolean
 )
@@ -83,6 +84,7 @@ object Progress {
         onlineTestFailed = progressResponse.onlineTest.failed,
         onlineTestFailedNotified = progressResponse.onlineTest.failedNotified,
         onlineTestAwaitingAllocation = progressResponse.onlineTest.awaitingAllocation,
+        onlineTestAwaitingAllocationNotified = progressResponse.onlineTest.awaitingAllocationNotified,
         onlineTestAllocationConfirmed = progressResponse.onlineTest.allocationConfirmed,
         onlineTestAllocationUnconfirmed = progressResponse.onlineTest.allocationUnconfirmed
       ),

@@ -22,12 +22,9 @@ import connectors.ExchangeObjects._
 import connectors.exchange.{ LocationSchemes, ProgressResponse, Questionnaire, SchemeInfo, _ }
 import forms.GeneralDetailsForm
 import mappings.PostCodeMapping
-import models.ApplicationData.ApplicationStatus.ApplicationStatus
 import models.UniqueIdentifier
 import org.joda.time.LocalDate
-import play.api.Play.current
 import play.api.http.Status._
-import play.api.libs.iteratee.Iteratee
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.http._
 
@@ -242,6 +239,27 @@ trait ApplicationClient {
   def getAvailableSchemes(implicit hc: HeaderCarrier): Future[List[SchemeInfo]] = {
     http.GET(s"$hostBase/schemes/available").map { response =>
       response.json.as[List[SchemeInfo]]
+    }
+  }
+
+  def getCandidateScores(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Option[CandidateScoresAndFeedback]] = {
+    http.GET(s"$hostBase/test-scores-feedback/application/$applicationId").map { response =>
+      if (response.status == OK) {
+        response.json.asOpt[CandidateScoresAndFeedback]
+      } else {
+        throw new NotFoundException(s"Error retrieving candidate scores for $applicationId")
+      }
+    }
+  }
+
+  def getAssessmentCentreCompetencyAverageResult(applicationId: UniqueIdentifier)(
+    implicit hc: HeaderCarrier): Future[CompetencyAverageResult] = {
+    http.GET(s"$hostBase/test-scores/competency-average/application/$applicationId").map { response =>
+      if (response.status == OK) {
+        response.json.as[CompetencyAverageResult]
+      } else {
+        throw new NotFoundException(s"Error retrieving assessment centre competency average for $applicationId")
+      }
     }
   }
 }
