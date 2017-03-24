@@ -44,7 +44,7 @@ abstract class ReviewApplicationController(applicationClient: ApplicationClient,
         schemeLocationChoices <- applicationClient.getSchemeLocationChoices(user.application.applicationId)
         schemeChoices <- applicationClient.getSchemeChoices(user.application.applicationId)
       } yield {
-        Ok(views.html.application.review.apply(personalDetails, assistanceDetails, schemeLocationChoices, schemeChoices, user.application))
+        Ok(views.html.application.review(personalDetails, assistanceDetails, schemeLocationChoices, schemeChoices, user.application))
       }).recover {
         case ex @ (_: PersonalDetailsNotFound | _: AssistanceDetailsNotFound | _: SchemeLocationChoicesNotFound | _: SchemeChoicesNotFound) =>
           Logger.warn("Preview section reached prematurely with exception", ex)
