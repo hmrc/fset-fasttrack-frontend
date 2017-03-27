@@ -20,10 +20,12 @@ import com.mohiva.play.silhouette.api.Identity
 import config.{ CSRCache, SecurityEnvironmentImpl }
 import play.api.Logger
 import play.api.libs.json._
+import play.api.mvc.{ Request, RequestHeader }
 import uk.gov.hmrc.http.cache.client.KeyStoreEntryValidationException
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * A model for the user. This should represent the logged in user, so it should contain information the user itself,
@@ -61,7 +63,7 @@ object CachedData {
 
 object SecurityUser {
   implicit class loginInfoToCachedUser(securityUser: SecurityUser) {
-    def toUserFuture(implicit hc: HeaderCarrier): Future[Option[models.CachedData]] =
+    def toUserFuture(implicit hc: HeaderCarrier, request: RequestHeader): Future[Option[models.CachedData]] =
       CSRCache.fetchAndGetEntry[CachedData](securityUser.userID).recoverWith {
         case ex: KeyStoreEntryValidationException =>
           Logger.warn(s"Retrieved invalid cache entry for userId '${securityUser.userID}' (structure changed?). " +

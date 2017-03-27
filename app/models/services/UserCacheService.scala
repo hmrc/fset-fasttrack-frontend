@@ -24,7 +24,7 @@ import connectors.FrameworkId
 import connectors.ApplicationClient.ApplicationNotFound
 import connectors.{ ApplicationClient, UserManagementClient }
 import models.{ CachedData, SecurityUser, UniqueIdentifier }
-import play.api.mvc.Request
+import play.api.mvc.{ Request, RequestHeader }
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,7 +38,7 @@ class UserCacheService extends UserService {
   override def save(user: CachedData)(implicit hc: HeaderCarrier): Future[CachedData] =
     CSRCache.cache[CachedData](user.user.userID.toString, user).map(_ => user)
 
-  override def refreshCachedUser(userId: UniqueIdentifier)(implicit hc: HeaderCarrier, request: Request[_]): Future[CachedData] = {
+  override def refreshCachedUser(userId: UniqueIdentifier)(implicit hc: HeaderCarrier, request: RequestHeader): Future[CachedData] = {
     UserManagementClient.findByUserId(userId).flatMap { userData =>
       ApplicationClient.getApplication(userId, FrameworkId).flatMap { appData =>
         val cd = CachedData(userData.toCached, Some(appData))

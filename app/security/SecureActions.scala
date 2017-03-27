@@ -76,7 +76,7 @@ trait SecureActions {
    */
   def CSRSecureAction(role: CsrAuthorization)(block: SecuredRequest[_, _] => CachedData => Future[Result]): Action[AnyContent] = {
     silhouette.SecuredAction.async { secondRequest =>
-      implicit val carrier = hc(secondRequest.request)
+      implicit val rh  = secondRequest.request
       secondRequest.identity.toUserFuture.flatMap {
         case Some(data) => SecuredActionWithCSRAuthorisation(secondRequest, block, role, data, data)
         case None => gotoAuthentication
@@ -86,7 +86,7 @@ trait SecureActions {
 
   def CSRSecureAppAction(role: CsrAuthorization)(block: SecuredRequest[_, _] => CachedDataWithApp => Future[Result]): Action[AnyContent] = {
     silhouette.SecuredAction.async { secondRequest =>
-      implicit val carrier = hc(secondRequest.request)
+      implicit val rh  = secondRequest.request
       secondRequest.identity.toUserFuture.flatMap {
         case Some(CachedData(_, None)) => gotoUnauthorised
         case Some(data @ CachedData(u, Some(app))) =>
@@ -99,8 +99,9 @@ trait SecureActions {
   def CSRUserAwareAction(block: UserAwareRequest[_, _] => Option[CachedData] => Future[Result]): Action[AnyContent] =
     withSession {
       silhouette.UserAwareAction.async { request =>
+        implicit val rh  = request.request
         request.identity match {
-          case Some(securityUser: SecurityUser) => securityUser.toUserFuture(hc(request.request)).flatMap(r => block(request)(r))
+          case Some(securityUser: SecurityUser) => securityUser.toUserFuture(hc(request.request), rh).flatMap(r => block(request)(r))
           case None => block(request)(None)
         }
       }

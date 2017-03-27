@@ -19,7 +19,7 @@ package models.services
 import com.google.inject.ImplementedBy
 import com.mohiva.play.silhouette.api.services.IdentityService
 import models.{ CachedData, SecurityUser, UniqueIdentifier }
-import play.api.mvc.Request
+import play.api.mvc.{ Request, RequestHeader }
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -29,6 +29,6 @@ trait UserService extends IdentityService[SecurityUser] {
 
   def save(user: CachedData)(implicit hc: HeaderCarrier): Future[CachedData]
 
-  def refreshCachedUser(userId: UniqueIdentifier)(implicit hc: HeaderCarrier, request: Request[_]): Future[CachedData]
+  def refreshCachedUser(userId: UniqueIdentifier)(implicit hc: HeaderCarrier, request: RequestHeader): Future[CachedData]
 
 }

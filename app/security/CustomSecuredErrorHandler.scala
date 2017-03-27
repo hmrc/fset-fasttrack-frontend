@@ -35,7 +35,7 @@ class CustomSecuredErrorHandler @Inject() (val messagesApi: MessagesApi) extends
   override def onNotAuthorized(implicit request: RequestHeader): Future[Result] = {
     val sec = request.asInstanceOf[SecuredRequest[SecurityEnvironment, SecurityUser]]
     val headerCarrier = HeaderCarrier.fromHeadersAndSession(sec.headers, Some(sec.session))
-    sec.identity.toUserFuture(headerCarrier).map {
+    sec.identity.toUserFuture(headerCarrier, request).map {
       case Some(user: CachedData) if user.user.isActive => Redirect(routes.HomeController.present).flashing(danger("access.denied"))
       case _ => Redirect(routes.ActivationController.present).flashing(danger("access.denied"))
     }
