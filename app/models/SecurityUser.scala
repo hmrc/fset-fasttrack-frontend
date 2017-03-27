@@ -17,8 +17,10 @@
 package models
 
 import com.mohiva.play.silhouette.api.Identity
-import config.CSRCache
+import config.{ CSRCache, SecurityEnvironmentImpl }
+import play.api.Logger
 import play.api.libs.json._
+import uk.gov.hmrc.http.cache.client.KeyStoreEntryValidationException
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -58,10 +60,17 @@ object CachedData {
 }
 
 object SecurityUser {
-
   implicit class loginInfoToCachedUser(securityUser: SecurityUser) {
     def toUserFuture(implicit hc: HeaderCarrier): Future[Option[models.CachedData]] =
-      CSRCache.fetchAndGetEntry[CachedData](securityUser.userID)
+      CSRCache.fetchAndGetEntry[CachedData](securityUser.userID).recoverWith {
+        case ex: KeyStoreEntryValidationException =>
+          Logger.warn(s"Retrieved invalid cache entry for userId '${securityUser.userID}' (structure changed?). " +
+            s"Attempting cache refresh from database...")
+          // TODO: Using SecurityEnvironmentImpl was used directly here for a production bugfix, get it injected properly.
+          SecurityEnvironmentImpl.userService.refreshCachedUser(UniqueIdentifier(securityUser.userID)).map(Some(_))
+        case ex: Throwable =>
+          Logger.warn(s"Retrieved invalid cache entry for userID '${securityUser.userID}. Could not recover!")
+          throw ex
+      }
   }
-
 }
