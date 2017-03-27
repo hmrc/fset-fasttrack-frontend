@@ -37,7 +37,9 @@ case class CachedUser(
   email: String,
   isActive: Boolean,
   lockStatus: String
-)
+) {
+  def fullName = s"$firstName $lastName"
+}
 
 object CachedUser {
   implicit val userJsonFormats = Json.format[CachedUser]
