@@ -38,7 +38,7 @@ case class CachedUser(
   isActive: Boolean,
   lockStatus: String
 ) {
-  def fullName = s"$firstName $lastName"
+  val fullName = s"$firstName $lastName"
 }
 
 object CachedUser {
