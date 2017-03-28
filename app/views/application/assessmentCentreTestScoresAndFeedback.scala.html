@@ -1,6 +1,13 @@
 @(scores: connectors.exchange.CandidateScoresAndFeedback, competencyAverageResult: connectors.exchange.CompetencyAverageResult)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, messages: Messages)
 
+@candidateName = {
+    <div class="toggle-content show-print">
+        <p><b>Candidate name:</b> @user.map(_.user.fullName)</p>
+    </div>
+}
+
 @main_template(title = "Your scores and feedback") {
+    @candidateName
     <div class="grid-wrapper">
         <div class="hgroup grid grid-2-3">
             <h1 class="heading-xlarge">Your scores and feedback</h1>
@@ -87,9 +94,7 @@
         </div>
     </div>
     <section class="section-border break-before">
-        <div class="toggle-content show-print">
-            <p><b>Candidate name:</b> @user.map(_.user.fullName)</p>
-        </div>
+        @candidateName
         <h2 class="heading-large">Feedback</h2>
         <h3 class="heading-medium">Interview</h3>
         <article class="text">
@@ -99,9 +104,7 @@
         </article>
     </section>
     <section class="section-border break-before">
-        <div class="toggle-content show-print">
-            <p><b>Candidate name:</b> @user.map(_.user.fullName)</p>
-        </div>
+        @candidateName
         <h3 class="heading-medium">Group exercise</h3>
         <article class="text">
             @scores.groupExercise.map(_.feedback).map { feedback =>
@@ -110,9 +113,7 @@
         </article>
     </section>
     <section class="section-border break-before">
-        <div class="toggle-content show-print">
-            <p><b>Candidate name:</b> @user.map(_.user.fullName)</p>
-        </div>
+        @candidateName
         <h3 class="heading-medium">Written exercise</h3>
         <article class="text">
             @scores.writtenExercise.map(_.feedback).map { feedback =>
