@@ -84,7 +84,7 @@ trait UserManagementClient {
 
   def updateDetails(userId: UniqueIdentifier, firstName: String, lastName: String,
     preferredName: Option[String])(implicit hc: HeaderCarrier): Future[Unit] =
-    http.PUT(s"${url.host}/details/$userId", UpdateDetails(firstName, lastName, preferredName, ServiceName)).map(_ => ())
+    http.PUT(s"${url.host}/service/$ServiceName/details/$userId", UpdateDetails(firstName, lastName, preferredName, ServiceName)).map(_ => ())
 
   def failedLogin(email: String)(implicit hc: HeaderCarrier): Future[UserResponse] =
     http.PUT(s"${url.host}/failedAttempt", EmailWrapper(email.toLowerCase, ServiceName)).map { (resp: HttpResponse) =>
@@ -105,7 +105,7 @@ trait UserManagementClient {
 
 
   def findByUserId(userId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[UserResponse] =
-    http.POST(s"${url.host}/findUserById", FindByUserIdRequest(userId)).map { (resp: HttpResponse) =>
+    http.POST(s"${url.host}/service/$ServiceName/findUserById", FindByUserIdRequest(userId)).map { (resp: HttpResponse) =>
       resp.json.as[UserResponse]
     }.recover {
       case e: NotFoundException => throw new InvalidCredentialsException(s"UserId = $userId")
