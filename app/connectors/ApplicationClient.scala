@@ -243,7 +243,7 @@ trait ApplicationClient {
   }
 
   def getCandidateScores(applicationId: UniqueIdentifier)(implicit hc: HeaderCarrier): Future[Option[CandidateScoresAndFeedback]] = {
-    http.GET(s"$hostBase/test-scores-feedback/application/$applicationId").map { response =>
+    http.GET(s"$hostBase/test-scores-feedback/reviewer/application/$applicationId").map { response =>
       if (response.status == OK) {
         response.json.asOpt[CandidateScoresAndFeedback]
       } else {
