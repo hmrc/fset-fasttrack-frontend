@@ -22,10 +22,10 @@ import play.api.Logger
 import play.api.libs.json._
 import play.api.mvc.{ Request, RequestHeader }
 import uk.gov.hmrc.http.cache.client.KeyStoreEntryValidationException
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.http.HeaderCarrier
 
 /**
  * A model for the user. This should represent the logged in user, so it should contain information the user itself,

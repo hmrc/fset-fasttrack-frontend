@@ -23,18 +23,18 @@ import controllers.routes
 import helpers.NotificationType.danger
 import models.{ CachedData, SecurityUser }
 import play.api.i18n.{ I18nSupport, MessagesApi }
-import play.api.mvc.{ RequestHeader, Result }
 import play.api.mvc.Results.Redirect
-import uk.gov.hmrc.play.http.HeaderCarrier
+import play.api.mvc.{ RequestHeader, Result }
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CustomSecuredErrorHandler @Inject() (val messagesApi: MessagesApi) extends SecuredErrorHandler with I18nSupport {
 
   override def onNotAuthorized(implicit request: RequestHeader): Future[Result] = {
     val sec = request.asInstanceOf[SecuredRequest[SecurityEnvironment, SecurityUser]]
-    val headerCarrier = HeaderCarrier.fromHeadersAndSession(sec.headers, Some(sec.session))
+    val headerCarrier = HeaderCarrierConverter.fromHeadersAndSession(sec.headers, Some(sec.session))
     sec.identity.toUserFuture(headerCarrier, request).map {
       case Some(user: CachedData) if user.user.isActive => Redirect(routes.HomeController.present).flashing(danger("access.denied"))
       case _ => Redirect(routes.ActivationController.present).flashing(danger("access.denied"))

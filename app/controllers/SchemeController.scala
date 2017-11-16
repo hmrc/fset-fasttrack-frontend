@@ -27,13 +27,13 @@ import play.api.Play
 import play.api.data.Form
 import play.api.mvc.Request
 import security.Roles.SchemesRole
-import uk.gov.hmrc.play.http.HeaderCarrier
 import viewmodels.application.scheme.{ SchemeLocationsViewModel, SchemePreferenceViewModel }
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import security.{ SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 object SchemeController extends SchemeController {
   val http = CSRHttp
