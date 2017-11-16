@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import config.CSRHttp
 import connectors.UserManagementClient.EmailTakenException
 import org.scalatestplus.play.OneServerPerSuite
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.http.HeaderCarrier
 
 class UserManagementClientSpec extends ConnectorSpec with OneServerPerSuite {
   implicit val hc = HeaderCarrier()

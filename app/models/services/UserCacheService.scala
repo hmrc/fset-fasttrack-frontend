@@ -25,10 +25,10 @@ import connectors.ApplicationClient.ApplicationNotFound
 import connectors.{ ApplicationClient, UserManagementClient }
 import models.{ CachedData, SecurityUser, UniqueIdentifier }
 import play.api.mvc.{ Request, RequestHeader }
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 class UserCacheService extends UserService {
 

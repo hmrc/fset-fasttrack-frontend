@@ -31,10 +31,10 @@ import play.api.mvc._
 import play.api.mvc.Results.Redirect
 import security.Roles.CsrAuthorization
 import uk.gov.hmrc.http.cache.client.KeyStoreEntryValidationException
-import uk.gov.hmrc.play.http.{ HeaderCarrier, SessionKeys }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, SessionKeys }
 
 /**
  *

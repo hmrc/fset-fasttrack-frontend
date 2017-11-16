@@ -24,7 +24,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{ Action, AnyContent }
 import security.Roles.SchemesRole
 import security.{ SecurityEnvironment, SilhouetteComponent }
-import uk.gov.hmrc.play.http.BadRequestException
+import uk.gov.hmrc.http.BadRequestException
 
 trait AddressLookupController extends BaseController {
   val addressLookupClient: AddressLookupClient

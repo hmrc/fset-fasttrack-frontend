@@ -35,17 +35,19 @@ import play.api.Play.current
 import play.api.libs.ws.WS
 import play.api.mvc.{ Call, RequestHeader }
 import security.CsrCredentialsProvider
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.cache.client.SessionCache
-import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
+import uk.gov.hmrc.http.hooks.HttpHooks
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.config.{ AppName, RunMode, ServicesConfig }
-import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.play.http.ws._
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import language.postfixOps
+import uk.gov.hmrc.play.frontend.config.LoadAuditingConfig
+import uk.gov.hmrc.play.frontend.filters.MicroserviceFilterSupport
 
 object FrontendAuditConnector extends AuditConnector {
   override lazy val auditingConfig = LoadAuditingConfig("auditing")
@@ -65,7 +67,7 @@ object CaseInSensitiveFingerPrintGenerator extends FingerprintGenerator {
 
 object CSRHttp extends CSRHttp
 
-class CSRHttp extends WSHttp {
+class CSRHttp extends WSHttp with HttpPut with HttpGet with HttpPost with HttpDelete with HttpPatch with HttpHooks{
   override val hooks = NoneRequired
   val wS = WS
 }

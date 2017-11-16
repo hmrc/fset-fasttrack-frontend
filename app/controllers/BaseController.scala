@@ -29,9 +29,9 @@ import play.api.mvc.{ Action, AnyContent, Request, Result }
 import security.Roles.CsrAuthorization
 import security.{ SecureActions, SecurityEnvironment }
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 case class FasttrackConfig(newAccountsEnabled: Boolean, applicationsSubmitEnabled: Boolean)
 

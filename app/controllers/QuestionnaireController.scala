@@ -27,13 +27,13 @@ import play.api.Play
 import play.api.mvc.{ Request, RequestHeader, Result }
 import security.QuestionnaireRoles._
 import security.Roles._
-import uk.gov.hmrc.play.http.HeaderCarrier
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import security.{ SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
 import scala.language.reflectiveCalls
+import uk.gov.hmrc.http.HeaderCarrier
 
 object QuestionnaireController extends QuestionnaireController {
   val http = CSRHttp

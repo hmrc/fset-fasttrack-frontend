@@ -30,12 +30,12 @@ import models.CachedDataWithApp
 import org.joda.time.LocalDate
 import play.api.Play
 import security.Roles.PersonalDetailsRole
-import uk.gov.hmrc.play.http.HeaderCarrier
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import security.{ SecurityEnvironment, SilhouetteComponent }
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 object FastTrackApplication extends FastTrackApplication {
   val http = CSRHttp

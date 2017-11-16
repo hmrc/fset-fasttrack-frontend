@@ -32,9 +32,9 @@ import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{ CSRF, CSRFConfig, CSRFConfigProvider, CSRFFilter }
 import security.Roles.CsrAuthorization
 import security.{ SecureActions, SecurityEnvironment }
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 /**
   * Each Controller test needs to extend this class to simplify controller testing

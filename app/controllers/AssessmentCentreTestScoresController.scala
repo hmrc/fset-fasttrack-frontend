@@ -23,9 +23,9 @@ import models.UniqueIdentifier
 import play.api.Logger
 import security.Roles.DisplayAssessmentCentreTestScoresAndFeedbackRole
 import security.SilhouetteComponent
-import uk.gov.hmrc.play.http.NotFoundException
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import uk.gov.hmrc.http.NotFoundException
 
 object AssessmentCentreTestScoresController extends AssessmentCentreTestScoresController {
   val http = CSRHttp

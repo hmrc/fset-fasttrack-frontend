@@ -28,10 +28,10 @@ import org.mockito.Mockito.{ when, _ }
 import play.api.test.Helpers._
 import security.SilhouetteComponent
 import testkit.BaseControllerSpec
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 class ReviewApplicationControllerSpec extends BaseControllerSpec {
 

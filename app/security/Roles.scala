@@ -22,7 +22,8 @@ import models.{ CachedData, CachedDataWithApp, Progress }
 import play.api.i18n.Lang
 import play.api.mvc.{ Call, Request, RequestHeader }
 import security.QuestionnaireRoles._
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
 object Roles {
 
@@ -191,7 +192,8 @@ object Roles {
 }
 
 object RoleUtils {
-  implicit def hc(implicit request: RequestHeader): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
+  implicit def hc(implicit request: RequestHeader): HeaderCarrier =
+    HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
   def activeUserWithApp(user: CachedData)(implicit request: RequestHeader, lang: Lang) =
     user.user.isActive && user.application.isDefined
