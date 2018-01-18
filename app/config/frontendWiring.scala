@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,5 +138,5 @@ object WhitelistFilter extends AkamaiWhitelistFilter with RunMode with Microserv
     path => Call("GET", path)
   }
 
-  override def destination: Call = Call("GET", "https://www.apply-civil-service-apprenticeship.service.gov.uk/outage-fset-fasttrack/index.html")
+  override def destination: Call = Call("GET", "https://www.apply-civil-service-apprenticeship.service.gov.uk/shutter/fset-fasttrack/index.html")
 }
