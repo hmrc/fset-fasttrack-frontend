@@ -142,7 +142,7 @@ object Roles {
 
   object UnconfirmedAllocatedCandidateRole extends CsrAuthorization {
     override def isAuthorized(user: CachedData)(implicit request: RequestHeader) =
-      activeUserWithApp(user) && statusIn(user)(ALLOCATION_UNCONFIRMED)
+      activeUserWithApp(user) && (statusIn(user)(ALLOCATION_UNCONFIRMED) || statusIn(user)(ALLOCATION_EXPIRED))
   }
 
   object AssessmentCentreFailedNotifiedRole extends CsrAuthorization {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ class DashboardPageSpec extends PlaySpec with TableDrivenPropertyChecks {
   implicit val lang: Lang = Lang.defaultLang
 
   // format: OFF
+
+  // NOTE: Steps here refer to the multiple application stages on the dashboard.
   val Applications = Table(
     ("applicationStatus", "step1", "step2", "step3", "step4"),
     (REGISTERED,                               ProgressInactive, ProgressInactive, ProgressInactive, ProgressInactive),
@@ -50,6 +52,7 @@ class DashboardPageSpec extends PlaySpec with TableDrivenPropertyChecks {
     (ALLOCATION_UNCONFIRMED,                   ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
     (AWAITING_ALLOCATION,                      ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
     (AWAITING_ALLOCATION_NOTIFIED,             ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
+    (ALLOCATION_EXPIRED,                       ProgressActive, ProgressInactive, ProgressInactive, ProgressInactive),
     (ONLINE_TEST_FAILED,                       ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
     (ONLINE_TEST_FAILED_NOTIFIED,              ProgressActive, ProgressActive, ProgressInactiveDisabled, ProgressInactiveDisabled),
     (AWAITING_ONLINE_TEST_RE_EVALUATION,       ProgressActive, ProgressActive, ProgressInactive, ProgressInactive),
