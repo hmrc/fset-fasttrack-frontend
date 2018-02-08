@@ -31,7 +31,7 @@
 
 @confirmAllocationExpired = @{
     allocationDetails match {
-        case Some(AllocationDetails(_, _, _, Some(expirationDate))) if LocalDate.now().isAfter(expirationDate) => true
+        case Some(AllocationDetails(_, _, _, Some(expirationDate))) if usr.application.get.applicationStatus == ALLOCATION_EXPIRED => true
         case _ => false
     }
 }
