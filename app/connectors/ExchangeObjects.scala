@@ -56,7 +56,8 @@ object ExchangeObjects {
     aLevel: Boolean,
     stemLevel: Boolean,
     civilServant: Boolean,
-    department: Option[String]
+    department: Option[String],
+    departmentOther: Option[String]
   )
 
   case class AddMedia(userId: UniqueIdentifier, media: String)

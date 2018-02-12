@@ -148,6 +148,22 @@ class GeneralDetailsFormSpec extends BaseSpec {
         + ("civilServant" -> "Yes")
         + ("department" -> " " * (deptMaxLength + 1)))
     }
+
+    "be invalid if you specify you are a civil servant, select department Other and specify the other department name " +
+      "which exceeds the max" in new Fixture {
+      assertFormError("error.departmentOther.maxLength", validFormValues - "civilServant"
+        + ("civilServant" -> "Yes")
+        + ("department" -> "Other")
+        + ("departmentOther" -> "A" * (deptMaxLength + 1))
+      )
+    }
+
+    "be invalid if you specify you are a civil servant, select department Other and not specify the other department name " in new Fixture {
+      assertFormError("error.departmentOther.required", validFormValues - "civilServant"
+        + ("civilServant" -> "Yes")
+        + ("department" -> "Other")
+      )
+    }
   }
 
   trait Fixture {
@@ -160,15 +176,16 @@ class GeneralDetailsFormSpec extends BaseSpec {
       "Bloggs",
       "Joe",
       DayMonthYear("21", "1", "1988"),
-      None,
+      outsideUk = None,
       Address("line1", Some("line2"), Some("line3"), Some("line4")),
       Some("E14 9EL"),
-      None,
+      country = None,
       Some("07912333333"),
-      Some(false),
-      Some(false),
-      "No",
-      None
+      aLevel = Some(false),
+      stemLevel = Some(false),
+      civilServant = "No",
+      department = None,
+      departmentOther = None
     )
 
     val validFormValues = Map(

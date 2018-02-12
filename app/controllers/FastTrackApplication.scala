@@ -17,7 +17,6 @@
 package controllers
 
 import _root_.forms.GeneralDetailsForm
-import com.mohiva.play.silhouette.api.Silhouette
 import config.{ CSRCache, CSRHttp }
 import connectors.ApplicationClient.PersonalDetailsNotFound
 import connectors.ExchangeObjects.PersonalDetails
@@ -28,11 +27,10 @@ import mappings.{ Address, DayMonthYear }
 import models.ApplicationData.ApplicationStatus._
 import models.CachedDataWithApp
 import org.joda.time.LocalDate
-import play.api.Play
 import security.Roles.PersonalDetailsRole
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
-import security.{ SecurityEnvironment, SilhouetteComponent }
+import security.SilhouetteComponent
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier
@@ -54,15 +52,16 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
         user.user.lastName,
         user.user.firstName,
         DayMonthYear("", "", ""),
-        None,
+        outsideUk = None,
         Address("", None, None, None),
-        None,
-        None,
-        None,
-        None,
-        None,
-        "No",
-        None
+        postCode = None,
+        country = None,
+        phone = None,
+        aLevel = None,
+        stemLevel = None,
+        civilServant = "No",
+        department = None,
+        departmentOther = None
       ))
       def presentPersonalDetails(availableSchemes: List[SchemeInfo]) = {
         getPersonalDetails(user.user.userID, user.application.applicationId).map { gd =>
@@ -79,7 +78,8 @@ trait FastTrackApplication extends BaseController with ApplicationClient with Us
             Some(gd.aLevel),
             Some(gd.stemLevel),
             if (gd.civilServant) "Yes" else "No",
-            gd.department
+            gd.department,
+            gd.departmentOther
           ))
           Ok(views.html.application.personalDetails(form, availableSchemes))
 

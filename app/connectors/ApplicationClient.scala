@@ -108,7 +108,8 @@ trait ApplicationClient {
         data.aLevel.getOrElse(false),
         data.stemLevel.getOrElse(false),
         data.civilServant == "Yes",
-        data.department
+        data.department,
+        data.departmentOther
       )
     ).map {
         case x: HttpResponse if x.status == CREATED => ()
