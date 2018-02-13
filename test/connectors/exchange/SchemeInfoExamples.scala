@@ -17,7 +17,9 @@
 package connectors.exchange
 
 object SchemeInfoExamples {
-  val NoALevelsScheme = SchemeInfo("Business", "SchemeNoALevels", requiresALevel = false, requiresALevelInStem = false)
-  val ALevelsScheme = SchemeInfo("Commercial", "SchemeALevels", requiresALevel = true, requiresALevelInStem = false)
-  val ALevelsStemScheme = SchemeInfo("ProjectDelivery", "SchemeALevelsStem", requiresALevel = true, requiresALevelInStem = true)
+  val NoALevelsScheme = SchemeInfo("Business", "SchemeNoALevels", requiresALevel = false, requiresALevelInStem = false,
+    requiresU18Level3 = false)
+  val ALevelsScheme = SchemeInfo("Commercial", "SchemeALevels", requiresALevel = true, requiresALevelInStem = false, requiresU18Level3 = false)
+  val ALevelsStemScheme = SchemeInfo("ProjectDelivery", "SchemeALevelsStem", requiresALevel = true, requiresALevelInStem = true ,
+    requiresU18Level3 = false)
 }
