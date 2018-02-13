@@ -19,7 +19,7 @@
 @(form: Form[_root_.forms.GeneralDetailsForm.Data], availableSchemes: List[SchemeInfo])(implicit request: Request[_], messages: Messages, flash: Flash, user: Option[CachedData], feedbackUrl: String)
 
 @import helpers.CSRFieldConstructor._
-@import views.html.widgets.{ pageProgress, checkbox, date, radioBox, radioBoxHorizontal }
+@import views.html.widgets.{ pageProgress, date, radioBox, radioBoxHorizontal, select_guard }
 
 @isOutsideUkChecked = @{
     form("outsideUk").value match {
@@ -212,13 +212,17 @@ function outsideUK() {
                 @radioBoxHorizontal(form("civilServant"), options = List(("yes", "Yes", true), ("no", "No", false)),
                     optionTrigger = "civilservant-panel")
                 <div id="civilservant-panel" class="toggle-content" aria-hidden="true">
-                    <div class="form-group">
-                        <label for="isCivilServantInput" class="form-label">Which department do you work in?</label>
-                        @helper.inputText(form("department"),
-                            '_label -> "",
-                            'class -> "form-control",
-                            '_showConstraints -> false
-                        )
+                    <div data-optional>
+                    @select_guard(form("department"), models.CivilServiceDepartments.list,
+                        "departmentDetail", "-- Select one --") {
+                        Which department do you work in?
+                    }
+                    </div>
+                    <div class="form-group toggle-content" id="departmentDetail" data-requiredifshown data-optional>
+                    @helper.inputText(form("departmentOther"),
+                        '_label -> "Provide more information",
+                        'class -> "form-control",
+                        '_showConstraints -> false)
                     </div>
                 </div>
             </fieldset>
