@@ -150,7 +150,7 @@ function outsideUK() {
                   <tr>
                     <td>
                         <ul class="">
-                        @availableSchemes.filter(scheme => !scheme.requiresALevel && !scheme.requiresALevelInStem).map { scheme =>
+                        @availableSchemes.filter(scheme => !scheme.requiresALevel && !scheme.requiresALevelInStem && !scheme.requiresU18Level3).map { scheme =>
                             <li>@scheme.name</li>
                         }
                         </ul>
@@ -159,10 +159,24 @@ function outsideUK() {
                       At least 5 GCSEs at grade C and above, or the new grade 4 and above, including English Language and Maths, or <a href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" rel="external" target="_blank">equivalent</a>.
                     </td>
                   </tr>
+                 <tr>
+                  <td>
+                   <ul class="">
+                   @availableSchemes.filter(scheme => !scheme.requiresALevel && !scheme.requiresALevelInStem && scheme.requiresU18Level3).map { scheme =>
+                    <li>@scheme.name</li>
+                   }
+                   </ul>
+                  </td>
+                  <td>
+                   At least 5 GCSEs at grade C and above, or the new grade 4 and above, including English Language and Maths, or <a href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" rel="external" target="_blank">equivalent</a>.
+                   <br /><br />
+                   If you're under 18 on 31st August 2018 you will also need a level 3 qualification
+                  </td>
+                 </tr>
                   <tr>
                     <td>
                         <ul class="">
-                        @availableSchemes.filter(scheme => scheme.requiresALevel && !scheme.requiresALevelInStem).map { scheme =>
+                        @availableSchemes.filter(scheme => scheme.requiresALevel && !scheme.requiresALevelInStem && !scheme.requiresU18Level3).map { scheme =>
                             <li>@scheme.name</li>
                         }
                         </ul>
