@@ -146,7 +146,7 @@ trait SecureActions {
       case Some(v) => block(request)
       case None =>
         val session = request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}")
-        block(request).map(_.withSession(session))
+        block(Request(env.authenticatorService.embed(session, request), request.body))
     }
   }
 }
