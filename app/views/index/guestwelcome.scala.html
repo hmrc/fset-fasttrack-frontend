@@ -20,7 +20,7 @@
 @import helpers.CSRFieldConstructor._
 @import play.filters.csrf.CSRF
 
-@main_template(title = "Create your account or Sign in", pageForms = Seq(signInForm), notification = notification) {
+@main_template(title = "Create your account or Sign in", pageForms = Seq(signInForm), notification = notification, campaignClosed = !fasttrackConfig.newAccountsEnabled) {
 
     <h1 class="heading-xlarge">Sign in</h1>
         @if(fasttrackConfig.newAccountsEnabled) {
