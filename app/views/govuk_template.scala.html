@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@(title: String, user: Option[CachedData] = None, additionalJavascriptFilenames: List[String] = Nil)(mainContent: Html)(implicit request: Request[_], feedbackUrl: String)
+@(title: String, user: Option[CachedData] = None, additionalJavascriptFilenames: List[String] = Nil, campaignClosed: Boolean = false)(mainContent: Html)(implicit request: Request[_], feedbackUrl: String)
 
 @import config.FrontendAppConfig
 @import views.html.template.userDetails
@@ -97,7 +97,7 @@
                         </div>
                     </div>
                     <div class="grid grid-1-3">
-                        @userDetails(user)
+                        @userDetails(user, campaignClosed)
                     </div>
                 </div>
 
