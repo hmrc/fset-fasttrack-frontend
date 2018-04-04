@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
-@(resetForm: Form[_root_.forms.RequestResetPasswordForm.Data], notification: Option[(helpers.NotificationType, String)] = None)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, messages: Messages)
+@(resetForm: Form[_root_.forms.RequestResetPasswordForm.Data], notification: Option[(helpers.NotificationType, String)] = None)(implicit request: Request[_], flash: Flash, user: Option[CachedData], feedbackUrl: String, fasttrackConfig: FasttrackConfig, messages: Messages)
 
 @import helpers.CSRFieldConstructor._
 
-@main_template(title = "Can't access your account?", pageForms = Seq(resetForm), notification = notification) {
+@main_template(title = "Can't access your account?", pageForms = Seq(resetForm), notification = notification, campaignClosed = !fasttrackConfig.newAccountsEnabled) {
 
     <div class="text">
         <h1 class="heading-xlarge">Can&#x27;t access your account?</h1>
