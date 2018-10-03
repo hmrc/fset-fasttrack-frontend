@@ -54,8 +54,6 @@ object FasttrackFrontendConfig {
 trait AppConfig {
   val analyticsToken: String
   val analyticsHost: String
-  val reportAProblemPartialUrl: String
-  val reportAProblemNonJSUrl: String
   val emailConfig: EmailConfig
   val userManagementConfig: UserManagementConfig
   val fasttrackConfig: FasttrackConfig
@@ -69,13 +67,8 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   val feedbackUrl = configuration.getString("feedback.url").getOrElse("")
 
-  private val contactHost = configuration.getString("microservice.services.contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "CSRFastTrack"
-
   override lazy val analyticsToken = loadConfig("microservice.services.google-analytics.token")
   override lazy val analyticsHost = loadConfig("microservice.services.google-analytics.host")
-  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   override lazy val emailConfig = configuration.underlying.as[EmailConfig]("microservice.services.email")
 
