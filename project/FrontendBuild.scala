@@ -17,11 +17,8 @@
 import sbt._
 
 object FrontendBuild extends Build with MicroService {
-  import scala.util.Properties.envOrElse
 
   val appName = "fset-fasttrack-frontend"
-  val appVersion = envOrElse("FSET_FASTTRACK_FRONTEND_VERSION", "999-SNAPSHOT")
-
   override lazy val appDependencies: Seq[ModuleID] = AppDependencies()
 }
 
@@ -33,7 +30,6 @@ private object AppDependencies {
 
   import Versions._
   import play.sbt.PlayImport._
-
 
   val compile = Seq(
     "com.iheart"                %% "ficus"                                    % "1.2.6",
