@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ abstract class DevelopmentFrontendGlobal
 
   override def onStart(app: Application) {
     super.onStart(app)
-    ApplicationCrypto.verifyConfiguration()
+    applicationCrypto.verifyConfiguration()
   }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
@@ -74,7 +74,9 @@ object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSuppor
   override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging
 }
 
-object AuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport {
+object AuditFilter extends FrontendAuditFilter with AppName with MicroserviceFilterSupport {
+
+  override def appNameConfiguration: Configuration = Play.current.configuration
 
   override lazy val maskedFormFields = Seq(
     SignInForm.passwordField,

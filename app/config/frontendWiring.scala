@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,8 @@ package config
 
 import java.util.Base64
 
-import akka.util.Crypt
 import com.mohiva.play.silhouette.api.{ Environment, EventBus }
-import com.mohiva.play.silhouette.api.crypto.Base64AuthenticatorEncoder
+import com.mohiva.play.silhouette.api.crypto.{ Base64AuthenticatorEncoder, Hash }
 import com.mohiva.play.silhouette.api.services.AuthenticatorService
 import com.mohiva.play.silhouette.api.util.{ Clock, FingerprintGenerator }
 import com.mohiva.play.silhouette.impl.authenticators.{ SessionAuthenticator, SessionAuthenticatorService, SessionAuthenticatorSettings }
@@ -28,6 +27,7 @@ import com.mohiva.play.silhouette.impl.util.DefaultFingerprintGenerator
 import com.mohiva.play.silhouette.api.EventBus
 import com.mohiva.play.silhouette.api.util.{ Clock, FingerprintGenerator }
 import com.mohiva.play.silhouette.impl.authenticators.{ SessionAuthenticatorService, SessionAuthenticatorSettings }
+import com.typesafe.config.Config
 import connectors.{ ApplicationClient, UserManagementClient }
 import models.services.{ UserCacheService, UserService }
 import play.api.Play
@@ -56,7 +56,7 @@ object FrontendAuditConnector extends AuditConnector {
 object CaseInSensitiveFingerPrintGenerator extends FingerprintGenerator {
     import play.api.http.HeaderNames._
     def generate(implicit request: RequestHeader) = {
-        Crypt.sha1(new StringBuilder()
+        Hash.sha1(new StringBuilder()
         .append(request.headers.get(USER_AGENT).map(_.toLowerCase).getOrElse("")).append(":")
         .append(request.headers.get(ACCEPT_LANGUAGE).map(_.toLowerCase).getOrElse("")).append(":")
         .append(request.headers.get(ACCEPT_CHARSET).map(_.toLowerCase).getOrElse("")).append(":")
@@ -70,6 +70,7 @@ object CSRHttp extends CSRHttp
 class CSRHttp extends WSHttp with HttpPut with HttpGet with HttpPost with HttpDelete with HttpPatch with HttpHooks{
   override val hooks = NoneRequired
   val wS = WS
+  override lazy val configuration: Option[Config] = Option(Play.current.configuration.underlying)
 }
 
 trait CSRCache extends SessionCache with AppName with ServicesConfig
@@ -82,6 +83,9 @@ object CSRCache extends CSRCache {
     "cachable.session-cache.domain",
     throw new Exception(s"Could not find config 'cachable.session-cache.domain'")
   )
+  override val appNameConfiguration = Play.current.configuration
+  override val mode = Play.current.mode
+  override val runModeConfiguration = Play.current.configuration
 }
 
 trait CSRSecurityEnvironment {
@@ -123,7 +127,7 @@ trait SecurityEnvironmentImpl extends Environment[security.SecurityEnvironment] 
   val http: CSRHttp = CSRHttp
 }
 
-object WhitelistFilter extends AkamaiWhitelistFilter with RunMode with MicroserviceFilterSupport {
+object WhitelistFilter extends AkamaiWhitelistFilter with MicroserviceFilterSupport {
 
   // Whitelist Configuration
   private def whitelistConfig(key: String): Seq[String] =
